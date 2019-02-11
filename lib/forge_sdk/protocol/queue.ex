@@ -187,7 +187,7 @@ end
 defimpl Enumerable, for: ForgeAbi.CircularQueue do
   def count(queue), do: {:ok, Enum.count(queue.items)}
   def find(queue, fun), do: Enum.find(queue.items, fun)
-  def member?(queue, item_any), do: Enum.member?(queue.items, item_any.value)
+  def member?(queue, item_any), do: {:ok, Enum.member?(queue.items, item_any.value)}
 
   def slice(queue),
     do: {:ok, Enum.count(queue), &Enumerable.List.slice(queue.items, &1, &2)}

@@ -3,6 +3,7 @@ defmodule ForgeSdk.File do
   Convenience functions for file api.
   """
 
+  alias ForgeAbi.{RequestLoadFile, RequestStoreFile}
   alias ForgeSdk.Rpc
   alias GRPC.Channel
 
@@ -22,7 +23,8 @@ defmodule ForgeSdk.File do
   def store_file(request, chan \\ nil)
 
   def store_file([path: path], chan) do
-    File.stream!(path, [], @chunk_size)
+    path
+    |> File.stream!([], @chunk_size)
     |> Stream.map(&[chunk: &1])
     |> store_file(chan)
   end

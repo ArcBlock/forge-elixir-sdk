@@ -3,7 +3,7 @@ defprotocol ForgeSdk.State.Context do
   State context protocol
   """
 
-  alias Forge.ForgeSdk.Context
+  alias ForgeSdk.State.Context
 
   @type t :: Context.t()
 

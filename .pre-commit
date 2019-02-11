@@ -1,0 +1,15 @@
+#!/bin/sh
+
+MIX_ENV=test mix test_all
+RES=$?
+if [ $RES -ne 0  ]
+then
+  exit $RES
+else
+  mix dialyzer --halt-exit-status
+  RES=$?
+  if [ $RES -ne 0 ]
+  then
+    exit $RES
+  fi
+fi

@@ -17,7 +17,8 @@ defmodule ForgeSdk.MixProject do
       compilers: Mix.compilers(),
       start_permanent: Mix.env() == :prod,
       test_coverage: [tool: ExCoveralls],
-      deps: deps()
+      deps: deps(),
+      dialyzer: [ignore_warnings: ".dialyzer_ignore.exs", plt_add_apps: [:eex, :typed_struct]]
     ]
   end
 
@@ -50,6 +51,11 @@ defmodule ForgeSdk.MixProject do
       {:forge_abi, git: "git@github.com:arcblock/forge_abi.git", tag: "v1.2.3"},
 
       # dev and test
+      {:credo, "~> 1.0.0", only: [:dev, :test]},
+      {:dialyxir, "~> 1.0.0-rc.4", only: [:dev], runtime: false},
+      {:ex_doc, "~> 0.19.0", only: [:dev, :test], runtime: false},
+      {:excoveralls, "~> 0.10", only: [:test]},
+      {:pre_commit_hook, "~> 1.2", only: [:dev, :test], runtime: false},
       {:stream_data, "~> 0.4", only: [:test, :integration]}
     ]
   end

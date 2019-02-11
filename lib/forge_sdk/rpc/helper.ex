@@ -42,7 +42,8 @@ defmodule ForgeSdk.Rpc.Helper do
   def send_stream(service, chan, req, opts, fun) do
     stream = get_stream(service, chan, opts)
 
-    do_send_stream(stream, [req], opts, fun)
+    stream
+    |> do_send_stream([req], opts, fun)
     |> case do
       [res] -> res
       res -> res

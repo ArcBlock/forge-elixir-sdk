@@ -4,7 +4,7 @@ defimpl ForgeSdk.Display, for: AbciVendor.KVPair do
   """
 
   def display(%{key: k, value: v}, _expand? \\ false) do
-    key = if String.valid?(k), do: k, else: Base.encode16(k, case: :lower)
+    key = if String.valid?(k), do: k, else: Base.url_encode64(k, padding: false)
     value = if String.valid?(v), do: v, else: Base.url_encode64(v, padding: false)
 
     %{

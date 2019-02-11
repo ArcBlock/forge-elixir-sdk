@@ -75,7 +75,6 @@ defimpl ForgeSdk.Display, for: Any do
         is_map(v) and Map.has_key?(v, :__struct__) -> Map.put(acc, k, Display.display(v))
         is_tuple(v) -> Map.put(acc, k, Display.display(v))
         is_list(v) -> Map.put(acc, k, Enum.map(v, &Display.display(&1)))
-        k in [:signatures] -> Map.put(acc, k, Enum.map(v, &Display.display(&1)))
         true -> Map.put(acc, k, Display.display(v))
       end
     end)

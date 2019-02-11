@@ -11,8 +11,6 @@ stake_for_node = 1
 [forge.web]
 enabled = true
 
-[forge.security]
-anti_replay = "hash"
 
 [tendermint]
 version = "0.29.1"

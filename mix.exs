@@ -47,7 +47,6 @@ defmodule ForgeSdk.MixProject do
       # forge family dependencies
       {:mcrypto, "~> 0.2"},
       {:abt_did, git: "git@github.com:arcblock/abt-did-elixir.git", tag: "v0.1.13"},
-      # {:abt_did, path: "~/Documents/GitHub/ArcBlock/abt-did"},
       {:forge_abi, git: "git@github.com:arcblock/forge_abi.git", tag: "v1.2.3"},
 
       # dev and test

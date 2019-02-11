@@ -152,7 +152,7 @@ defmodule ForgeSdk.Rpc do
     res.blocks
   end
 
-  @spec get_tx(RequestSearch.t() | Keyword.t(), Channel.t() | nil, Keyword.t()) ::
+  @spec search(RequestSearch.t() | Keyword.t(), Channel.t() | nil, Keyword.t()) ::
           [Transaction.t()] | {:error, term()}
   rpc :search do
     res.txs

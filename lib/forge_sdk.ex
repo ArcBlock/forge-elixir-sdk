@@ -77,7 +77,7 @@ defmodule ForgeSdk do
   defdelegate proto_to_datetime(ts), to: Util
 
   # init sdk and handler registration
-  defdelegate init(otp_app, filename \\ nil), to: Util
+  defdelegate init(otp_app, app_hash, filename \\ nil), to: Util
 
   # statistics
   defdelegate get_forge_statistics(requests, chan \\ nil), to: Rpc

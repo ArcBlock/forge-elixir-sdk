@@ -3,6 +3,7 @@ defmodule ForgeSdk.File do
   Convenience functions for file api.
   """
 
+  alias ForgeAbi.{RequestLoadFile, RequestStoreFile}
   alias ForgeSdk.Rpc
   alias GRPC.Channel
 

@@ -10,7 +10,7 @@ defmodule ForgeSdk.Wallet.Util do
   alias ForgeAbi.{KeyType, HashType, RoleType, Transaction, WalletInfo, WalletType}
   alias AbciVendor.KVPair
   alias Mcrypto.Crypter.AES
-  alias Mcrypto.Hasher.{Keccak, Sha3, Sha2}
+  alias Mcrypto.Hasher.{Keccak, Sha3}
   alias Mcrypto.Signer.{Ed25519, Secp256k1}
 
   @spec create(WalletType.t(), String.t()) :: WalletInfo.t() | {:error, term()}
@@ -210,11 +210,11 @@ defmodule ForgeSdk.Wallet.Util do
   end
 
   defp do_hash(:keccak, data), do: Mcrypto.hash(%Keccak{}, data)
-  defp do_hash(:sha2, data), do: Mcrypto.hash(%Sha2{}, data)
+  # defp do_hash(:sha2, data), do: Mcrypto.hash(%Sha2{}, data)
   defp do_hash(:sha3, data), do: Mcrypto.hash(%Sha3{}, data)
 
   defp do_hash(:keccak_384, data), do: Mcrypto.hash(%Keccak{size: 384}, data)
-  defp do_hash(:sha2_384, data), do: Mcrypto.hash(%Sha2{size: 384}, data)
+  # defp do_hash(:sha2_384, data), do: Mcrypto.hash(%Sha2{size: 384}, data)
   defp do_hash(:sha3_384, data), do: Mcrypto.hash(%Sha3{size: 384}, data)
 
   defp do_keypair(:ed25519), do: Mcrypto.keypair(%Ed25519{})

@@ -255,7 +255,11 @@ defmodule ForgeSdk.Rpc do
 
   # file system related
   @spec store_file(
-          RequestStoreFile.t() | [RequestStoreFile.t()] | Keyword.t() | [Keyword.t()],
+          Enumerable.t()
+          | RequestStoreFile.t()
+          | [RequestStoreFile.t()]
+          | Keyword.t()
+          | [Keyword.t()],
           Channel.t() | nil,
           Keyword.t()
         ) :: String.t() | {:error, term()}

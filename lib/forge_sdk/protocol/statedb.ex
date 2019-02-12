@@ -57,12 +57,6 @@ defprotocol ForgeSdk.StateDb do
   def put(handler, address, data)
 
   @doc """
-  Put the raw state into to address in the db. This will lead to a change of root_hash.
-  """
-  @spec put_raw(t(), binary(), binary()) :: {:ok, t()} | {:error, term()}
-  def put_raw(handler, address, data)
-
-  @doc """
   When a block is committed, record the last block and the app hash for that block. Then return the app hash.
   """
   @spec commit_block(t(), non_neg_integer()) :: binary()

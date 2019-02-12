@@ -27,6 +27,9 @@ index_db = "index"
 keystore = "keystore"
 logfile = "logs/forge.log"
 
+# index db is nondeterministic, it won't affect statesdb.
+enable_index = true
+
 sock_grpc = "tcp://127.0.0.1:27210"
 consensus_engine = "tendermint"
 storage_engine = "ipfs"

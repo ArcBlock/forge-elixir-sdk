@@ -12,9 +12,9 @@ defprotocol ForgeSdk.Serializable do
   def encode(data)
 end
 
-defimpl ForgeSdk.Serializable, for: ForgeSdk.State do
-  @spec encode(ForgeSdk.State.t()) :: binary()
-  def encode(data), do: ForgeSdk.State.encode(data)
+defimpl ForgeSdk.Serializable, for: BitString do
+  @spec encode(binary()) :: binary()
+  def encode(data), do: data
 end
 
 defimpl ForgeSdk.Serializable, for: Integer do

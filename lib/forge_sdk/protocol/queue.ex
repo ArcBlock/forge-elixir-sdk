@@ -139,16 +139,8 @@ defimpl ForgeSdk.Queue, for: ForgeAbi.CircularQueue do
 
   # private function
 
-  defp init_items(%{max_items: 0} = queue, items) do
+  defp init_items(queue, items) do
     Enum.reduce(items, queue, &add(&2, &1))
-  end
-
-  defp init_items(%{max_items: max_items} = queue, items) do
-    if length(items) < max_items do
-      Enum.reduce(items, queue, &add(&2, &1))
-    else
-      queue
-    end
   end
 
   defp add_item(%{fifo: true, items: items} = queue, item) do

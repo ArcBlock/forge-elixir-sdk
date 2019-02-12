@@ -103,21 +103,19 @@ defmodule ForgeSdkTest.Queue do
   test "test remove and fifo is false" do
     item_1 = Any.new(type_url: "test", value: "1")
     item_2 = Any.new(type_url: "test", value: "2")
-    item_3 = Any.new(type_url: "test", value: "1")
+    item_3 = Any.new(type_url: "test", value: "3")
     queue = Queue.init(CircularQueue.new(), type_url: "test", max_items: 3, circular: true)
     queue = Queue.add(queue, item_1)
     queue = Queue.add(queue, item_2)
     queue = Queue.add(queue, item_3)
     res = Queue.remove(queue, :value, "1")
-    # TODO(lei): please check why this fails
-    # assert res.items === [item_3.value, item_2.value]
-    assert res.items === ["2"]
+    assert res.items === [item_3.value, item_2.value]
   end
 
   test "test remove and fifo is true" do
     item_1 = %{type_url: "test", value: "1"}
     item_2 = %{type_url: "test", value: "2"}
-    item_3 = %{type_url: "test", value: "1"}
+    item_3 = %{type_url: "test", value: "3"}
 
     queue =
       Queue.init(CircularQueue.new(), type_url: "test", max_items: 3, circular: true, fifo: true)
@@ -125,9 +123,8 @@ defmodule ForgeSdkTest.Queue do
     queue = Queue.add(queue, item_1)
     queue = Queue.add(queue, item_2)
     queue = Queue.add(queue, item_3)
-    res = Queue.remove(queue, :value, 1)
-    # TODO(lei): please fix this. should be [item2, item3]
-    assert res.items === [item_3.value, item_2.value]
+    res = Queue.remove(queue, :value, "1")
+    assert res.items === [item_2.value, item_3.value]
   end
 
   test "test pop and fifo is false" do
@@ -219,9 +216,7 @@ defmodule ForgeSdkTest.Queue do
         items: [item_1, item_2, item_3, item_4]
       )
 
-    # TODO(lei): please check why this fails
-    # assert res.items === [item_4.value, item_3.value, item_2.value]
-    assert res.items === []
+    assert res.items === [item_4.value, item_3.value, item_2.value]
   end
 
   test "test init with items and fifo is true" do
@@ -239,8 +234,6 @@ defmodule ForgeSdkTest.Queue do
         items: [item_1, item_2, item_3, item_4]
       )
 
-    # TODO(lei): please check why this fails
-    # assert res.items === [item_2.value, item_3.value, item_4.value]
-    assert res.items === []
+    assert res.items === [item_2.value, item_3.value, item_4.value]
   end
 end

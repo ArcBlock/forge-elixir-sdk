@@ -255,7 +255,11 @@ defmodule ForgeSdk.Rpc do
 
   # file system related
   @spec store_file(
-          RequestStoreFile.t() | [RequestStoreFile.t()] | Keyword.t() | [Keyword.t()],
+          Enumerable.t()
+          | RequestStoreFile.t()
+          | [RequestStoreFile.t()]
+          | Keyword.t()
+          | [Keyword.t()],
           Channel.t() | nil,
           Keyword.t()
         ) :: String.t() | {:error, term()}
@@ -264,7 +268,7 @@ defmodule ForgeSdk.Rpc do
   end
 
   @spec load_file(RequestLoadFile.t() | Keyword.t(), Channel.t() | nil, Keyword.t()) ::
-          [binary()] | {:error, term()}
+          [binary()] | [error: term()] | {:error, term()}
   rpc :load_file, response_stream: true do
     res.chunk
   end

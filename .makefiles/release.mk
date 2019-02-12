@@ -16,7 +16,7 @@ bump-version:
 
 create-pr:
 	@echo "Creating pull request..."
-	git push origin $(GIT_BRANCH)
+	@git push origin $(GIT_BRANCH)
 	@hub pull-request
 
 browse-pr:

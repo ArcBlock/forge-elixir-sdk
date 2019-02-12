@@ -268,7 +268,7 @@ defmodule ForgeSdk.Rpc do
   end
 
   @spec load_file(RequestLoadFile.t() | Keyword.t(), Channel.t() | nil, Keyword.t()) ::
-          [binary()] | {:error, term()}
+          [binary()] | [error: term()] | {:error, term()}
   rpc :load_file, response_stream: true do
     res.chunk
   end

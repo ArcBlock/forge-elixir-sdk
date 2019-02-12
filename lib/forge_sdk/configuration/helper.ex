@@ -1,6 +1,6 @@
 defmodule ForgeSdk.Configuration.Helper do
   @moduledoc """
-  FUnctions to make configuration parse easy
+  Functions to make configuration parse easy
   """
 
   def parse_config(config, paths_to_normalize) do

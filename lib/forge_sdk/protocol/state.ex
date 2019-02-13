@@ -14,12 +14,6 @@ defprotocol ForgeSdk.State do
   def create(state, attrs, context)
 
   @doc """
-  Encode the state to binary data
-  """
-  @spec encode(t()) :: binary()
-  def encode(state)
-
-  @doc """
   update a state with the give attributes and context.
   """
   @spec update(t(), map(), AbciContext.t()) :: map()

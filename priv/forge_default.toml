@@ -40,6 +40,7 @@ unlock_ttl = 300
 max_validators = 64
 max_candidates = 256
 pub_sub_key = "ABTTOTHEMOON"
+compression = "snappy"
 
 [forge.limit]
 # max grace period is 10

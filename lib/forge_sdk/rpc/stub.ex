@@ -41,4 +41,5 @@ defmodule ForgeSdk.Rpc.Stub do
 
   # statistics rpc
   defdelegate get_forge_statistics(chan, req, opts \\ []), to: ForgeAbi.StatisticRpc.Stub
+  defdelegate list_transactions(chan, req, opts \\ []), to: ForgeAbi.StatisticRpc.Stub
 end

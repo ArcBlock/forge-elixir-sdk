@@ -62,7 +62,7 @@ seed_mode = false
 [tendermint.genesis]
 genesis_time = "2018-11-05T19:22:08.938749Z"
 chain_id = "forge"
-max_bytes = 22020096
+max_bytes = 600000
 max_gas = -1
 app_hash = ""
 

@@ -18,6 +18,7 @@ defmodule ForgeSdk.Rpc do
     StakeState,
 
     # tx
+    IndexedTransaction,
     Transaction,
     UnconfirmedTxs,
 
@@ -27,14 +28,15 @@ defmodule ForgeSdk.Rpc do
     NetInfo,
     ValidatorsInfo,
     WalletInfo,
+    PageInfo,
 
     # chain related
-
     RequestCreateTx,
     RequestGetBlock,
     RequestGetBlocks,
     RequestGetTx,
     RequestGetUnconfirmedTxs,
+    RequestListTransactions,
     RequestMultisig,
     RequestSearch,
     RequestSendTx,
@@ -359,5 +361,14 @@ defmodule ForgeSdk.Rpc do
         ) :: ForgeStatistics.t() | {:error, term()}
   rpc :get_forge_statistics do
     res.forge_statistics
+  end
+
+  @spec list_transactions(
+          RequestListTransactions.t() | Keyword.t(),
+          Channel.t() | nil,
+          Keyword.t()
+        ) :: {[IndexedTransaction.t()], PageInfo.t()} | {:error, term()}
+  rpc :list_transactions do
+    {res.transactions, res.page}
   end
 end

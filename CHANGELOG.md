@@ -1,3 +1,9 @@
+## 0.14.1 (February 15, 2019)
+  - add get-asset-address grpc (#12)
+  - update forge_abi dep (#11)
+  - add list transactions apis (#10)
+  - tune max block size to 600k
+
 ## 0.14.0 (February 13, 2019)
   - add compression in forge config (#9)
   - impl for serializable (#8)

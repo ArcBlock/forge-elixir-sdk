@@ -27,7 +27,7 @@ sock_grpc = "unix://socks/tm_grpc_test.sock"
 sock_p2p = "tcp://0.0.0.0:27656"
 sock_prof = ""
 
-timeout_commit = "100ms"
+timeout_commit = "1s"
 create_empty_blocks = false
 
 [ipfs]
@@ -39,4 +39,4 @@ path = "/tmp/.forge_test/ipfs"
 dc_dump_limit = 50
 dump_log_write_threshold = 50_000
 cache_mnesia_table_timeout = 15_000
-path = "~/.forge_test/cache/mnesia_data_dir"
+path = "/tmp/.forge_test/cache/mnesia_data_dir"

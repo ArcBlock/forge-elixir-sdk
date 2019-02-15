@@ -34,6 +34,7 @@ defmodule ForgeSdk do
   defdelegate get_blocks(request, chan \\ nil), to: Rpc
   defdelegate search(request, chan \\ nil), to: Rpc
   defdelegate get_config(chan \\ nil), to: Rpc
+  defdelegate get_asset_address(request, chan \\ nil), to: Rpc
 
   # wallet related
   defdelegate create_wallet(request, chan \\ nil), to: Rpc

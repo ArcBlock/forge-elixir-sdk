@@ -32,6 +32,7 @@ defmodule ForgeSdk.Rpc do
 
     # chain related
     RequestCreateTx,
+    RequestGetAssetAddress,
     RequestGetBlock,
     RequestGetBlocks,
     RequestGetTx,
@@ -183,6 +184,15 @@ defmodule ForgeSdk.Rpc do
   @spec get_config(Channel.t() | nil, Keyword.t()) :: String.t() | {:error, term()}
   rpc :get_config, no_params: true do
     res.config
+  end
+
+  @spec get_asset_address(
+          RequestGetAssetAddress.t() | Keyword.t(),
+          Channel.t() | nil,
+          Keyword.t()
+        ) :: String.t() | {:error, term()}
+  rpc :get_asset_address do
+    res.asset_address
   end
 
   # wallet

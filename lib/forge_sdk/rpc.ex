@@ -32,6 +32,7 @@ defmodule ForgeSdk.Rpc do
 
     # chain related
     RequestCreateTx,
+    RequestDeclareNode,
     RequestGetAssetAddress,
     RequestGetBlock,
     RequestGetBlocks,
@@ -227,8 +228,9 @@ defmodule ForgeSdk.Rpc do
     :ok
   end
 
-  @spec declare_node(Channel.t() | nil, Keyword.t()) :: WalletInfo.t() | {:error, term()}
-  rpc :declare_node, no_params: true do
+  @spec declare_node(RequestDeclareNode.t(), Channel.t() | nil, Keyword.t()) ::
+          WalletInfo.t() | {:error, term()}
+  rpc :declare_node do
     res.wallet
   end
 

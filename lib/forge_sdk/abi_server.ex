@@ -94,6 +94,7 @@ defmodule ForgeSdk.AbiServer do
   rescue
     e ->
       Logger.warn("Failed to verify request: Error: #{inspect(e)}. Request: #{inspect(value)}. ")
+      Logger.warn("Trace: #{Exception.format_stacktrace(__STACKTRACE__)}")
       resp = ResponseVerifyTx.new(code: StatusCode.value(:invalid_tx))
       :ok = send_response(%Response{value: {:verify_tx, resp}}, state)
 
@@ -115,6 +116,7 @@ defmodule ForgeSdk.AbiServer do
   rescue
     e ->
       Logger.warn("Failed to update states: Error: #{inspect(e)}. Request: #{inspect(value)}. ")
+      Logger.warn("Trace: #{Exception.format_stacktrace(__STACKTRACE__)}")
       resp = ResponseUpdateState.new(states: [])
       :ok = send_response(%Response{value: {:update_state, resp}}, state)
 

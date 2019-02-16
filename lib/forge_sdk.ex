@@ -42,7 +42,7 @@ defmodule ForgeSdk do
   defdelegate recover_wallet(request, chan \\ nil), to: Rpc
   defdelegate list_wallet(chan \\ nil), to: Rpc
   defdelegate remove_wallet(request, chan \\ nil), to: Rpc
-  defdelegate declare_node(chan \\ nil), to: Rpc
+  defdelegate declare_node(request, chan \\ nil), to: Rpc
 
   # state related
   defdelegate get_account_state(request, chan \\ nil), to: Rpc

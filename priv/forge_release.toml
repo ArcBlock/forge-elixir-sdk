@@ -79,3 +79,6 @@ app_hash = ""
 [ipfs]
 version = "0.4.18"
 path = "~/.forge_release/ipfs"
+
+[cache]
+path = "~/.forge_release/cache/mnesia_data_dir"

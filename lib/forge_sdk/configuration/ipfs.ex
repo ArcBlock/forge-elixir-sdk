@@ -18,6 +18,7 @@ defimpl ForgeSdk.Configuration, for: ForgeSdk.Configuration.Ipfs do
       |> Helper.add_paths([{"config_file", "config"}])
 
     Helper.put_env(:ipfs_config, config)
+    Application.put_env(:forge, :storage_config, config)
     config
   end
 end

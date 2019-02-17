@@ -14,12 +14,9 @@ defimpl ForgeSdk.Configuration, for: ForgeSdk.Configuration.Forge do
   def parse(_parser, conf) do
     config = conf["forge"]
     consensus_config = conf[config["consensus_engine"]]
-    storage_config = conf[config["storage_engine"]]
     genesis = consensus_config["genesis"]
     config = Helper.parse_config(config, ["db", "index_db", "keystore", "logfile"])
     Helper.put_env(:forge_config, config)
-    Helper.put_env(:consensus_config, consensus_config)
-    Helper.put_env(:storage_config, storage_config)
     Helper.put_env(:consensus, to_atom(config, "consensus_engine"))
     Helper.put_env(:storage, to_atom(config, "storage_engine"))
     Helper.put_env(:chain_id, genesis["chain_id"])

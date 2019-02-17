@@ -26,6 +26,7 @@ defimpl ForgeSdk.Configuration, for: ForgeSdk.Configuration.Tendermint do
       |> Helper.add_paths(new_paths)
 
     Helper.put_env(:tendermint_config, config)
+    Application.put_env(:forge, :consensus_config, config)
     config
   end
 end

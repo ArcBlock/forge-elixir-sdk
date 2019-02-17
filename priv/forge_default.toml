@@ -116,6 +116,7 @@ timeout_commit = "5s"
 
 # create empty blocks in 5s interval
 create_empty_blocks = true
+create_empty_blocks_interval = "0s"
 
 # set if this node runs in a seed mode
 seed_mode = false
@@ -126,6 +127,8 @@ max_num_inbound_peers = 40
 max_num_outbound_peers = 10
 
 upnp = false
+
+recheck = true
 
 [tendermint.genesis]
 genesis_time = "2018-11-05T19:22:08.938749Z"

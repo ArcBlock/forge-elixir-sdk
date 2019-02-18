@@ -42,6 +42,7 @@ defmodule ForgeSdk.Rpc do
     RequestMultisig,
     RequestSearch,
     RequestSendTx,
+    RequestSignData,
 
     # wallet related
     RequestCreateWallet,
@@ -194,6 +195,12 @@ defmodule ForgeSdk.Rpc do
         ) :: String.t() | {:error, term()}
   rpc :get_asset_address do
     res.asset_address
+  end
+
+  @spec sign_data(RequestSignData.t() | Keyword.t(), Channel.t() | nil, Keyword.t()) ::
+          binary | {:error, term()}
+  rpc :sign_data do
+    res.signed_data
   end
 
   # wallet

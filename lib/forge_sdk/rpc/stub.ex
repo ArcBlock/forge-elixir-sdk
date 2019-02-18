@@ -16,6 +16,7 @@ defmodule ForgeSdk.Rpc.Stub do
   defdelegate get_validators_info(chan, req, opts \\ []), to: ForgeAbi.ChainRpc.Stub
   defdelegate get_config(chan, req, opts \\ []), to: ForgeAbi.ChainRpc.Stub
   defdelegate get_asset_address(chan, req, opts \\ []), to: ForgeAbi.ChainRpc.Stub
+  defdelegate sign_data(chan, req, opts \\ []), to: ForgeAbi.ChainRpc.Stub
 
   # wallet rpc
   defdelegate create_wallet(chan, req, opts \\ []), to: ForgeAbi.WalletRpc.Stub

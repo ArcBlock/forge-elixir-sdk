@@ -145,6 +145,9 @@ path = "~/.forge/ipfs"
 logfile = "logs/ipfs.log"
 storage_max = "10GB"
 bootstrap = []
+swarm_port = 24001
+api_port = 25001
+gateway_port = 28080
 
 #ipfs_cluster_version = "0.7.0"
 #ipfs_cluster_ctl_version = "0.7.0"

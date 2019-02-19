@@ -59,10 +59,12 @@ create_empty_blocks = true
 # set if this node runs in a seed mode
 seed_mode = false
 
+recheck = false
+
 [tendermint.genesis]
 genesis_time = "2018-11-05T19:22:08.938749Z"
 chain_id = "forge"
-max_bytes = 600000
+max_bytes = 150000
 max_gas = -1
 app_hash = ""
 

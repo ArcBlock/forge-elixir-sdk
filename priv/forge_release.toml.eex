@@ -22,6 +22,9 @@ general = 10
 # for node stake, we do 60s
 stake_for_node = 60
 
+[forge.web]
+enabled = true
+
 [forge.release]
 url = "<%= release_url %>"
 
@@ -59,6 +62,8 @@ create_empty_blocks = <%= create_empty_blocks %>
 
 # set if this node runs in a seed mode
 seed_mode = false
+
+recheck = false
 
 [tendermint.genesis]
 genesis_time = "<%= genesis_time %>"

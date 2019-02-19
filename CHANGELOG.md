@@ -1,3 +1,10 @@
+## 0.15.0 (February 18, 2019)
+  - tune consensus params (#15)
+  - add grpc for signing data with wallet and token (#14)
+  - fix forge consensus / storage config issue
+  - add more default config
+  - fix declare node rpc (#13)
+
 ## 0.14.1 (February 15, 2019)
   - add get-asset-address grpc (#12)
   - update forge_abi dep (#11)

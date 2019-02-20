@@ -44,6 +44,7 @@ defmodule ForgeSdk.MixProject do
       {:mcrypto, "~> 0.2"},
       {:abt_did, git: "git@github.com:arcblock/abt-did-elixir.git", tag: "v0.1.13"},
       {:forge_abi, git: "git@github.com:arcblock/forge-abi.git"},
+
       # dev and test
       {:credo, "~> 1.0.0", only: [:dev, :test]},
       {:dialyxir, "~> 1.0.0-rc.4", only: [:dev], runtime: false},

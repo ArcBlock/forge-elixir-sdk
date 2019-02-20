@@ -84,4 +84,7 @@ defmodule ForgeSdk do
   # statistics
   defdelegate get_forge_statistics(requests, chan \\ nil), to: Rpc
   defdelegate list_transactions(request, chan \\ nil), to: Rpc
+  defdelegate get_assets(request, chan \\ nil), to: Rpc
+  defdelegate get_stakes(request, chan \\ nil), to: Rpc
+  defdelegate get_top_accounts(request, chan \\ nil), to: Rpc
 end

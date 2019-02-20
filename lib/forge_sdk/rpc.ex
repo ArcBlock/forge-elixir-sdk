@@ -22,6 +22,11 @@ defmodule ForgeSdk.Rpc do
     Transaction,
     UnconfirmedTxs,
 
+    # index state
+    IndexedStakeState,
+    IndexedAccountState,
+    IndexedAssetState,
+
     # other
     ChainInfo,
     BlockInfo,
@@ -34,8 +39,11 @@ defmodule ForgeSdk.Rpc do
     RequestCreateTx,
     RequestDeclareNode,
     RequestGetAssetAddress,
+    RequestGetAssets,
     RequestGetBlock,
     RequestGetBlocks,
+    RequestGetStakes,
+    RequestGetTopAccounts,
     RequestGetTx,
     RequestGetUnconfirmedTxs,
     RequestListTransactions,
@@ -389,5 +397,32 @@ defmodule ForgeSdk.Rpc do
         ) :: {[IndexedTransaction.t()], PageInfo.t()} | {:error, term()}
   rpc :list_transactions do
     {res.transactions, res.page}
+  end
+
+  @spec get_assets(
+          RequestGetAssets.t() | Keyword.t(),
+          Channel.t() | nil,
+          Keyword.t()
+        ) :: {[IndexedAssetState.t()], PageInfo.t()} | {:error, term()}
+  rpc :get_assets do
+    {res.assets, res.page}
+  end
+
+  @spec get_stakes(
+          RequestGetStakes.t() | Keyword.t(),
+          Channel.t() | nil,
+          Keyword.t()
+        ) :: {[IndexedStakeState.t()], PageInfo.t()} | {:error, term()}
+  rpc :get_stakes do
+    {res.stakes, res.page}
+  end
+
+  @spec get_top_accounts(
+          RequestGetTopAccounts.t() | Keyword.t(),
+          Channel.t() | nil,
+          Keyword.t()
+        ) :: {[IndexedAccountState.t()], PageInfo.t()} | {:error, term()}
+  rpc :get_top_accounts do
+    {res.accounts, res.page}
   end
 end

@@ -27,28 +27,16 @@ defprotocol ForgeSdk.StateDb do
   def get(handler, address)
 
   @doc """
-  Retrieve the state from an address
+  Retrieve the state from an address by given height
   """
-  @spec get(t(), binary(), binary()) :: State.t() | nil
-  def get(handler, address, app_hash)
+  @spec get(t(), binary(), non_neg_integer()) :: State.t() | nil
+  def get(handler, address, height)
 
   @doc """
   Retrieve the raw state (not final) from an address, used internally for migration. No cache is needed.
   """
   @spec get_raw(t(), binary()) :: map() | binary() | nil
   def get_raw(handler, address)
-
-  @doc """
-  Check if a key exists in db
-  """
-  @spec has?(t(), binary()) :: boolean()
-  def has?(handler, address)
-
-  @doc """
-  Check if a key exists in db
-  """
-  @spec has?(t(), binary(), binary()) :: boolean()
-  def has?(handler, address, app_hash)
 
   @doc """
   Put the state into to address in the db. This will lead to a change of root_hash.
@@ -72,8 +60,8 @@ defprotocol ForgeSdk.StateDb do
   def get_info(handler, height \\ 0)
 
   @doc """
-  Travel to different app hash (or block height). The returned db handler could be used to retrieve old state from the db.
+  Travel to different block height. The returned db handler could be used to retrieve old state from the db.
   """
-  @spec travel(t(), non_neg_integer() | binary() | nil) :: t()
-  def travel(handler, height_or_hash)
+  @spec travel(t(), non_neg_integer() | nil) :: t()
+  def travel(handler, height)
 end

@@ -335,6 +335,7 @@ defmodule ForgeSdk.Rpc do
   tx :declare
   tx :declare_file
   tx :exchange, multisig: true
+  tx :activate, multisig: true
   tx :stake
   tx :sys_upgrade
   tx :transfer

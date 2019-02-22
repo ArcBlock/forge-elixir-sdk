@@ -160,9 +160,9 @@ defmodule ForgeSdk.Rpc do
   end
 
   @spec get_blocks(RequestGetBlocks.t() | Keyword.t(), Channel.t() | nil, Keyword.t()) ::
-          [BlockInfo.t()] | {:error, term()}
+          {[BlockInfo.t()], PageInfo.t()} | {:error, term()}
   rpc :get_blocks do
-    res.blocks
+    {res.blocks, res.page}
   end
 
   @spec search(RequestSearch.t() | Keyword.t(), Channel.t() | nil, Keyword.t()) ::
@@ -330,6 +330,7 @@ defmodule ForgeSdk.Rpc do
   end
 
   tx :account_migrate
+  tx :activate_asset, multisig: true
   tx :create_asset
   tx :consensus_upgrade
   tx :declare

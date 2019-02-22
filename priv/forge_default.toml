@@ -16,6 +16,9 @@ sock_grpc = ""
 # For configuring the backoff time (in milliseconds) if the ABI connection is cutoff.
 sock_backoff = 500
 
+[forge_starter]
+release_path = "~/.forge_cli/release/forge"
+
 [forge]
 decimal = 16
 proto_version = 1

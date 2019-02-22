@@ -330,12 +330,12 @@ defmodule ForgeSdk.Rpc do
   end
 
   tx :account_migrate
+  tx :activate_asset, multisig: true
   tx :create_asset
   tx :consensus_upgrade
   tx :declare
   tx :declare_file
   tx :exchange, multisig: true
-  tx :activate, multisig: true
   tx :stake
   tx :sys_upgrade
   tx :transfer

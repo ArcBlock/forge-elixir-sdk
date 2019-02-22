@@ -66,3 +66,9 @@ Then you can put the itx into the tx, and provide `from`, `nonce` (you can just 
 3. Sign the hash with the private key.
 4. do url base64 encode for the signature, and attach it to the tx.
 5. Json encode the tx. And then send it with send_tx graphql API.
+
+### Exchange itx
+
+Most of the itx only required single signature, which shall be the sender's signature, to fulfill the transaction. However, transactions like exchange required multiple signature. To properly sign an exchange tx, we need to follow the simular guide as `declare`, which, the sender need to attach its signature into the `signature` field. However, before sending the tx to the chain, the receiver shall attach her signature as well. We have a `signatures` field, which is a `KVPair` for this purpose. Receiver first shall verify the signature of the sender is correct (look up the sender state in the chain and verify the signature with its PK from sender's account state), then sign the entire tx with receiver's sk (the sign flow is the same, here we use receiver's wallet type). Then receiver generate a `KVPair`, with her address as the key, and the signature as the value, and put the pair to the `signatures` list.
+
+Currently for exchange we just need receiver's signature. In future, 3rd party may also need to attach its signature into this tx.

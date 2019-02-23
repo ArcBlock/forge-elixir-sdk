@@ -22,9 +22,9 @@ defmodule ForgeSdk.Rpc.Helper do
 
       {:error, msg} ->
         Logger.warn(
-          "Failed to process request for #{inspect(service)}. Req is #{inspect(req)}. Error: #{
-            inspect(msg)
-          }"
+          "Failed to process request for #{inspect(service)}. Error: #{inspect(msg)}, Req is #{
+            inspect(req)
+          }. "
         )
 
         {:error, :internal}

@@ -1,3 +1,14 @@
+## 0.15.1 (February 23, 2019)
+  - add more logs
+  - Uptake new version of abt-did-elixir (#20)
+  - Use configurable ipfs ports (#18)
+  - support activate tx (#23)
+  - add empty filter when query blocks (#21)
+  - add tx sign doc (#22)
+  - update forge_abi version (#19)
+  - support index state db related apis (#17)
+  - update forge_abi version (#16)
+
 ## 0.15.0 (February 18, 2019)
   - tune consensus params (#15)
   - add grpc for signing data with wallet and token (#14)

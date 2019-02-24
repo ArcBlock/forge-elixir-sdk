@@ -81,9 +81,13 @@ defmodule ForgeSdk.AbiServer do
   def handle_requests([], state), do: state
 
   def handle_requests([%{value: {:verify_tx, value}} | rest_requests], state) do
-    Logger.debug(fn -> "Received verify tx request #{inspect(value)}" end)
-
     %{tx: tx, states: states, context: context} = value
+
+    Logger.info(fn ->
+      "ABI: verify tx: block=#{context.block_height} index=#{context.tx_index} type_url=#{
+        tx.itx.type_url
+      }"
+    end)
 
     sender = Enum.find(states, fn state -> state.address === tx.from end)
     {_type, itx} = ForgeAbi.decode_any(tx.itx)
@@ -102,9 +106,13 @@ defmodule ForgeSdk.AbiServer do
   end
 
   def handle_requests([%{value: {:update_state, value}} | rest_requests], state) do
-    Logger.debug(fn -> "Received update state request #{inspect(value)}" end)
-
     %{tx: tx, states: states, context: context} = value
+
+    Logger.info(fn ->
+      "ABI: update state: block=#{context.block_height} index=#{context.tx_index} type_url=#{
+        tx.itx.type_url
+      }"
+    end)
 
     sender = Enum.find(states, fn state -> state.address === tx.from end)
     {_type, itx} = ForgeAbi.decode_any(tx.itx)
@@ -124,9 +132,12 @@ defmodule ForgeSdk.AbiServer do
   end
 
   def handle_requests([%{value: {:info, value}} | rest_requests], state) do
-    Logger.debug(fn -> "Received get application info request #{inspect(value)}" end)
-    %{forge_version: _forge_version} = value
+    %{forge_version: version} = value
     app_hash = Application.get_env(:forge_sdk, :forge_app_hash, "")
+
+    Logger.info(fn ->
+      "ABI: info request: forge_version=#{version} app_hash=#{ForgeSdk.display(app_hash)}"
+    end)
 
     type_urls = TypeUrl.get_extended() |> Enum.map(fn {_, url, _} -> url end)
 

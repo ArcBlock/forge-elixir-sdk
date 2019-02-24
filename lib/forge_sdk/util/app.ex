@@ -7,7 +7,7 @@ defmodule ForgeSdk.Util.App do
   @spec get_server_opts(String.t()) :: {non_neg_integer(), Keyword.t()} | non_neg_integer()
   def get_server_opts("unix://" <> path) do
     if File.exists?(path) do
-      Logger.warn("Socket file #{path} exists. Clean it up.")
+      Logger.info("Socket file #{path} exists. Clean it up.")
       File.rm!(path)
     end
 

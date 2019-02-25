@@ -53,10 +53,7 @@ defprotocol ForgeSdk.StateDb do
   @doc """
   Retrieve the last block height and the app_hash of the states db for a given height
   """
-  @spec get_info(t(), non_neg_integer()) :: %{
-          last_block: non_neg_integer(),
-          app_hash: binary()
-        }
+  @spec get_info(t(), non_neg_integer()) :: map()
   def get_info(handler, height \\ 0)
 
   @doc """

@@ -43,7 +43,8 @@ defmodule ForgeSdk.MixProject do
       # forge family dependencies
       {:mcrypto, "~> 0.2"},
       {:abt_did_elixir, git: "git@github.com:arcblock/abt-did-elixir.git", tag: "v0.1.17"},
-      {:forge_abi, git: "git@github.com:arcblock/forge-abi.git"},
+      {:forge_abi,
+       git: "git@github.com:arcblock/forge-abi.git", branch: "feature/support-multiple-db"},
 
       # dev and test
       {:credo, "~> 1.0.0", only: [:dev, :test]},

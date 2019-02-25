@@ -208,7 +208,7 @@ defmodule ForgeSdk.Rpc do
   @spec sign_data(RequestSignData.t() | Keyword.t(), Channel.t() | nil, Keyword.t()) ::
           binary | {:error, term()}
   rpc :sign_data do
-    res.signed_data
+    res.signature
   end
 
   # wallet

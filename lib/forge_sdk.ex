@@ -23,6 +23,7 @@ defmodule ForgeSdk do
 
   # chain related
   defdelegate get_chain_info(chan \\ nil), to: Rpc
+  defdelegate get_node_info(chan \\ nil), to: Rpc
   defdelegate get_net_info(chan \\ nil), to: Rpc
   defdelegate get_validators_info(chan \\ nil), to: Rpc
 

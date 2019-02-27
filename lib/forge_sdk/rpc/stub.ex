@@ -11,6 +11,7 @@ defmodule ForgeSdk.Rpc.Stub do
   defdelegate get_block(chan, opts \\ []), to: ForgeAbi.ChainRpc.Stub
   defdelegate get_blocks(chan, req, opts \\ []), to: ForgeAbi.ChainRpc.Stub
   defdelegate get_chain_info(chan, req, opts \\ []), to: ForgeAbi.ChainRpc.Stub
+  defdelegate get_node_info(chan, req, opts \\ []), to: ForgeAbi.ChainRpc.Stub
   defdelegate search(chan, req, opts \\ []), to: ForgeAbi.ChainRpc.Stub
   defdelegate get_net_info(chan, req, opts \\ []), to: ForgeAbi.ChainRpc.Stub
   defdelegate get_validators_info(chan, req, opts \\ []), to: ForgeAbi.ChainRpc.Stub

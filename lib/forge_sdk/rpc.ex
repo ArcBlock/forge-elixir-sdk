@@ -29,6 +29,7 @@ defmodule ForgeSdk.Rpc do
 
     # other
     ChainInfo,
+    NodeInfo,
     BlockInfo,
     NetInfo,
     ValidatorsInfo,
@@ -106,6 +107,11 @@ defmodule ForgeSdk.Rpc do
     res.info
   end
 
+  @spec get_node_info(Channel.t() | nil, Keyword.t()) :: NodeInfo.t() | {:error, term()}
+  rpc :get_node_info, no_params: true do
+    res.info
+  end
+
   @doc """
   Create a transaction
 
@@ -123,6 +129,7 @@ defmodule ForgeSdk.Rpc do
     }, ""}
     iex>
   """
+
   @spec create_tx(RequestCreateTx.t() | Keyword.t(), Channel.t() | nil, Keyword.t()) ::
           Transaction.t() | {:error, term()}
   rpc :create_tx do

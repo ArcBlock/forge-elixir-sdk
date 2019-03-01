@@ -40,14 +40,10 @@ defmodule ForgeSdk.Rpc do
     RequestCreateTx,
     RequestDeclareNode,
     RequestGetAssetAddress,
-    RequestGetAssets,
     RequestGetBlock,
     RequestGetBlocks,
-    RequestGetStakes,
-    RequestGetTopAccounts,
     RequestGetTx,
     RequestGetUnconfirmedTxs,
-    RequestListTransactions,
     RequestMultisig,
     RequestSearch,
     RequestSendTx,
@@ -77,7 +73,12 @@ defmodule ForgeSdk.Rpc do
     ResponseUnsubscribe,
 
     # statistics related
+    RequestGetAssets,
     RequestGetForgeStatistics,
+    RequestGetStakes,
+    RequestGetTopAccounts,
+    RequestListAssetTransactions,
+    RequestListTransactions,
     ForgeStatistics
   }
 
@@ -432,5 +433,14 @@ defmodule ForgeSdk.Rpc do
         ) :: {[IndexedAccountState.t()], PageInfo.t()} | {:error, term()}
   rpc :get_top_accounts do
     {res.accounts, res.page}
+  end
+
+  @spec list_asset_transactions(
+          RequestListAssetTransactions.t() | Keyword.t(),
+          Channel.t() | nil,
+          Keyword.t()
+        ) :: {[IndexedTransaction.t()], PageInfo.t()} | {:error, term()}
+  rpc :list_asset_transactions do
+    {res.transactions, res.page}
   end
 end

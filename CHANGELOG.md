@@ -1,3 +1,12 @@
+## 0.17.0 (March 04, 2019)
+  - support consume asset tx
+  - Remove forge_starter in toml (#29)
+  - add account recent_num_txs && list asset txs (#30)
+  - uptake forge_abi version (#28)
+  - listTxs with mutal dir and getNodeInfo (#27)
+  - support multiple db (#26)
+  - update params in tx related apis (#25)
+
 ## 0.15.1 (February 23, 2019)
   - add more logs
   - Uptake new version of abt-did-elixir (#20)

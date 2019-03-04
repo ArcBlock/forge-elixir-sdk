@@ -8,7 +8,7 @@ defmodule ForgeSdk.Wallet.Util do
   alias AbtDid.Type, as: DidType
   alias ForgeSdk.Util.Validator
   alias ForgeAbi.{KeyType, HashType, RoleType, Transaction, WalletInfo, WalletType}
-  alias AbciVendor.KVPair
+
   alias Mcrypto.Crypter.AES
   alias Mcrypto.Hasher.{Keccak, Sha3}
   alias Mcrypto.Signer.{Ed25519, Secp256k1}
@@ -52,9 +52,9 @@ defmodule ForgeSdk.Wallet.Util do
 
   def multisig!(wallet, tx) do
     sig = sign!(wallet, Transaction.encode(tx))
-    signatures = tx.signatures
-    new_sig = KVPair.new(key: wallet.address, value: sig)
-    %Transaction{tx | signatures: [new_sig | signatures]}
+    [data | sigs] = tx.signatures
+    data = %{data | signature: sig}
+    %Transaction{tx | signatures: [data | sigs]}
   end
 
   @spec save(WalletInfo.t(), binary()) :: :ok

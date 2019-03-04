@@ -13,10 +13,20 @@ defimpl ForgeSdk.Display, for: Google.Protobuf.Any do
         Map.from_struct(any)
 
       {type, data} ->
-        data
-        |> Display.display(expand?)
-        |> Map.put(:_type, get_type(any, type))
-        |> Map.put(:type_url, any.type_url)
+        case is_map(data) do
+          true ->
+            data
+            |> Display.display(expand?)
+            |> Map.put(:_type, get_type(any, type))
+            |> Map.put(:type_url, any.type_url)
+
+          _ ->
+            %{
+              _type: get_type(any, type),
+              type_url: any.type_url,
+              data: Display.display(data, expand?)
+            }
+        end
     end
   end
 

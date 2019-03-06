@@ -17,7 +17,6 @@ sock_grpc = ""
 sock_backoff = 500
 
 [forge]
-decimal = 16
 proto_version = 1
 path = "~/.forge/core"
 # State db path
@@ -82,6 +81,17 @@ url = "http://releases.arcblock.io/forge"
 
 [forge.security]
 anti_replay = "hash" # default is hash, but can be switched to "nonce"
+
+[forge.token]
+name = "ArcBlock"
+symbol = "ABT"
+unit = "arc"
+description = "Forge token ABT"
+icon = ""
+decimal = 16
+initial_supply = 93000000
+total_supply = 186000000
+inflation_rate = 0
 
 [tendermint]
 moniker = "forge"

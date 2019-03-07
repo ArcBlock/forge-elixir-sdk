@@ -7,7 +7,6 @@ executable = ""
 sock_tcp = ""
 
 [forge]
-decimal = 16
 proto_version = 1
 path = "~/.forge_release/core"
 sock_grpc = "tcp://127.0.0.1:28210"

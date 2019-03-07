@@ -20,8 +20,6 @@ defimpl ForgeSdk.Configuration, for: ForgeSdk.Configuration.Forge do
     Helper.put_env(:consensus, to_atom(config, "consensus_engine"))
     Helper.put_env(:storage, to_atom(config, "storage_engine"))
     Helper.put_env(:chain_id, genesis["chain_id"])
-    Helper.put_env(:decimal, config["decimal"])
-    Application.put_env(:forge_abi, :decimal, config["decimal"])
     config
   end
 

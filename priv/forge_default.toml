@@ -91,7 +91,7 @@ icon = ""
 decimal = 16
 initial_supply = 93000000
 total_supply = 186000000
-inflation_rate = 0.0
+inflation_rate = 0
 
 [tendermint]
 moniker = "forge"

@@ -4,12 +4,9 @@ defmodule ForgeSdk.Util do
   """
   use ForgeAbi.Arc
 
-  alias ForgeAbi.{CreateAssetTx, WalletType}
-  alias ForgeAbi.WalletType
-  alias ForgeSdk.Configuration
-  alias ForgeSdk.AbiServer
+  alias ForgeAbi.{CreateAssetTx, ForgeState, WalletType}
+  alias ForgeSdk.{AbiServer, Configuration}
   alias Configuration.{ForgeApp, Forge, Cache, Tendermint, Ipfs}
-
   alias Google.Protobuf.Timestamp
 
   @doc """
@@ -156,6 +153,27 @@ defmodule ForgeSdk.Util do
 
   def datetime_to_proto(dt), do: Google.Protobuf.Timestamp.new(seconds: DateTime.to_unix(dt))
   def proto_to_datetime(%{seconds: seconds}), do: DateTime.from_unix!(seconds)
+
+  @doc """
+  Update forge token env from forge state.
+  This function needs to be called after ForgeSdk.init was called.
+  """
+  def update_token do
+    token =
+      case ForgeSdk.get_forge_state() do
+        nil ->
+          # for the first time forge started, there's no forge state yet
+          # hence we cache the token from forge_config
+          ForgeSdk.get_env(:forge_config) |> Map.get("token")
+
+        %ForgeState{token: token} ->
+          # for the rest time, we cache the token from forge state
+          token |> Map.from_struct() |> Enum.into(%{}, fn {k, v} -> {to_string(k), v} end)
+      end
+
+    ForgeSdk.put_env(:token, token)
+    Application.put_env(:forge_abi, :decimal, token["decimal"])
+  end
 
   # private function
 

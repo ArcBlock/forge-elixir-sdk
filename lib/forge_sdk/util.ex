@@ -164,7 +164,7 @@ defmodule ForgeSdk.Util do
         nil ->
           # for the first time forge started, there's no forge state yet
           # hence we cache the token from forge_config
-          ForgeSdk.get_env(:forge_config) |> Map.get("token")
+          :forge_config |> ForgeSdk.get_env() |> Map.get("token")
 
         %ForgeState{token: token} ->
           # for the rest time, we cache the token from forge state

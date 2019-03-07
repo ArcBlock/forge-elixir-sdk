@@ -10,7 +10,7 @@ defimpl ForgeSdk.Display, for: Google.Protobuf.Any do
   def display(any, expand? \\ false) do
     case TypeUrl.decode(any) do
       {:error, _} ->
-        Map.from_struct(any)
+        Map.from_struct(%{any | value: Base.url_encode64(any.value, padding: false)})
 
       {type, data} ->
         case is_map(data) do

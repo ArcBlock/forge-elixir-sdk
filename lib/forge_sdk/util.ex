@@ -164,15 +164,18 @@ defmodule ForgeSdk.Util do
         nil ->
           # for the first time forge started, there's no forge state yet
           # hence we cache the token from forge_config
-          :forge_config |> ForgeSdk.get_env() |> Map.get("token")
+          :forge_config
+          |> ForgeSdk.get_env()
+          |> Map.get("token")
+          |> Enum.into(%{}, fn {k, v} -> {String.to_existing_atom(k), v} end)
 
         %ForgeState{token: token} ->
           # for the rest time, we cache the token from forge state
-          token |> Map.from_struct() |> Enum.into(%{}, fn {k, v} -> {to_string(k), v} end)
+          Map.from_struct(token)
       end
 
     ForgeSdk.put_env(:token, token)
-    Application.put_env(:forge_abi, :decimal, token["decimal"])
+    Application.put_env(:forge_abi, :decimal, token.decimal)
   end
 
   # private function

@@ -83,6 +83,12 @@ url = "http://releases.arcblock.io/forge"
 [forge.security]
 anti_replay = "hash" # default is hash, but can be switched to "nonce"
 
+[forge.poke]
+address = "z11AezyNp4JaTMswv22sc8VNKs192HLCfruA"
+balance = 3750000000
+daily_limit = 2500000
+amount = 25
+
 [tendermint]
 moniker = "forge"
 path = "~/.forge/tendermint"

@@ -32,14 +32,13 @@ enable_index = true
 sock_grpc = "tcp://127.0.0.1:27210"
 consensus_engine = "tendermint"
 storage_engine = "ipfs"
-hash = "sha3"
-encoding = "base64"
+
 unlock_ttl = 300
 
 max_validators = 64
 max_candidates = 256
 pub_sub_key = "ABTTOTHEMOON"
-compression = "snappy"
+compression = "zstd"
 
 [forge.limit]
 # max grace period is 10

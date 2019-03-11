@@ -8,6 +8,7 @@ defmodule ForgeSdk.Rpc.Helper do
   alias GRPC.Stub, as: Client
 
   @recv_timeout 10000
+  @deadline_expired 4
 
   @doc """
   Send a single request to GRPC server.
@@ -88,6 +89,10 @@ defmodule ForgeSdk.Rpc.Helper do
     mod.map(res_stream, fn
       {:ok, res} ->
         process_response(res, opts, fun)
+
+      {:error, %{status: @deadline_expired}} ->
+        Logger.warn("Deadline expired for the stream.")
+        process_response(%{code: StatusCode.value(:timeout)}, opts, fun)
 
       {:error, msg} ->
         Logger.warn("Failed to process response.  Error: #{inspect(msg)}")

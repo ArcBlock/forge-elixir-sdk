@@ -92,7 +92,7 @@ defmodule ForgeSdk.Rpc.Helper do
 
       {:error, %{status: @deadline_expired}} ->
         Logger.warn("Deadline expired for the stream.")
-        process_response(%{code: :timeout}, opts, fun)
+        process_response(%{code: StatusCode.value(:timeout)}, opts, fun)
 
       {:error, msg} ->
         Logger.warn("Failed to process response.  Error: #{inspect(msg)}")

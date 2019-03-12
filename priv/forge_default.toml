@@ -143,7 +143,7 @@ max_num_outbound_peers = 10
 
 upnp = false
 
-recheck = true
+recheck = false
 
 [tendermint.genesis]
 genesis_time = "2018-11-05T19:22:08.938749Z"

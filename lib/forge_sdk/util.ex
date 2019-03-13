@@ -2,6 +2,7 @@ defmodule ForgeSdk.Util do
   @moduledoc """
   Get configuration, server setup, etc.
   """
+
   use ForgeAbi.Arc
 
   alias ForgeAbi.{CreateAssetTx, ForgeState, WalletType}
@@ -21,7 +22,6 @@ defmodule ForgeSdk.Util do
   """
   @spec init(atom(), String.t(), String.t() | nil) :: [module() | {module(), term()}]
   def init(otp_app, app_hash \\ "", filename \\ nil)
-
   def init(otp_app, app_hash, nil), do: init(otp_app, app_hash, find_config_file!())
 
   def init(otp_app, app_hash, filename) do
@@ -153,6 +153,7 @@ defmodule ForgeSdk.Util do
   end
 
   def datetime_to_proto(dt), do: Google.Protobuf.Timestamp.new(seconds: DateTime.to_unix(dt))
+
   def proto_to_datetime(%{seconds: seconds}), do: DateTime.from_unix!(seconds)
 
   @doc """
@@ -218,12 +219,12 @@ defmodule ForgeSdk.Util do
 
   defp to_file(:env), do: System.get_env("FORGE_CONFIG") || ""
   defp to_file(:home), do: Path.expand("~/.forge/forge.toml")
-  defp to_file(:cwd), do: Path.join(File.cwd!(), "forge.toml")
 
   defp to_file(:priv) do
-    case Application.get_env(:forge_sdk, :env) in [:test, :integration] do
-      true -> Path.join(Application.app_dir(:forge_sdk), "priv/forge_test.toml")
-      _ -> Path.join(Application.app_dir(:forge_sdk), "priv/forge.toml")
+    if Application.get_env(:forge_sdk, :env) in [:test, :integration] do
+      :code.priv_dir(:forge_sdk) |> Path.join("forge_test.toml")
+    else
+      :code.priv_dir(:forge_sdk) |> Path.join("forge.toml")
     end
   end
 

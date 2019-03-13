@@ -69,13 +69,13 @@ defmodule ForgeSdk.Util do
     filename =
       :forge_sdk
       |> Application.get_env(:config_priorities, [])
-      |> Enum.map(&to_file/1)
-      |> Enum.filter(&File.exists?/1)
-      |> List.first()
+      |> Stream.map(&to_file/1)
+      |> Stream.filter(&File.exists?/1)
+      |> Enum.at(0)
 
     case filename do
       nil ->
-        throw(
+        exit(
           "Cannot find configuration files in envar `FORGE_CONFIG` or home folder, or current working directory."
         )
 

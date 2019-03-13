@@ -64,7 +64,7 @@ defmodule ForgeSdk.Util do
   def parse(:cache, content), do: Configuration.parse(%Cache{}, content["cache"])
 
   @doc """
-  Returns the first configuration file in the following locations:
+  Find the first configuration file in the following locations:
 
     - system env `FORGE_CONFIG`
     - `~/.forge/forge.toml`

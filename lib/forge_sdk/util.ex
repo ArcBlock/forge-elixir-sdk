@@ -62,25 +62,22 @@ defmodule ForgeSdk.Util do
   def parse(:cache, content), do: Configuration.parse(%Cache{}, content["cache"])
 
   @doc """
-  Find the configuration file based on different priorities
+  Returns the first configuration file in the following locations:
+
+    - system env `FORGE_CONFIG`
+    - `~/.forge/forge.toml`
+    - `forge-elixir-sdk/priv/forge[_test].toml`
   """
   @spec find_config_file! :: String.t()
   def find_config_file! do
-    filename =
-      :forge_sdk
-      |> Application.get_env(:config_priorities, [])
-      |> Stream.map(&to_file/1)
-      |> Stream.filter(&File.exists?/1)
-      |> Enum.at(0)
-
-    case filename do
-      nil ->
-        exit(
-          "Cannot find configuration files in envar `FORGE_CONFIG` or home folder, or current working directory."
-        )
-
-      v ->
-        v
+    :forge_sdk
+    |> Application.get_env(:config_priorities, [])
+    |> Stream.map(&to_file/1)
+    |> Stream.filter(&File.exists?/1)
+    |> Enum.at(0)
+    |> case do
+      nil -> exit("Cannot find configuration files in env `FORGE_CONFIG` or home folder.")
+      v -> v
     end
   end
 

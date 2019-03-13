@@ -36,8 +36,8 @@ defmodule ForgeSdk.Util do
   def init(otp_app, app_hash, filename) do
     Application.put_env(:forge_sdk, :otp_app, otp_app)
     Application.put_env(:forge_sdk, :forge_app_hash, app_hash)
-    config = load_config_file!(filename)
-    get_servers(config)
+    load_config_file!(filename)
+    |> get_servers()
   end
 
   def get_chan do
@@ -64,7 +64,7 @@ defmodule ForgeSdk.Util do
   def parse(type, file \\ "")
 
   def parse(type, ""), do: parse(type, find_config_file!())
-  def parse(type, file) when is_binary(file), do: parse(type, Toml.decode_file!(file))
+  def parse(type, file) when is_binary(file), do: parse(type, load_config_file!(file))
 
   def parse(:forge, content), do: Configuration.parse(%Forge{}, content)
   def parse(:forge_app, content), do: Configuration.parse(%ForgeApp{}, content["app"])

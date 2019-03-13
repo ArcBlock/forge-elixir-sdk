@@ -10,6 +10,8 @@ defmodule ForgeSdk.Util do
   alias Configuration.{ForgeApp, Forge, Cache, Tendermint, Ipfs}
   alias Google.Protobuf.Timestamp
 
+  @config_priorities [:env, :home, :priv]
+
   @doc """
   Initialize the ForgeSdk - setting up basic config and return two specs for ABI server and RPC client conn.
 
@@ -70,8 +72,7 @@ defmodule ForgeSdk.Util do
   """
   @spec find_config_file! :: String.t()
   def find_config_file! do
-    :forge_sdk
-    |> Application.get_env(:config_priorities, [])
+    @config_priorities
     |> Stream.map(&to_file/1)
     |> Stream.filter(&File.exists?/1)
     |> Enum.at(0)

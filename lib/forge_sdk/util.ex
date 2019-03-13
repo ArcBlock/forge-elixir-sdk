@@ -105,7 +105,8 @@ defmodule ForgeSdk.Util do
   @spec gen_config(map()) :: String.t()
   def gen_config(params) do
     content = "forge_release.toml.eex" |> get_file() |> File.read!()
-    EEx.eval_string(content, to_keyword_list(params))
+    params = Keyword.new(params, fn {k, v} -> {:"#{k}", v} end)
+    EEx.eval_string(content, params)
   end
 
   @doc """
@@ -231,10 +232,4 @@ defmodule ForgeSdk.Util do
     |> Application.app_dir()
     |> Path.join("priv/#{name}")
   end
-
-  defp to_keyword_list(m), do: Enum.map(m, fn {k, v} -> {to_key(k), to_value(v)} end)
-  defp to_key(k) when is_atom(k), do: k
-  defp to_key(k), do: String.to_atom(k)
-
-  defp to_value(v), do: v
 end

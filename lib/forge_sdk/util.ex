@@ -7,23 +7,30 @@ defmodule ForgeSdk.Util do
 
   alias ForgeAbi.{CreateAssetTx, ForgeState, WalletType}
   alias ForgeSdk.{AbiServer, Configuration}
-  alias Configuration.{ForgeApp, Forge, Cache, Tendermint, Ipfs}
+  alias Configuration.{Cache, Forge, ForgeApp, Ipfs, Tendermint}
   alias Google.Protobuf.Timestamp
 
   @config_priorities [:env, :home, :priv]
 
   @doc """
-  Initialize the ForgeSdk - setting up basic config and return two specs for ABI server and RPC client conn.
+  Initialize the ForgeSdk.
 
-  For a forge app build with elixir sdk, application shall put these servers into their supervision tree.
+  Setting up basic config and return child spec for:
 
-    filename = "path to forge.toml"
-    servers = ForgeSdk.init(:app_name, app_hash, filename)
-    children = servers ++ other_children
-    Supervisor.start_link(children, opts)
+    - ABI server
+    - RPC client conn
+
+  For a forge app build with Elixir sdk, application shall put these servers
+  into their supervision tree.
+
+      filename = "/path/to/forge.toml"
+      servers = ForgeSdk.init(:app_name, app_hash, filename)
+      children = servers ++ other_children
+      Supervisor.start_link(children, opts)
   """
   @spec init(atom(), String.t(), String.t() | nil) :: [module() | {module(), term()}]
   def init(otp_app, app_hash \\ "", filename \\ nil)
+
   def init(otp_app, app_hash, nil), do: init(otp_app, app_hash, find_config_file!())
 
   def init(otp_app, app_hash, filename) do
@@ -55,8 +62,10 @@ defmodule ForgeSdk.Util do
 
   @spec parse(atom(), String.t() | map()) :: map()
   def parse(type, file \\ "")
+
   def parse(type, ""), do: parse(type, find_config_file!())
   def parse(type, file) when is_binary(file), do: parse(type, Toml.decode_file!(file))
+
   def parse(:forge, content), do: Configuration.parse(%Forge{}, content)
   def parse(:forge_app, content), do: Configuration.parse(%ForgeApp{}, content["app"])
   def parse(:tendermint, content), do: Configuration.parse(%Tendermint{}, content["tendermint"])

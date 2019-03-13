@@ -83,32 +83,30 @@ defmodule ForgeSdk.Util do
   end
 
   @doc """
-  Load the configuration file and merge it with default configuration
+  Load the configuration file and merge it with default configuration.
   """
   @spec load_config_file!(String.t() | nil) :: map()
+
+  def load_config_file!(nil) do
+    find_config_file!()
+    |> load_config_file!()
+  end
+
   def load_config_file!(filename) do
-    filename =
-      case filename do
-        nil -> find_config_file!()
-        _ -> filename
-      end
-
+    default_config = get_priv_file("forge_default.toml") |> Toml.decode_file!()
     config = Toml.decode_file!(filename)
-
-    default_config = "forge_default.toml" |> get_file() |> Toml.decode_file!()
-
     DeepMerge.deep_merge(default_config, config)
   end
 
   @spec gen_config(map()) :: String.t()
   def gen_config(params) do
-    content = "forge_release.toml.eex" |> get_file() |> File.read!()
+    content = get_priv_file("forge_release.toml.eex") |> File.read!()
     params = Keyword.new(params, fn {k, v} -> {:"#{k}", v} end)
     EEx.eval_string(content, params)
   end
 
   @doc """
-  Convert datetime or iso8601 datetime string to google protobuf timestamp
+  Convert datetime or iso8601 datetime string to google protobuf timestamp.
   """
   @spec to_proto_ts(String.t() | DateTime.t()) :: Timestamp.t()
   def to_proto_ts(s) when is_binary(s) do
@@ -219,16 +217,10 @@ defmodule ForgeSdk.Util do
   defp to_file(:home), do: Path.expand("~/.forge/forge.toml")
 
   defp to_file(:priv) do
-    if Application.get_env(:forge_sdk, :env) in [:test, :integration] do
-      :code.priv_dir(:forge_sdk) |> Path.join("forge_test.toml")
-    else
-      :code.priv_dir(:forge_sdk) |> Path.join("forge.toml")
-    end
+    if Application.get_env(:forge_sdk, :env) in [:test, :integration],
+      do: get_priv_file("forge_test.toml"),
+      else: get_priv_file("forge.toml")
   end
 
-  defp get_file(name) do
-    :forge_sdk
-    |> Application.app_dir()
-    |> Path.join("priv/#{name}")
-  end
+  defp get_priv_file(name), do: :code.priv_dir(:forge_sdk) |> Path.join(name)
 end

@@ -83,10 +83,9 @@ defmodule ForgeSdk.Util do
   end
 
   @doc """
-  Load the configuration file and merge it with default configuration.
+  Load the configuration file and merge it with default configuration `forge_default.toml`.
   """
   @spec load_config_file!(String.t() | nil) :: map()
-
   def load_config_file!(nil) do
     find_config_file!()
     |> load_config_file!()

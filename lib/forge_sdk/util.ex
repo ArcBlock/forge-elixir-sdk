@@ -198,13 +198,6 @@ defmodule ForgeSdk.Util do
     get_abi_server_spec(tcp_addr) ++ get_rpc_conn_spec(grpc_addr)
   end
 
-  defp get_rpc_conn_spec(addr) do
-    case Process.whereis(ForgeSdk.Rpc.Conn) do
-      nil -> [{ForgeSdk.Rpc.Conn, addr}]
-      _ -> []
-    end
-  end
-
   defp get_abi_server_spec(""), do: []
 
   defp get_abi_server_spec(addr) do
@@ -221,6 +214,13 @@ defmodule ForgeSdk.Util do
 
   defp do_get_abi_server_spec("unix://" <> name) do
     AbiServer.child_spec(port: 0, ip: {:local, String.to_charlist(name)})
+  end
+
+  defp get_rpc_conn_spec(addr) do
+    case Process.whereis(ForgeSdk.Rpc.Conn) do
+      nil -> [{ForgeSdk.Rpc.Conn, addr}]
+      _ -> []
+    end
   end
 
   defp to_file(:env), do: System.get_env("FORGE_CONFIG") || ""

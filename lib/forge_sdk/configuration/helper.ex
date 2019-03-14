@@ -30,10 +30,10 @@ defmodule ForgeSdk.Configuration.Helper do
       case :application.get_application() do
         # in test cases, current pid would be incorrect
         :undefined ->
-          cond do
-            name == :tendermint -> :consensus
-            name == :ipfs -> :storage
-            true -> Application.get_env(:forge_sdk, :otp_app, :undefined)
+          case name do
+            :tendermint -> :consensus
+            :ipfs -> :storage
+            _ -> Application.get_env(:forge_sdk, :otp_app, :undefined)
           end
 
         {:ok, v} ->

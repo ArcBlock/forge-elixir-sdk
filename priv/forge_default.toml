@@ -38,7 +38,7 @@ sock_backoff = 500
 [forge]
 
 # protobuf version
-proto_version = 1                    # TODO: in forge state?
+proto_version = 1                    # TODO: we should use data_version, keep it for now
 
 # home path of forge
 path = "~/.forge/core"
@@ -62,39 +62,22 @@ enable_index = true
 sock_grpc = "tcp://127.0.0.1:27210"
 
 # consensus engine name
-consensus_engine = "tendermint"      # TODO: in forge state?
+consensus_engine = "tendermint"
 
 # storage engine name
-storage_engine = "ipfs"              # TODO: in forge state?
-
-# unlock time to live
-unlock_ttl = 300                     # TODO: is needed?
+storage_engine = "ipfs"
 
 # max number of validator nodes for forge
-max_validators = 64                  # TODO: in consensus pramas?
+max_validators = 64
 
 # max number of candidate nodes for forge
-max_candidates = 256                 # TODO: in consensus pramas?
+max_candidates = 256
 
 # pub sub key
-pub_sub_key = "ABTTOTHEMOON"         # TODO: in forge state?
+pub_sub_key = "ABTTOTHEMOON"
 
 # compression algorithm
-compression = "zstd"                 # TODO: in forge state?
-
-  [forge.account]                    # TODO: is needed?
-
-  # account public key format
-  # for ethereum compatibility, use secp256k1
-  public_key_format = "ed25519"
-
-  # account public key hash format
-  # for ethereum compatibility, use keccak_256
-  public_key_hash_format = "sha3_256"
-
-  # account address encode format
-  # for ethereum compatibility, use base16
-  address_format = "base58"
+compression = "zstd"
 
   [forge.transaction]
 
@@ -115,13 +98,13 @@ compression = "zstd"                 # TODO: in forge state?
   # wether to enable forge web interface
   enabled = false
 
-  [forge.stake.timeout]              # TODO: is needed?
+  [forge.stake.timeout]
 
   # for general stake, we do T+1
   general = 86400
 
   # for node stake, we do T+7
-  stake_for_node = 604800
+  stake_for_node = 604800            # TODO: might not in use
 
   [forge.rpc]
 
@@ -136,7 +119,7 @@ compression = "zstd"                 # TODO: in forge state?
   [forge.security]
 
   # anti replay strategy, default is hash, but can be switched to "nonce"
-  anti_replay = "hash"               # TODO: in forge state?
+  anti_replay = "hash"               # TODO: should only use hash, deprecate nonce
 
   [forge.token]
 
@@ -165,7 +148,7 @@ compression = "zstd"                 # TODO: in forge state?
   total_supply = 186000000
 
   # inflation rate
-  inflation_rate = 0                 # TODO: in forge state?
+  inflation_rate = 0
 
   [forge.poke]
 
@@ -218,11 +201,11 @@ persistent_peers = ""
 seed_peers = ""
 
 # timeout for commiting a new block
-timeout_commit = "5s"                # TODO: in forge chain?
+timeout_commit = "5s"                # TODO: need to test if this need to be in forge state
 
 # create empty blocks in 5s interval
-create_empty_blocks = true           # TODO: in forge chain?
-create_empty_blocks_interval = "0s"  # TODO: in forge chain?
+create_empty_blocks = true           # TODO: same
+create_empty_blocks_interval = "0s"  # TODO: same
 
 # set if this node runs in a seed mode
 seed_mode = false

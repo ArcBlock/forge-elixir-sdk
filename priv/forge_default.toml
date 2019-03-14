@@ -104,7 +104,7 @@ compression = "zstd"
   general = 86400
 
   # for node stake, we do T+7
-  stake_for_node = 604800            # TODO: might not in use
+  stake_for_node = 604800
 
   [forge.rpc]
 

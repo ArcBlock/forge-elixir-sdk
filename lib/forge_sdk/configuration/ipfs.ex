@@ -1,5 +1,5 @@
 defmodule ForgeSdk.Configuration.Ipfs do
-  @moduledoc "Hold forge related configuration"
+  @moduledoc "Hold ipfs related configuration."
   use TypedStruct
 
   typedstruct do

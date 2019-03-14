@@ -1,5 +1,5 @@
 defmodule ForgeSdk.Configuration.Cache do
-  @moduledoc "Hold cache related configuration"
+  @moduledoc "Hold cache related configuration."
   use TypedStruct
 
   typedstruct do
@@ -22,6 +22,4 @@ defimpl ForgeSdk.Configuration, for: ForgeSdk.Configuration.Cache do
 
     config
   end
-
-  #
 end

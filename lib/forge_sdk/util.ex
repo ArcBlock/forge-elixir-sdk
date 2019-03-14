@@ -36,7 +36,9 @@ defmodule ForgeSdk.Util do
   def init(otp_app, app_hash, filename) do
     Application.put_env(:forge_sdk, :otp_app, otp_app)
     Application.put_env(:forge_sdk, :forge_app_hash, app_hash)
-    load_config_file!(filename)
+
+    filename
+    |> load_config_file!()
     |> get_servers()
   end
 

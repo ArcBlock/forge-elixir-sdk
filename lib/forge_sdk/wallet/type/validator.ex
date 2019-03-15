@@ -8,7 +8,7 @@ defmodule ForgeSdk.Wallet.Type.Validator do
 
   typedstruct do
     field :pk, non_neg_integer(), default: KeyType.value(:ed25519)
-    field :hash, non_neg_integer(), default: HashType.value(:sha3)
+    field :hash, non_neg_integer(), default: HashType.value(:sha2)
     field :address, non_neg_integer(), default: EncodingType.value(:base58)
     field :role, non_neg_integer(), default: RoleType.value(:role_validator)
   end

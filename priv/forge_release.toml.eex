@@ -1,75 +1,4 @@
-[app]
-name = ""
-version = ""
-
-path = ""
-executable = ""
-sock_tcp = ""
-
-[forge]
-proto_version = 1
-path = "~/.forge_release/core"
-sock_grpc = "tcp://127.0.0.1:28210"
-
-pub_sub_key = "ABTTOTHEMOON"
-
-[forge.stake]
-
-[forge.stake.timeout]
-# for general stake, we do 10s
-general = 10
-# for node stake, we do 60s
-stake_for_node = 60
-
-[forge.web]
-enabled = true
-
-[forge.release]
-url = "<%= release_url %>"
-
-[tendermint]
-moniker = "forge"
-path = "~/.forge_release/tendermint"
-
-# socket to proxy app
-sock_proxy_app = "tcp://127.0.0.1:28220"
-
-# socket for tendermint json rpc
-sock_rpc = "tcp://127.0.0.1:28221"
-
-# socket for tendermint grpc (right now just use it for send tx and commit immediately)
-sock_grpc = "tcp://127.0.0.1:28222"
-
-# socket for tendermint p2p. Normally this shall be opened to the public network
-sock_p2p = "tcp://0.0.0.0:26656"
-
-# socket for performance metrics
-sock_prof = ""
-
-# persistent peers
-persistent_peers = "<%= peer_address %>"
-
-# seed peers
-seed_peers = ""
-
-# timeout for commiting a new block
-timeout_commit = "<%= timeout_commit %>"
-
-# create empty blocks in 5s interval
-create_empty_blocks = <%= create_empty_blocks %>
-
-# set if this node runs in a seed mode
-seed_mode = false
-
-recheck = false
-
-[tendermint.genesis]
-genesis_time = "<%= genesis_time %>"
-chain_id = "<%= chain_id %>"
-max_bytes = <%= max_bytes %>
-max_gas = <%= max_gas %>
-app_hash = "<%= app_hash %>"
-
+### begin validators
 <%= for v <- validators do %>
 [[tendermint.genesis.validators]]
 address = "<%= v.address %>"
@@ -80,10 +9,4 @@ power = "<%= v.voting_power %>"
 type = "<%= v.pub_key.type %>"
 value = "<%= v.pub_key.data %>"
 <% end %>
-
-[ipfs]
-version = "0.4.18"
-path = "~/.forge_release/ipfs"
-
-[cache]
-path = "~/.forge_release/cache/mnesia_data_dir"
+### end validators

@@ -95,7 +95,9 @@ defmodule ForgeSdk.Util do
         _ -> filename
       end
 
-    config = Toml.decode_file!(filename)
+    content = File.read!(filename)
+    ForgeSdk.put_env(:toml, content)
+    config = Toml.decode!(content)
 
     default_config = "forge_default.toml" |> get_file() |> Toml.decode_file!()
 
@@ -105,7 +107,13 @@ defmodule ForgeSdk.Util do
   @spec gen_config(map()) :: String.t()
   def gen_config(params) do
     content = "forge_release.toml.eex" |> get_file() |> File.read!()
-    EEx.eval_string(content, to_keyword_list(params))
+    validators = EEx.eval_string(content, to_keyword_list(params))
+    toml = ForgeSdk.get_env(:toml)
+
+    case String.contains?(toml, "### begin validators") do
+      true -> String.replace(toml, ~r/### begin validators.*?### end validators/s, validators)
+      _ -> String.replace(toml, "[[tendermint.genesis.validators]]", validators)
+    end
   end
 
   @doc """

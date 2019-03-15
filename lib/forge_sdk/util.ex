@@ -104,7 +104,9 @@ defmodule ForgeSdk.Util do
 
   def load_config_file!(filename) do
     default_config = get_priv_file("forge_default.toml") |> Toml.decode_file!()
-    config = Toml.decode_file!(filename)
+    content = File.read!(filename)
+    ForgeSdk.put_env(:toml, content)
+    config = Toml.decode!(content)
     DeepMerge.deep_merge(default_config, config)
   end
 
@@ -112,7 +114,12 @@ defmodule ForgeSdk.Util do
   def gen_config(params) do
     content = get_priv_file("forge_release.toml.eex") |> File.read!()
     params = Keyword.new(params, fn {k, v} -> {:"#{k}", v} end)
-    EEx.eval_string(content, params)
+    validators = EEx.eval_string(content, params)
+    toml = ForgeSdk.get_env(:toml)
+
+    if String.contains?(toml, "### begin validators"),
+      do: String.replace(toml, ~r/### begin validators.*?### end validators/s, validators),
+      else: String.replace(toml, "[[tendermint.genesis.validators]]", validators)
   end
 
   @doc """

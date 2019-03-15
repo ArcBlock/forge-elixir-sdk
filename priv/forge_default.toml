@@ -116,11 +116,6 @@ compression = "zstd"
   # url for forge release
   url = "http://releases.arcblock.io/forge"
 
-  [forge.security]
-
-  # anti replay strategy, default is hash, but can be switched to "nonce"
-  anti_replay = "hash"               # TODO: should only use hash, deprecate nonce
-
   [forge.token]
 
   # token name

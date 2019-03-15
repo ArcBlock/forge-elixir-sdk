@@ -1,27 +1,5 @@
 [app]
-# Give your application a name.
-# name = "your_awesome_app"
-
-# Version number of your application.
-# version = "0.1.0"
-
-# The home path of your application.
-# path = "~/.forge/app"
-
-# The path of your application's executable file.
-# executable = ""
-
-# Log file path.
-# logfile = "logs/app.log"
-
-# Error log file.
-# error_logfile = "logs/app_error.log"
-
-# For the ABI connection between your app and Forge under TCP mode.
 sock_tcp = "tcp://127.0.0.1:27219"
-
-# For the ABI connection between your app and Forge under gRPC mode.
-# sock_grpc = "tcp://127.0.0.1:37210"
 
 [forge]
 pub_sub_key = "forgetothemoon!"

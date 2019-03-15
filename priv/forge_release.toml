@@ -67,18 +67,12 @@ max_bytes = 150000
 max_gas = -1
 app_hash = ""
 
-# note that if you don't give this information we will use self as validator
+### begin validators
 [[tendermint.genesis.validators]]
-# address = "D875CBC0F1D0925D62AB235F1DA909D89CDF9D78"
-# name = "forge_genesis_validator"
-# power = "10"
+### end validators
 
-# [tendermint.genesis.validators.pub_key]
-# type = "tendermint/PubKeyEd25519"
-# value = "whsJQCA4g4bzQeaBe69/ZW/xHRNPAI2QxHV4CIgguq4="
 
 [ipfs]
-version = "0.4.18"
 path = "~/.forge_release/ipfs"
 
 [cache]

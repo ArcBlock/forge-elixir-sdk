@@ -1,5 +1,5 @@
 %{
-  "abt_did_elixir": {:git, "git@github.com:arcblock/abt-did-elixir.git", "98d9574a8fa3e616c5c77f8d532379eb7d2e064d", [tag: "v0.1.17"]},
+  "abt_did_elixir": {:git, "git@github.com:arcblock/abt-did-elixir.git", "81c7b9f32ac94ea7d307e4a0066a29315d5183b4", [tag: "v0.2.0"]},
   "artificery": {:hex, :artificery, "0.4.1", "90b1fcedb9034853b36dbea2174f9fc1172bd50b0686a723178103def5c9c1c8", [:mix], [], "hexpm"},
   "base1": {:hex, :base1, "0.1.0", "493a46bb5b34bf38d3b69ea6eaff33416d222f1621231cb1a04af42a351117ea", [:mix], [], "hexpm"},
   "base2": {:hex, :base2, "0.1.0", "bc9e19f1578e1439010d26b1bee456f3ac980481a46c3643b24e15c40e1db0ed", [:mix], [], "hexpm"},

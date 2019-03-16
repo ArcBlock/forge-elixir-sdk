@@ -31,6 +31,12 @@ defmodule ForgeSdk.Rpc.Tx.Helper do
       raise "There's no valid state for this wallet address. Please declare this wallet first."
     end
 
+    nonce =
+      case type === :poke do
+        true -> 0
+        false -> nonce
+      end
+
     case sign? do
       true ->
         req = build_sign(any, nonce, wallet, address, token)

@@ -269,5 +269,5 @@ defmodule ForgeSdk.Util do
     end
   end
 
-  defp get_priv_file(name), do: :code.priv_dir(:forge_sdk) |> Path.join(name)
+  defp get_priv_file(name), do: :forge_sdk |> :code.priv_dir() |> Path.join(name)
 end

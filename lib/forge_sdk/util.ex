@@ -103,7 +103,7 @@ defmodule ForgeSdk.Util do
   end
 
   def load_config_file!(filename) do
-    default_config = get_priv_file("forge_default.toml") |> Toml.decode_file!()
+    default_config = "forge_default.toml" |> get_priv_file() |> Toml.decode_file!()
     content = File.read!(filename)
     ForgeSdk.put_env(:toml, content)
     config = Toml.decode!(content)
@@ -112,14 +112,15 @@ defmodule ForgeSdk.Util do
 
   @spec gen_config(map()) :: String.t()
   def gen_config(params) do
-    content = get_priv_file("forge_release.toml.eex") |> File.read!()
+    content = "forge_release.toml.eex" |> get_priv_file() |> File.read!()
     params = Keyword.new(params, fn {k, v} -> {:"#{k}", v} end)
     validators = EEx.eval_string(content, params)
     toml = ForgeSdk.get_env(:toml)
 
-    if String.contains?(toml, "### begin validators"),
-      do: String.replace(toml, ~r/### begin validators.*?### end validators/s, validators),
-      else: String.replace(toml, "[[tendermint.genesis.validators]]", validators)
+    case String.contains?(toml, "### begin validators") do
+      true -> String.replace(toml, ~r/### begin validators.*?### end validators/s, validators)
+      false -> String.replace(toml, "[[tendermint.genesis.validators]]", validators)
+    end
   end
 
   @doc """
@@ -262,9 +263,10 @@ defmodule ForgeSdk.Util do
   defp to_file(:home), do: Path.expand("~/.forge/forge.toml")
 
   defp to_file(:priv) do
-    if Application.get_env(:forge_sdk, :env) in [:test, :integration],
-      do: get_priv_file("forge_test.toml"),
-      else: get_priv_file("forge.toml")
+    case Application.get_env(:forge_sdk, :env) in [:test, :integration] do
+      true -> get_priv_file("forge_test.toml")
+      false -> get_priv_file("forge.toml")
+    end
   end
 
   defp get_priv_file(name), do: :code.priv_dir(:forge_sdk) |> Path.join(name)

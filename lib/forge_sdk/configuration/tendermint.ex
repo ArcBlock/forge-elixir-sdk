@@ -1,5 +1,5 @@
 defmodule ForgeSdk.Configuration.Tendermint do
-  @moduledoc "Hold tendermint related configuration"
+  @moduledoc "Hold tendermint related configuration."
   use TypedStruct
 
   typedstruct do
@@ -8,8 +8,6 @@ defmodule ForgeSdk.Configuration.Tendermint do
 end
 
 defimpl ForgeSdk.Configuration, for: ForgeSdk.Configuration.Tendermint do
-  require Logger
-
   alias ForgeSdk.Configuration.{Helper, Tendermint}
 
   @spec parse(Tendermint.t(), map()) :: map()

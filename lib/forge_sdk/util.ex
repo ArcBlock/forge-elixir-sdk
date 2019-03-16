@@ -201,18 +201,18 @@ defmodule ForgeSdk.Util do
         # hence we cache the config from forge_config
 
         config = ForgeSdk.get_env(:forge_config)
-        token = Enum.into(config["token"], %{}, fn {k, v} -> {String.to_existing_atom(k), v} end)
+        token = Enum.into(config["token"], %{}, fn {k, v} -> {String.to_atom(k), v} end)
 
         tx_config =
-          Enum.into(config["transaction"], %{}, fn {k, v} -> {String.to_existing_atom(k), v} end)
+          Enum.into(config["transaction"], %{}, fn {k, v} -> {String.to_atom(k), v} end)
 
         stake_config =
           config
           |> get_in(["stake", "timeout"])
-          |> Enum.into(%{}, fn {k, v} -> {String.to_existing_atom("timeout_#{k}"), v} end)
+          |> Enum.into(%{}, fn {k, v} -> {String.to_atom("timeout_#{k}"), v} end)
 
         poke_config =
-          Enum.into(config["poke"], %{}, fn {k, v} -> {String.to_existing_atom(k), v} end)
+          Enum.into(config["poke"], %{}, fn {k, v} -> {String.to_atom(k), v} end)
 
         Application.put_env(:forge_abi, :decimal, token.decimal)
         ForgeSdk.put_env(:token, token)

@@ -170,10 +170,16 @@ defmodule ForgeSdk.Util do
   def proto_to_datetime(%{seconds: seconds}), do: DateTime.from_unix!(seconds)
 
   @doc """
-  Update forge token env from forge state.
+  Update few config env from forge state.
+
+    - token
+    - tx_config
+    - stake_config
+    - poke_config
+
   This function needs to be called after ForgeSdk.init was called.
   """
-  def update_token do
+  def update_config do
     case ForgeSdk.get_forge_state() do
       %ForgeState{} = forge_state ->
         # for the rest time, we cache the configs from forge state

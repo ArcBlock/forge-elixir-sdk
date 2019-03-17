@@ -69,6 +69,7 @@ defmodule ForgeSdk do
   # extended
   defdelegate get_nonce(address, chan \\ nil, app_hash \\ ""), to: Rpc
   defdelegate stake_for_node(address, amount, opts), to: Rpc
+  defdelegate checkin(opts), to: Rpc
 
   # other
   defdelegate parse_config(name, file \\ ""), to: Util, as: :parse

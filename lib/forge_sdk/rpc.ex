@@ -223,7 +223,7 @@ defmodule ForgeSdk.Rpc do
     res.signature
   end
 
-  # wallet
+  # wallet related
   @spec create_wallet(RequestCreateWallet.t() | Keyword.t(), Channel.t() | nil, Keyword.t()) ::
           {WalletInfo.t(), String.t()} | {:error, term()}
   rpc :create_wallet do
@@ -259,6 +259,18 @@ defmodule ForgeSdk.Rpc do
           WalletInfo.t() | {:error, term()}
   rpc :declare_node do
     res.wallet
+  end
+
+  @doc """
+  Allow user to checkin to get reward
+  """
+  @spec checkin(Keyword.t()) :: String.t() | {:error, term()}
+  def checkin(opts) do
+    date = Date.to_string(Date.utc_today())
+    address = ForgeSdk.get_env(:forge_config)["poke"]["address"]
+    itx = ForgeAbi.PokeTx.new(date: date, address: address)
+
+    poke(itx, opts)
   end
 
   # account related

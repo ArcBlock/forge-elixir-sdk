@@ -1,7 +1,6 @@
 [app]
 name = ""
 version = ""
-
 path = ""
 executable = ""
 sock_tcp = ""
@@ -10,19 +9,16 @@ sock_tcp = ""
 proto_version = 1
 path = "~/.forge_release/core"
 sock_grpc = "tcp://127.0.0.1:28210"
-
 pub_sub_key = "ABTTOTHEMOON"
 
-[forge.stake]
+  [forge.stake.timeout]
+  # for general stake, we do 10s
+  general = 10
+  # for node stake, we do 60s
+  stake_for_node = 60
 
-[forge.stake.timeout]
-# for general stake, we do 10s
-general = 10
-# for node stake, we do 60s
-stake_for_node = 60
-
-[forge.web]
-enabled = true
+  [forge.web]
+  enabled = true
 
 [tendermint]
 moniker = "forge"
@@ -60,17 +56,16 @@ seed_mode = false
 
 recheck = false
 
-[tendermint.genesis]
-genesis_time = "2018-11-05T19:22:08.938749Z"
-chain_id = "forge"
-max_bytes = 150000
-max_gas = -1
-app_hash = ""
+  [tendermint.genesis]
+  genesis_time = "2018-11-05T19:22:08.938749Z"
+  chain_id = "forge"
+  max_bytes = 150000
+  max_gas = -1
+  app_hash = ""
 
-### begin validators
-[[tendermint.genesis.validators]]
-### end validators
-
+  ### begin validators
+  [[tendermint.genesis.validators]]
+  ### end validators
 
 [ipfs]
 path = "~/.forge_release/ipfs"

@@ -2,22 +2,31 @@ defmodule ForgeSdk.Util do
   @moduledoc """
   Get configuration, server setup, etc.
   """
+
   use ForgeAbi.Arc
 
   alias ForgeAbi.{CreateAssetTx, ForgeState, WalletType}
   alias ForgeSdk.{AbiServer, Configuration}
-  alias Configuration.{ForgeApp, Forge, Cache, Tendermint, Ipfs}
+  alias Configuration.{Cache, Forge, ForgeApp, Ipfs, Tendermint}
   alias Google.Protobuf.Timestamp
 
+  @config_priorities [:env, :home, :priv]
+
   @doc """
-  Initialize the ForgeSdk - setting up basic config and return two specs for ABI server and RPC client conn.
+  Initialize the ForgeSdk.
 
-  For a forge app build with elixir sdk, application shall put these servers into their supervision tree.
+  Setting up basic config and return child spec for:
 
-    filename = "path to forge.toml"
-    servers = ForgeSdk.init(:app_name, app_hash, filename)
-    children = servers ++ other_children
-    Supervisor.start_link(children, opts)
+    - ABI server
+    - RPC client conn
+
+  For a forge app build with Elixir sdk, application shall put these servers
+  into their supervision tree.
+
+      filename = "/path/to/forge.toml"
+      servers = ForgeSdk.init(:app_name, app_hash, filename)
+      children = servers ++ other_children
+      Supervisor.start_link(children, opts)
   """
   @spec init(atom(), String.t(), String.t() | nil) :: [module() | {module(), term()}]
   def init(otp_app, app_hash \\ "", filename \\ nil)
@@ -27,8 +36,10 @@ defmodule ForgeSdk.Util do
   def init(otp_app, app_hash, filename) do
     Application.put_env(:forge_sdk, :otp_app, otp_app)
     Application.put_env(:forge_sdk, :forge_app_hash, app_hash)
-    config = load_config_file!(filename)
-    get_servers(config)
+
+    filename
+    |> load_config_file!()
+    |> get_servers()
   end
 
   def get_chan do
@@ -53,8 +64,10 @@ defmodule ForgeSdk.Util do
 
   @spec parse(atom(), String.t() | map()) :: map()
   def parse(type, file \\ "")
+
   def parse(type, ""), do: parse(type, find_config_file!())
-  def parse(type, file) when is_binary(file), do: parse(type, Toml.decode_file!(file))
+  def parse(type, file) when is_binary(file), do: parse(type, load_config_file!(file))
+
   def parse(:forge, content), do: Configuration.parse(%Forge{}, content)
   def parse(:forge_app, content), do: Configuration.parse(%ForgeApp{}, content["app"])
   def parse(:tendermint, content), do: Configuration.parse(%Tendermint{}, content["tendermint"])
@@ -62,62 +75,56 @@ defmodule ForgeSdk.Util do
   def parse(:cache, content), do: Configuration.parse(%Cache{}, content["cache"])
 
   @doc """
-  Find the configuration file based on different priorities
+  Find the first configuration file in the following locations:
+
+    - system env `FORGE_CONFIG`
+    - `~/.forge/forge.toml`
+    - `forge-elixir-sdk/priv/forge[_test].toml`
   """
   @spec find_config_file! :: String.t()
   def find_config_file! do
-    filename =
-      :forge_sdk
-      |> Application.get_env(:config_priorities, [])
-      |> Enum.map(&to_file/1)
-      |> Enum.filter(&File.exists?/1)
-      |> List.first()
-
-    case filename do
-      nil ->
-        throw(
-          "Cannot find configuration files in envar `FORGE_CONFIG` or home folder, or current working directory."
-        )
-
-      v ->
-        v
+    @config_priorities
+    |> Stream.map(&to_file/1)
+    |> Stream.filter(&File.exists?/1)
+    |> Enum.at(0)
+    |> case do
+      nil -> exit("Cannot find configuration files in env `FORGE_CONFIG` or home folder.")
+      v -> v
     end
   end
 
   @doc """
-  Load the configuration file and merge it with default configuration
+  Load the configuration file and merge it with default configuration `forge_default.toml`.
   """
   @spec load_config_file!(String.t() | nil) :: map()
-  def load_config_file!(filename) do
-    filename =
-      case filename do
-        nil -> find_config_file!()
-        _ -> filename
-      end
+  def load_config_file!(nil) do
+    find_config_file!()
+    |> load_config_file!()
+  end
 
+  def load_config_file!(filename) do
+    default_config = "forge_default.toml" |> get_priv_file() |> Toml.decode_file!()
     content = File.read!(filename)
     ForgeSdk.put_env(:toml, content)
     config = Toml.decode!(content)
-
-    default_config = "forge_default.toml" |> get_file() |> Toml.decode_file!()
-
     DeepMerge.deep_merge(default_config, config)
   end
 
   @spec gen_config(map()) :: String.t()
   def gen_config(params) do
-    content = "forge_release.toml.eex" |> get_file() |> File.read!()
-    validators = EEx.eval_string(content, to_keyword_list(params))
+    content = "forge_release.toml.eex" |> get_priv_file() |> File.read!()
+    params = Keyword.new(params, fn {k, v} -> {:"#{k}", v} end)
+    validators = EEx.eval_string(content, params)
     toml = ForgeSdk.get_env(:toml)
 
     case String.contains?(toml, "### begin validators") do
       true -> String.replace(toml, ~r/### begin validators.*?### end validators/s, validators)
-      _ -> String.replace(toml, "[[tendermint.genesis.validators]]", validators)
+      false -> String.replace(toml, "[[tendermint.genesis.validators]]", validators)
     end
   end
 
   @doc """
-  Convert datetime or iso8601 datetime string to google protobuf timestamp
+  Convert datetime or iso8601 datetime string to google protobuf timestamp.
   """
   @spec to_proto_ts(String.t() | DateTime.t()) :: Timestamp.t()
   def to_proto_ts(s) when is_binary(s) do
@@ -160,30 +167,59 @@ defmodule ForgeSdk.Util do
   end
 
   def datetime_to_proto(dt), do: Google.Protobuf.Timestamp.new(seconds: DateTime.to_unix(dt))
+
   def proto_to_datetime(%{seconds: seconds}), do: DateTime.from_unix!(seconds)
 
   @doc """
-  Update forge token env from forge state.
+  Update few config env from forge state.
+
+    - token
+    - tx_config
+    - stake_config
+    - poke_config
+
   This function needs to be called after ForgeSdk.init was called.
   """
-  def update_token do
-    token =
-      case ForgeSdk.get_forge_state() do
-        %ForgeState{token: token} ->
-          # for the rest time, we cache the token from forge state
-          Map.from_struct(token)
+  def update_config do
+    case ForgeSdk.get_forge_state() do
+      %ForgeState{} = forge_state ->
+        # for the rest time, we cache the configs from forge state
 
-        _ ->
-          # for the first time forge started, there's no forge state yet
-          # hence we cache the token from forge_config
-          :forge_config
-          |> ForgeSdk.get_env()
-          |> Map.get("token")
-          |> Enum.into(%{}, fn {k, v} -> {String.to_existing_atom(k), v} end)
-      end
+        token = Map.from_struct(forge_state.token)
+        tx_config = Map.from_struct(forge_state.tx_config)
+        stake_config = Map.from_struct(forge_state.stake_config)
+        poke_config = Map.from_struct(forge_state.poke_config)
 
-    ForgeSdk.put_env(:token, token)
-    Application.put_env(:forge_abi, :decimal, token.decimal)
+        Application.put_env(:forge_abi, :decimal, token.decimal)
+        ForgeSdk.put_env(:token, token)
+        ForgeSdk.put_env(:tx_config, tx_config)
+        ForgeSdk.put_env(:stake_config, stake_config)
+        ForgeSdk.put_env(:poke_config, poke_config)
+
+      _ ->
+        # for the first time forge started, there's no forge state yet
+        # hence we cache the config from forge_config
+
+        config = ForgeSdk.get_env(:forge_config)
+        token = Enum.into(config["token"], %{}, fn {k, v} -> {String.to_atom(k), v} end)
+
+        tx_config =
+          Enum.into(config["transaction"], %{}, fn {k, v} -> {String.to_atom(k), v} end)
+
+        stake_config =
+          config
+          |> get_in(["stake", "timeout"])
+          |> Enum.into(%{}, fn {k, v} -> {String.to_atom("timeout_#{k}"), v} end)
+
+        poke_config =
+          Enum.into(config["poke"], %{}, fn {k, v} -> {String.to_atom(k), v} end)
+
+        Application.put_env(:forge_abi, :decimal, token.decimal)
+        ForgeSdk.put_env(:token, token)
+        ForgeSdk.put_env(:tx_config, tx_config)
+        ForgeSdk.put_env(:stake_config, stake_config)
+        ForgeSdk.put_env(:poke_config, poke_config)
+    end
   end
 
   # private function
@@ -196,13 +232,6 @@ defmodule ForgeSdk.Util do
     grpc_addr = forge_config["sock_grpc"]
 
     get_abi_server_spec(tcp_addr) ++ get_rpc_conn_spec(grpc_addr)
-  end
-
-  defp get_rpc_conn_spec(addr) do
-    case Process.whereis(ForgeSdk.Rpc.Conn) do
-      nil -> [{ForgeSdk.Rpc.Conn, addr}]
-      _ -> []
-    end
   end
 
   defp get_abi_server_spec(""), do: []
@@ -223,26 +252,22 @@ defmodule ForgeSdk.Util do
     AbiServer.child_spec(port: 0, ip: {:local, String.to_charlist(name)})
   end
 
-  defp to_file(:env), do: System.get_env("FORGE_CONFIG") || ""
-  defp to_file(:home), do: Path.expand("~/.forge/forge.toml")
-  defp to_file(:cwd), do: Path.join(File.cwd!(), "forge.toml")
-
-  defp to_file(:priv) do
-    case Application.get_env(:forge_sdk, :env) in [:test, :integration] do
-      true -> Path.join(Application.app_dir(:forge_sdk), "priv/forge_test.toml")
-      _ -> Path.join(Application.app_dir(:forge_sdk), "priv/forge.toml")
+  defp get_rpc_conn_spec(addr) do
+    case Process.whereis(ForgeSdk.Rpc.Conn) do
+      nil -> [{ForgeSdk.Rpc.Conn, addr}]
+      _ -> []
     end
   end
 
-  defp get_file(name) do
-    :forge_sdk
-    |> Application.app_dir()
-    |> Path.join("priv/#{name}")
+  defp to_file(:env), do: System.get_env("FORGE_CONFIG") || ""
+  defp to_file(:home), do: Path.expand("~/.forge/forge.toml")
+
+  defp to_file(:priv) do
+    case Application.get_env(:forge_sdk, :env) in [:test, :integration] do
+      true -> get_priv_file("forge_test.toml")
+      false -> get_priv_file("forge.toml")
+    end
   end
 
-  defp to_keyword_list(m), do: Enum.map(m, fn {k, v} -> {to_key(k), to_value(v)} end)
-  defp to_key(k) when is_atom(k), do: k
-  defp to_key(k), do: String.to_atom(k)
-
-  defp to_value(v), do: v
+  defp get_priv_file(name), do: :forge_sdk |> :code.priv_dir() |> Path.join(name)
 end

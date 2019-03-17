@@ -1,15 +1,14 @@
 defmodule ForgeSdk.Configuration.Helper do
   @moduledoc """
-  Functions to make configuration parse easy
+  Functions to make configuration parse easy.
   """
 
+  @doc """
+  Expand the path and normalize the given paths and sockets.
+  """
   def parse_config(config, paths_to_normalize) do
-    path =
-      config
-      |> Map.get("path")
-      |> get_abs_path()
-
-    File.mkdir_p!(path)
+    path = config |> Map.get("path") |> Path.expand()
+    :ok = File.mkdir_p!(path)
 
     config
     |> Map.put("path", path)
@@ -31,10 +30,10 @@ defmodule ForgeSdk.Configuration.Helper do
       case :application.get_application() do
         # in test cases, current pid would be incorrect
         :undefined ->
-          cond do
-            name === :tendermint -> :consensus
-            name === :ipfs -> :storage
-            true -> Application.get_env(:forge_sdk, :otp_app, :undefined)
+          case name do
+            :tendermint -> :consensus
+            :ipfs -> :storage
+            _ -> Application.get_env(:forge_sdk, :otp_app, :undefined)
           end
 
         {:ok, v} ->
@@ -61,42 +60,37 @@ defmodule ForgeSdk.Configuration.Helper do
   end
 
   # private functions
-  defp get_abs_path(p), do: Path.expand(p)
 
   defp normalize_paths(config, keys, path) do
     Enum.reduce(keys, config, fn key, acc ->
-      normalize_path(acc, key, path)
+      case acc[key] do
+        "" ->
+          acc
+
+        nil ->
+          acc
+
+        v ->
+          full_path = Path.join(path, v)
+          :ok = File.mkdir_p!(Path.dirname(full_path))
+          Map.put(acc, key, full_path)
+      end
     end)
   end
 
   defp normalize_socks(config, path) do
     config
     |> Map.keys()
-    |> Enum.filter(&String.starts_with?(&1, "sock_"))
+    |> Stream.filter(&String.starts_with?(&1, "sock_"))
     |> Enum.reduce(config, fn name, acc ->
       addr = Map.get(acc, name)
       Map.put(acc, name, expand_unix_socket(addr, path))
     end)
   end
 
-  defp normalize_path(config, name, path) do
-    case config[name] do
-      "" ->
-        config
-
-      nil ->
-        config
-
-      v ->
-        full_path = Path.join(path, v)
-        File.mkdir_p!(Path.dirname(full_path))
-        Map.put(config, name, full_path)
-    end
-  end
-
   defp expand_unix_socket("unix://" <> file, path) do
     sock_path = Path.join(path, file)
-    File.mkdir_p!(Path.dirname(sock_path))
+    :ok = File.mkdir_p!(Path.dirname(sock_path))
     "unix://#{sock_path}"
   end
 

@@ -1,23 +1,17 @@
-[app]
-
 [forge]
 path = "/tmp/.forge_test/core"
 sock_grpc = "unix://socks/forge_grpc_test.sock"
 
-[forge.stake.timeout]
-general = 1
-stake_for_node = 1
+  [forge.stake.timeout]
+  general = 1
+  stake_for_node = 1
 
-[forge.web]
-enabled = true
-
+  [forge.web]
+  enabled = true
 
 [tendermint]
-version = "0.29.1"
 moniker = "forge_test"
 path = "/tmp/.forge_test/tendermint"
-
-# relative paths to "path"
 executable = "bin/tendermint"
 logfile = "logs/tendermint.log"
 
@@ -31,9 +25,8 @@ timeout_commit = "1s"
 create_empty_blocks = false
 
 [ipfs]
-version = "0.4.18"
-executable = "bin/ipfs"
 path = "/tmp/.forge_test/ipfs"
+executable = "bin/ipfs"
 
 [cache]
 dc_dump_limit = 50

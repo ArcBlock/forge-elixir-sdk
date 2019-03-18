@@ -3,7 +3,7 @@ defmodule ForgeSdk.Util do
   Get configuration, server setup, etc.
   """
 
-  use ForgeAbi.Arc
+  use ForgeAbi.Unit
 
   alias ForgeAbi.{CreateAssetTx, ForgeState, WalletType}
   alias ForgeSdk.{AbiServer, Configuration}

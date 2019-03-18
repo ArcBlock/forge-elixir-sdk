@@ -2,7 +2,7 @@ defimpl ForgeSdk.Display, for: ForgeAbi.ChainInfo do
   @moduledoc """
   Implementation of `Display` protocol for `BigSint`
   """
-  use ForgeAbi.Arc
+  use ForgeAbi.Unit
 
   def display(data, _expand? \\ false) do
     %{

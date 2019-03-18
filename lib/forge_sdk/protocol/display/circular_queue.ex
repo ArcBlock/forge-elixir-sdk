@@ -2,7 +2,7 @@ defimpl ForgeSdk.Display, for: ForgeAbi.CircularQueue do
   @moduledoc """
   Implementation of `Display` protocol for `BigSint`
   """
-  use ForgeAbi.Arc
+  use ForgeAbi.Unit
 
   alias ForgeSdk.Display
   alias Google.Protobuf.Any

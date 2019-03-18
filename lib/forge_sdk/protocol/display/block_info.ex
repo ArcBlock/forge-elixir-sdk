@@ -2,7 +2,7 @@ defimpl ForgeSdk.Display, for: ForgeAbi.BlockInfo do
   @moduledoc """
   Implementation of `Display` protocol for `BlockInfo`
   """
-  use ForgeAbi.Arc
+  use ForgeAbi.Unit
 
   alias ForgeSdk.Display
 

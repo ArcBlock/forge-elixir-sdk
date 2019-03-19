@@ -14,7 +14,7 @@ defmodule ForgeSdkTest.ConfigParser do
           db = "data"
           keystore = "keystore"
           logfile = "logs/forge.log"
-
+          index_db = "sqlite://index/index.sqlite3"
           sock_grpc = "unix://socks/forge_grpc.sock"
 
           consensus_engine = "tendermint"

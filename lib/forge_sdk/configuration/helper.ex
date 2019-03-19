@@ -16,6 +16,18 @@ defmodule ForgeSdk.Configuration.Helper do
     |> normalize_socks(path)
   end
 
+  @doc """
+  Parse index db config
+  """
+  def parse_index_db(config, index_db) do
+    index_db = config[index_db]
+
+    case String.starts_with?(index_db, "sqlite://") do
+      true -> append_sqlite_info(config, index_db)
+      _ -> append_postgres_info(config, index_db)
+    end
+  end
+
   @spec add_paths(nil | keyword() | map(), any()) :: any()
   def add_paths(config, paths) do
     path = config["path"]
@@ -95,4 +107,15 @@ defmodule ForgeSdk.Configuration.Helper do
   end
 
   defp expand_unix_socket(addr, _), do: addr
+
+  defp append_sqlite_info(config, index_db) do
+    partial_filename = String.trim_leading(index_db, "sqlite://")
+    filename = Path.join(config["path"], partial_filename)
+
+    config
+    |> Map.put("index_db_type", "sqlite")
+    |> Map.put("index_db", filename)
+  end
+
+  defp append_postgres_info(config, _index_db), do: Map.put(config, "index_db_type", "postgres")
 end

@@ -7,7 +7,7 @@ defmodule ForgeSdk.Rpc.Helper do
   alias ForgeAbi.StatusCode
   alias GRPC.Stub, as: Client
 
-  @recv_timeout 10000
+  @recv_timeout 10_000
   @deadline_expired 4
 
   @doc """

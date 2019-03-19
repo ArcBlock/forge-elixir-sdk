@@ -163,7 +163,7 @@ defmodule ForgeSdk.AbiServer do
 
   @spec gen_ranch_args(Keyword.t()) :: term()
   def gen_ranch_args(args) do
-    default = %{max_connections: 1, socket_opts: [buffer: 65535, sndbuf: 65535, recbuf: 65535]}
+    default = %{max_connections: 1, socket_opts: [buffer: 65_535, sndbuf: 65_535, recbuf: 65_535]}
     opts = Map.update!(default, :socket_opts, &Keyword.merge(&1, args))
 
     [__MODULE__, :ranch_tcp, opts, __MODULE__, []]

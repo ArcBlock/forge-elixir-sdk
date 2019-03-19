@@ -22,14 +22,14 @@ defmodule ForgeSdk.Util.App do
   def set_ranch_port({0, ip: ip}, app) do
     Application.put_env(app, :ranch_opts, %{
       max_connections: 3,
-      socket_opts: [port: 0, ip: ip, buffer: 65535, sndbuf: 65535, recbuf: 65535]
+      socket_opts: [port: 0, ip: ip, buffer: 65_535, sndbuf: 65_535, recbuf: 65_535]
     })
   end
 
   def set_ranch_port(port, app) do
     Application.put_env(app, :ranch_opts, %{
       max_connections: 3,
-      socket_opts: [port: port, buffer: 65535, sndbuf: 65535, recbuf: 65535]
+      socket_opts: [port: port, buffer: 65_535, sndbuf: 65_535, recbuf: 65_535]
     })
   end
 

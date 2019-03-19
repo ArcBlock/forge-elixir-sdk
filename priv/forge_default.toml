@@ -47,7 +47,8 @@ path = "~/.forge/core"
 db = "data"
 
 # the index db path
-index_db = "index"
+# sqlite://index/index.sqlite3 or postgres://postgres:postgres@localhost:5432/index
+index_db = "sqlite://index/index.sqlite3"
 
 # the keystore path
 keystore = "keystore"

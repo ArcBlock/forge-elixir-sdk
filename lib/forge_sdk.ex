@@ -94,4 +94,5 @@ defmodule ForgeSdk do
   defdelegate get_top_accounts(request, chan \\ nil), to: Rpc
   defdelegate list_asset_transactions(request, chan \\ nil), to: Rpc
   defdelegate list_blocks(request, chan \\ nil), to: Rpc
+  defdelegate list_assets(request, chan \\ nil), to: Rpc
 end

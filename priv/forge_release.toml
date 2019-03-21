@@ -8,7 +8,7 @@ sock_tcp = ""
 [forge]
 proto_version = 1
 path = "~/.forge_release/core"
-logpath = "/tmp/logs"
+logpath = "logs"
 sock_grpc = "tcp://127.0.0.1:28210"
 pub_sub_key = "ABTTOTHEMOON"
 
@@ -25,7 +25,7 @@ pub_sub_key = "ABTTOTHEMOON"
 moniker = "forge"
 path = "~/.forge_release/tendermint"
 keypath = "~/.forge_cli/keys"
-logpath = "/tmp/logs"
+logpath = "logs"
 # socket to proxy app
 sock_proxy_app = "tcp://127.0.0.1:28220"
 
@@ -71,7 +71,7 @@ recheck = false
 
 [ipfs]
 path = "~/.forge_release/ipfs"
-logpath = "/tmp/logs"
+logpath = "logs"
 
 [cache]
 path = "~/.forge_release/cache/mnesia_data_dir"

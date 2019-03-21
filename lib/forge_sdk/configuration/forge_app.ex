@@ -12,7 +12,7 @@ defimpl ForgeSdk.Configuration, for: ForgeSdk.Configuration.ForgeApp do
 
   @spec parse(ForgeApp.t(), map()) :: map()
   def parse(_parser, config) do
-    config = Helper.parse_config(config, ["executable", "logfile", "error_logfile"])
+    config = Helper.parse_config(config, ["executable", "logpath"])
     Helper.put_env(:forge_app_config, config)
     config
   end

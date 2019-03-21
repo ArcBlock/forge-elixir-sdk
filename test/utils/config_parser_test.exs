@@ -5,7 +5,7 @@ defmodule ForgeSdkTest.ConfigParser do
           [app]
           path = "~/.forge/app"
           executable = ""
-          logfile = "logs/app.log"
+          logpath = "logs"
           sock_grpc = "unix://socks/abi.sock"
           sock_tcp = ""
 
@@ -13,7 +13,7 @@ defmodule ForgeSdkTest.ConfigParser do
           path = "~/.forge/core"
           db = "data"
           keystore = "keystore"
-          logfile = "logs/forge.log"
+          logpath = "logs"
           index_db = "sqlite://index/index.sqlite3"
           sock_grpc = "unix://socks/forge_grpc.sock"
 
@@ -25,7 +25,8 @@ defmodule ForgeSdkTest.ConfigParser do
 
           # relative paths to "path"
           executable = "bin/tendermint_0.27.0"
-          logfile = "logs/tendermint.log"
+          logpath = "logs"
+          keypath = "config"
 
           sock_proxy_app = "unix://socks/tm_proxy_app.sock"
           sock_rpc = "unix://socks/tm_rpc.sock"
@@ -36,7 +37,7 @@ defmodule ForgeSdkTest.ConfigParser do
           [ipfs]
           executable = "bin/ipfs_0.4.18"
           path = "~/.forge/ipfs"
-          logfile = "logs/ipfs.log"
+          logpath = "logs"
           """
           |> Toml.decode!()
 
@@ -55,7 +56,7 @@ defmodule ForgeSdkTest.ConfigParser do
 
     assert config["path"] !== "~/.forge/ipfs"
     assert config["executable"] === Path.join(config["path"], "bin/ipfs_0.4.18")
-    assert config["logfile"] === Path.join(config["path"], "logs/ipfs.log")
+    assert config["logpath"] === Path.join(config["path"], "logs")
   end
 
   test "app config parser works" do
@@ -71,7 +72,7 @@ defmodule ForgeSdkTest.ConfigParser do
       config = ForgeSdk.parse_config(t, @config)
 
       assert config["path"] !== "~/.forge/core"
-      assert config["logfile"] === Path.join(config["path"], "logs/forge.log")
+      assert config["logpath"] === Path.join(config["path"], "logs")
     end)
   end
 end

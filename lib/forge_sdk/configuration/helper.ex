@@ -30,10 +30,9 @@ defmodule ForgeSdk.Configuration.Helper do
 
   @spec add_paths(nil | keyword() | map(), any()) :: any()
   def add_paths(config, paths) do
-    path = config["path"]
-
     Enum.reduce(paths, config, fn {k, v}, acc ->
-      Map.put(acc, k, Path.join(path, v))
+      :ok = File.mkdir_p!(Path.dirname(v))
+      Map.put(acc, k, v)
     end)
   end
 
@@ -83,8 +82,17 @@ defmodule ForgeSdk.Configuration.Helper do
           acc
 
         v ->
-          full_path = Path.join(path, v)
-          :ok = File.mkdir_p!(Path.dirname(full_path))
+          full_path =
+            case String.starts_with?(v, "/") or String.starts_with?(v, "~") do
+              true -> Path.expand(v)
+              _ -> Path.join(path, v)
+            end
+
+          case File.dir?(full_path) do
+            true -> :ok = File.mkdir_p!(full_path)
+            _ -> :ok = File.mkdir_p!(Path.dirname(full_path))
+          end
+
           Map.put(acc, key, full_path)
       end
     end)

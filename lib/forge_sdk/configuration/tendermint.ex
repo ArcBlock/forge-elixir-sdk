@@ -12,17 +12,16 @@ defimpl ForgeSdk.Configuration, for: ForgeSdk.Configuration.Tendermint do
 
   @spec parse(Tendermint.t(), map()) :: map()
   def parse(_parser, config) do
+    config = Helper.parse_config(config, ["executable", "keypath", "logpath"])
+
     new_paths = [
-      {"genesis_file", "config/genesis.json"},
-      {"config_file", "config/config.toml"},
-      {"node_key_file", "config/node_key.json"}
+      {"genesis_file", Path.join(config["path"], "genesis.json")},
+      {"config_file", Path.join(config["path"], "config/config.toml")},
+      {"node_key_file", Path.join(config["keypath"], "node_key.json")},
+      {"validator_key_file", Path.join(config["keypath"], "priv_validator_key.json")}
     ]
 
-    config =
-      config
-      |> Helper.parse_config(["executable", "logfile"])
-      |> Helper.add_paths(new_paths)
-
+    config = Helper.add_paths(config, new_paths)
     Helper.put_env(:tendermint_config, config)
     Application.put_env(:forge, :consensus_config, config)
     config

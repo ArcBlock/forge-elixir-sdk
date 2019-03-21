@@ -13,7 +13,7 @@ sock_grpc = "unix://socks/forge_grpc_test.sock"
 moniker = "forge_test"
 path = "/tmp/.forge_test/tendermint"
 executable = "bin/tendermint"
-logfile = "logs/tendermint.log"
+logpath = "logs"
 
 sock_proxy_app = "unix://socks/tm_proxy_app_test.sock"
 sock_rpc = "unix://socks/tm_rpc_test.sock"

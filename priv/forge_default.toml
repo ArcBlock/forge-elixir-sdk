@@ -17,10 +17,7 @@ path = ""
 executable = ""
 
 # the log file path
-logfile = ""
-
-# the error log file path
-error_logfile = ""
+logpath = "logs"
 
 # the ABI connection between app and forge under TCP mode
 sock_tcp = ""
@@ -56,8 +53,8 @@ bitmap = "bitmap"
 # the keystore path
 keystore = "keystore"
 
-# the log file path
-logfile = "logs/forge.log"
+# the log path
+logpath = "logs"
 
 # index db is nondeterministic, it won't affect statesdb
 enable_index = true
@@ -178,8 +175,11 @@ moniker = "forge"
 # path of tendermint
 path = "~/.forge/tendermint"
 
-# log file path
-logfile = "logs/tendermint.log"
+# path of tendermint configuration
+keypath = "config"
+
+# log path
+logpath = "logs"
 
 # socket to proxy app
 sock_proxy_app = "tcp://127.0.0.1:27220"
@@ -256,8 +256,8 @@ recheck = false
 # path of ipfs
 path = "~/.forge/ipfs"
 
-# log file path
-logfile = "logs/ipfs.log"
+# log path
+logpath = "logs"
 
 # max amount for storage
 storage_max = "10GB"

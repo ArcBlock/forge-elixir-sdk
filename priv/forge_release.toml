@@ -8,22 +8,24 @@ sock_tcp = ""
 [forge]
 proto_version = 1
 path = "~/.forge_release/core"
+logpath = "/tmp/logs"
 sock_grpc = "tcp://127.0.0.1:28210"
 pub_sub_key = "ABTTOTHEMOON"
 
-  [forge.stake.timeout]
-  # for general stake, we do 10s
-  general = 10
-  # for node stake, we do 60s
-  stake_for_node = 60
+[forge.stake.timeout]
+# for general stake, we do 10s
+general = 10
+# for node stake, we do 60s
+stake_for_node = 60
 
-  [forge.web]
-  enabled = true
+[forge.web]
+enabled = true
 
 [tendermint]
 moniker = "forge"
 path = "~/.forge_release/tendermint"
-
+keypath = "~/.forge_cli/keys"
+logpath = "/tmp/logs"
 # socket to proxy app
 sock_proxy_app = "tcp://127.0.0.1:28220"
 
@@ -69,6 +71,7 @@ recheck = false
 
 [ipfs]
 path = "~/.forge_release/ipfs"
+logpath = "/tmp/logs"
 
 [cache]
 path = "~/.forge_release/cache/mnesia_data_dir"

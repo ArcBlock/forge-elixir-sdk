@@ -15,7 +15,7 @@ defimpl ForgeSdk.Configuration, for: ForgeSdk.Configuration.Tendermint do
     config = Helper.parse_config(config, ["executable", "keypath", "logpath"])
 
     new_paths = [
-      {"genesis_file", Path.join(config["path"], "genesis.json")},
+      {"genesis_file", Path.join(config["path"], "config/genesis.json")},
       {"config_file", Path.join(config["path"], "config/config.toml")},
       {"node_key_file", Path.join(config["keypath"], "node_key.json")},
       {"validator_key_file", Path.join(config["keypath"], "priv_validator_key.json")}

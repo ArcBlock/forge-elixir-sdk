@@ -26,6 +26,7 @@ defmodule ForgeSdkTest.ConfigParser do
           # relative paths to "path"
           executable = "bin/tendermint_0.27.0"
           logpath = "logs"
+          keypath = "config"
 
           sock_proxy_app = "unix://socks/tm_proxy_app.sock"
           sock_rpc = "unix://socks/tm_rpc.sock"

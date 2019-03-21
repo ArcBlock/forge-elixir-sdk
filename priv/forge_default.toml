@@ -50,6 +50,9 @@ db = "data"
 # sqlite://index/index.sqlite3 or postgres://postgres:postgres@localhost:5432/index
 index_db = "sqlite://index/index.sqlite3"
 
+# bitmap path
+bitmap = "bitmap"
+
 # the keystore path
 keystore = "keystore"
 

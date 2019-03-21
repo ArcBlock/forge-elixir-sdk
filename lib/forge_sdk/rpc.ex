@@ -82,6 +82,7 @@ defmodule ForgeSdk.Rpc do
     RequestGetTopAccounts,
     RequestListAssetTransactions,
     RequestListBlocks,
+    RequestListAssets,
     RequestListTransactions,
     ForgeStatistics
   }
@@ -468,5 +469,14 @@ defmodule ForgeSdk.Rpc do
         ) :: {[IndexedBlock.t()], PageInfo.t()} | {:error, term()}
   rpc :list_blocks do
     {res.blocks, res.page}
+  end
+
+  @spec list_assets(
+          RequestListAssets.t() | Keyword.t(),
+          Channel.t() | nil,
+          Keyword.t()
+        ) :: {[IndexedAssetState.t()], IndexedAccountState.t(), PageInfo.t()} | {:error, term()}
+  rpc :list_assets do
+    {res.assets, res.account, res.page}
   end
 end

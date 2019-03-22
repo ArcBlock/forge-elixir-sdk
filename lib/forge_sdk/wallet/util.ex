@@ -187,11 +187,10 @@ defmodule ForgeSdk.Wallet.Util do
     data
     |> Jason.decode!(keys: :atoms)
     |> Enum.reduce(%{}, fn {k, v}, acc ->
-      if k == :address do
-        Map.put(acc, k, v)
-      else
-        # k in [:sk, :pk]
-        Map.put(acc, k, Base.decode64!(v))
+      cond do
+        k == :address -> Map.put(acc, k, v)
+        k in [:sk, :pk] -> Map.put(acc, k, Base.decode64!(v))
+        true -> acc
       end
     end)
     |> WalletInfo.new()

@@ -1,3 +1,39 @@
+## 0.19.5 (March 22, 2019)
+  - list_assets with account and list of assets returns (#59)
+  - fix typo
+  - restructure paths (#58)
+  - add bitmap path (#57)
+  - Add port option for forge.web (#56)
+  - Uptake new version of forge abi (#55)
+  - add indexer url (#52)
+  - Uptake new version of DID. (#54)
+  - Change use ForgeAbi.Arc to ForgeAbi.Unit (#53)
+  - reorganize poke pipe (#48)
+  - add checkin (#51)
+  - Add sha2. (#49)
+  - Fix atom not exist issue when testing on manager app (#50)
+  - Add docs for forge_default.toml (#45)
+  - Uptake new abt-did-elixir v 0.2.0 (#47)
+  - use latest forge-abi
+  - use better delimer (#46)
+  - uptake to forge_abi version (#44)
+  - list_blocks and save block_header to state DB (#43)
+  - Change recheck to false for tendermint mempool (#42)
+  - improve tx_info data (#41)
+  - fix test case
+  - use latest forge-abi
+  - for compression, default to zstd (#40)
+  - use new poke address (#39)
+  - uptake abi version (#38)
+  - support poke tx (#37)
+  - Update forge_abi hash (#36)
+  - Add forge token section in forge config toml (#34)
+  - CLIENT SIDE BLOCKER.  Encode 'value' field of Google.Protobuf.Any type in its ForgeSdk.display implementation (#35)
+  - uptake forge_abi version (#33)
+  - do not parse data field for multisig
+  - update to latest forge abi
+  - Update mcrypto (#32)
+
 ## 0.17.0 (March 04, 2019)
   - support consume asset tx
   - Remove forge_starter in toml (#29)

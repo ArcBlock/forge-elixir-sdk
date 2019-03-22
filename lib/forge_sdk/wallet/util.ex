@@ -190,6 +190,7 @@ defmodule ForgeSdk.Wallet.Util do
       if k == :address do
         Map.put(acc, k, v)
       else
+        # k in [:sk, :pk]
         Map.put(acc, k, Base.decode64!(v))
       end
     end)

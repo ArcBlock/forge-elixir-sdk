@@ -18,7 +18,8 @@ defmodule ForgeSdk.Wallet.Util do
     case passphrase == "" or Validator.valid_passphrase?(passphrase) do
       true ->
         {pk, sk} = do_keypair(KeyType.key(type.pk))
-        to_keystore(type, sk, pk, passphrase)
+        did_type = to_did_type(type)
+        to_keystore(did_type, sk, pk, passphrase)
 
       _ ->
         {:error, "cannot create the wallet. Passphrase is not strong enough"}
@@ -27,21 +28,21 @@ defmodule ForgeSdk.Wallet.Util do
 
   @spec sign!(WalletInfo.t(), binary()) :: binary()
   def sign!(wallet, data) do
-    type = wallet.type
+    did_type = AbtDid.get_did_type(wallet.address)
 
-    hash = do_hash(HashType.key(type.hash), data)
-    do_sign!(KeyType.key(type.pk), hash, wallet.sk)
+    hash = do_hash(did_type.hash_type, data)
+    do_sign!(did_type.key_type, hash, wallet.sk)
   end
 
   @spec verify(WalletInfo.t(), binary(), binary()) :: boolean()
   def verify(%{pk: ""}, _data, _signature), do: false
-  def verify(%{type: nil}, _data, _signature), do: false
+  def verify(%{address: ""}, _data, _signature), do: false
 
   def verify(wallet, data, signature) do
-    type = wallet.type
+    did_type = AbtDid.get_did_type(wallet.address)
 
-    hash = do_hash(HashType.key(type.hash), data)
-    valid_sig?(KeyType.key(type.pk), hash, signature, wallet.pk)
+    hash = do_hash(did_type.hash_type, data)
+    valid_sig?(did_type.key_type, hash, signature, wallet.pk)
   end
 
   @doc """
@@ -66,8 +67,7 @@ defmodule ForgeSdk.Wallet.Util do
 
     [iv: iv, ciphertext: cipher] = Mcrypto.encrypt(%AES{}, wallet.sk, passphrase)
 
-    type = wallet.type |> WalletType.encode() |> Base.encode64()
-    data = %{iv: iv, wallet: %{wallet | sk: cipher, pk: Base.encode64(wallet.pk), type: type}}
+    data = %{iv: iv, wallet: %{wallet | sk: cipher, pk: Base.encode64(wallet.pk)}}
     File.write!(filename, Jason.encode!(data))
   end
 
@@ -120,15 +120,8 @@ defmodule ForgeSdk.Wallet.Util do
         {:error, "Cannot decrypt wallet with content: #{inspect(wallet)}"}
 
       _ ->
-        type = wallet.type |> Base.decode64!() |> WalletType.decode()
-
         WalletInfo.new(%{
-          type:
-            WalletType.new(%{
-              pk: type.pk,
-              hash: type.hash,
-              address: type.address
-            }),
+          type: nil,
           sk: sk,
           pk: Base.decode64!(wallet.pk),
           address: wallet.address
@@ -140,12 +133,14 @@ defmodule ForgeSdk.Wallet.Util do
 
   def load(wallet, _), do: {:error, "invalid wallet: #{inspect(wallet)}"}
 
-  @spec recover(WalletType.t(), binary(), String.t()) :: WalletInfo.t() | {:error, term()}
-  def recover(type, sk, passphrase \\ "") do
+  @spec recover(AbtDid.Type.t() | WalletType.t(), binary(), String.t()) ::
+          WalletInfo.t() | {:error, term()}
+  def recover(type, sk, passphrase \\ "")
+
+  def recover(%AbtDid.Type{} = type, sk, passphrase) do
     case passphrase === "" or Validator.valid_passphrase?(passphrase) do
       true ->
-        pk_type = KeyType.key(type.pk)
-        pk = sk_to_pk(pk_type, sk)
+        pk = sk_to_pk(type.key_type, sk)
         to_keystore(type, sk, pk, passphrase)
 
       _ ->
@@ -153,12 +148,22 @@ defmodule ForgeSdk.Wallet.Util do
     end
   end
 
+  def recover(%WalletType{} = type, sk, passphrase) do
+    did_type = to_did_type(type)
+    recover(did_type, sk, passphrase)
+  end
+
   @doc """
   Converts a (pseudo) publick key to address.
   """
   @spec to_address(binary(), WalletType.t()) :: String.t()
-  def to_address(data, wallet_type) do
+  def to_address(data, %WalletType{} = wallet_type) do
     did_type = to_did_type(wallet_type)
+    AbtDid.pk_to_did(did_type, data, encode: true, form: :short)
+  end
+
+  @spec to_address(binary(), AbtDid.Type.t()) :: String.t()
+  def to_address(data, %AbtDid.Type{} = did_type) do
     AbtDid.pk_to_did(did_type, data, encode: true, form: :short)
   end
 
@@ -171,7 +176,6 @@ defmodule ForgeSdk.Wallet.Util do
 
   def serialize(wallet) do
     %{
-      type: Map.from_struct(wallet.type),
       pk: Base.encode64(wallet.pk),
       sk: Base.encode64(wallet.sk),
       address: wallet.address
@@ -183,20 +187,43 @@ defmodule ForgeSdk.Wallet.Util do
     data
     |> Jason.decode!(keys: :atoms)
     |> Enum.reduce(%{}, fn {k, v}, acc ->
-      cond do
-        k == :address -> Map.put(acc, k, v)
-        k in [:pk, :sk] -> Map.put(acc, k, Base.decode64!(v))
-        k == :type -> Map.put(acc, k, WalletType.new(v))
+      if k == :address do
+        Map.put(acc, k, v)
+      else
+        Map.put(acc, k, Base.decode64!(v))
       end
     end)
     |> WalletInfo.new()
   end
 
+  @spec to_did_type(WalletType.t()) :: AbtDid.Type.t()
+  def to_did_type(wallet_type) do
+    %DidType{
+      role_type: to_did_type(wallet_type.role, RoleType, "role_"),
+      key_type: to_did_type(wallet_type.pk, KeyType, ""),
+      hash_type: to_did_type(wallet_type.hash, HashType, "")
+    }
+  end
+
+  @spec to_wallet_type(AbtDid.Type.t()) :: WalletType.t()
+  def to_wallet_type(did_type) do
+    %ForgeAbi.WalletType{
+      address: 1,
+      pk: ForgeAbi.KeyType.value(did_type.key_type),
+      hash: ForgeAbi.HashType.value(did_type.hash_type),
+      role:
+        ("role_" <> Atom.to_string(did_type.role_type))
+        |> String.to_atom()
+        |> ForgeAbi.RoleType.value()
+    }
+  end
+
   # private function
+  @spec to_keystore(AbtDid.Type.t(), binary(), binary(), String.t()) :: WalletInfo.t()
   defp to_keystore(type, sk, pk, passphrase) do
     wallet =
       WalletInfo.new(%{
-        type: type,
+        type: nil,
         sk: sk,
         pk: pk,
         address: to_address(pk, type)
@@ -228,14 +255,6 @@ defmodule ForgeSdk.Wallet.Util do
   defp valid_sig?(:secp256k1, data, sig, pk), do: Mcrypto.verify(%Secp256k1{}, data, sig, pk)
 
   defp get_keystore, do: :forge_config |> ForgeSdk.get_env() |> Map.get("keystore")
-
-  defp to_did_type(wallet_type) do
-    %DidType{
-      role_type: to_did_type(wallet_type.role, RoleType, "role_"),
-      key_type: to_did_type(wallet_type.pk, KeyType, ""),
-      hash_type: to_did_type(wallet_type.hash, HashType, "")
-    }
-  end
 
   defp to_did_type(wallet_type, _module, "") when is_atom(wallet_type), do: wallet_type
 

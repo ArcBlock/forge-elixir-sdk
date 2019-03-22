@@ -16,7 +16,7 @@ defmodule ForgeSdkTest.WalletUtils do
               encoding_type <- integer(0..1) do
       type = WalletType.new(address: encoding_type, hash: hash_type, pk: pk_type)
       wallet = Util.create(type, @pass)
-      assert wallet.type == type
+      assert wallet.type == nil
 
       case pk_type do
         0 -> assert Mcrypto.sk_to_pk(%Ed25519{}, wallet.sk) === wallet.pk
@@ -36,8 +36,8 @@ defmodule ForgeSdkTest.WalletUtils do
 
   test "recover a wallet by sk shall create a keystore" do
     w1 = Util.create(WalletType.new(address: 1, hash: 1, pk: 0), @pass)
-
-    wallet = Util.recover(w1.type, w1.sk, @pass)
+    did_type = AbtDid.get_did_type(w1.address)
+    wallet = Util.recover(did_type, w1.sk, @pass)
     assert w1 === wallet
   end
 

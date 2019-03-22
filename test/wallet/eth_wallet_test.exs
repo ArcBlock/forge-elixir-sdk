@@ -3,17 +3,21 @@ defmodule ForgeSdkTest.EthWallet do
   use ExUnit.Case
 
   alias Mcrypto.Signer.Secp256k1
-
   alias ForgeSdk.Wallet
   alias ForgeSdk.Wallet.Type.Eth
-
-  alias ForgeAbi.WalletType
 
   @pass "abcd1234"
 
   test "create a new eth wallet shall return correct data" do
     wallet = Wallet.create(%Eth{}, @pass)
-    assert wallet.type == WalletType.new(address: 0, hash: 0, pk: 1, role: 0)
+    did_type = AbtDid.get_did_type(wallet.address)
+
+    assert did_type === %AbtDid.Type{
+             key_type: :secp256k1,
+             hash_type: :keccak,
+             role_type: :account
+           }
+
     assert Mcrypto.sk_to_pk(%Secp256k1{}, wallet.sk) === wallet.pk
   end
 

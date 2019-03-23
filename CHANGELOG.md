@@ -1,3 +1,6 @@
+## 0.19.6 (March 23, 2019)
+  - bump forge abi to include ex_abci_proto change
+
 ## 0.19.5 (March 22, 2019)
   - list_assets with account and list of assets returns (#59)
   - fix typo

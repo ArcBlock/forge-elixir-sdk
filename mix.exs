@@ -33,7 +33,6 @@ defmodule ForgeSdk.MixProject do
     [
       {:connection, "~> 1.0"},
       {:deep_merge, "~> 0.1.1"},
-      {:ex_abci_proto, "~> 0.7.6"},
       {:jason, "~> 1.1"},
       {:multibase, "~> 0.0.1"},
       {:recase, "~> 0.4"},

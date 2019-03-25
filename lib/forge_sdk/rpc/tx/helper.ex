@@ -11,21 +11,18 @@ defmodule ForgeSdk.Rpc.Tx.Helper do
     any = ForgeAbi.encode_any!(type, itx)
 
     wallet = opts[:wallet]
-    address = opts[:address]
     token = Keyword.get(opts, :token, "")
 
     sign? = Keyword.get(opts, :sign, true)
     chan = opts[:chan]
 
-    if (wallet === nil or wallet.sk === "") and token === "" and sign? do
+    if wallet === nil do
+      raise "wallet shall be provided in opts"
+    end
+
+    if wallet.sk === "" and token === "" and sign? do
       raise "Tx requires signature but no sk or valid token found"
     end
-
-    if wallet === nil and (address === "" or address === nil) do
-      raise "either wallet or address shall be provided in opts"
-    end
-
-    address = address || wallet.address
 
     nonce =
       case type === :poke do
@@ -35,7 +32,7 @@ defmodule ForgeSdk.Rpc.Tx.Helper do
 
     case sign? do
       true ->
-        case create_tx(any, nonce, wallet, address, token) do
+        case create_tx(any, nonce, wallet, token) do
           {:error, _} = error ->
             error
 
@@ -48,24 +45,25 @@ defmodule ForgeSdk.Rpc.Tx.Helper do
         end
 
       false ->
-        create_unsigned_tx(any, nonce, address)
+        create_unsigned_tx(any, nonce, wallet)
     end
   end
 
-  defp create_unsigned_tx(any, nonce, address),
+  defp create_unsigned_tx(any, nonce, wallet),
     do:
       Transaction.new(
         itx: any,
-        chain_id: ForgeSdk.get_env(:chain_id),
-        from: address,
-        nonce: nonce
+        from: wallet.address,
+        nonce: nonce,
+        chain_id: chain_id,
+        pk: wallet.pk
       )
 
-  defp create_tx(any, nonce, %{sk: ""} = wallet, address, token) do
+  defp create_tx(any, nonce, %{sk: ""} = wallet, token) do
     req =
       RequestCreateTx.new(
         itx: any,
-        from: address,
+        from: wallet.address,
         nonce: nonce,
         wallet: wallet,
         token: token
@@ -74,15 +72,16 @@ defmodule ForgeSdk.Rpc.Tx.Helper do
     Rpc.create_tx(req)
   end
 
-  defp create_tx(any, nonce, wallet, address, _token) do
+  defp create_tx(any, nonce, wallet, _token) do
     chain_id = ForgeSdk.get_env(:chain_id)
 
     tx =
       Transaction.new(
         itx: any,
-        from: address,
+        from: wallet.address,
         nonce: nonce,
-        chain_id: chain_id
+        chain_id: chain_id,
+        pk: wallet.pk
       )
 
     tx = %Transaction{tx | signature: <<>>}

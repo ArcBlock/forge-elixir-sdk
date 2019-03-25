@@ -4,6 +4,7 @@ defmodule ForgeSdk.Rpc.Tx.Helper do
   """
   alias ForgeAbi.{RequestCreateTx, RequestSendTx, Transaction}
   alias ForgeSdk.Rpc
+  alias ForgeSdk.Wallet.Util, as: WalletUtil
 
   # credo:disable-for-lines:40
   def build(type, itx, opts) do
@@ -25,23 +26,16 @@ defmodule ForgeSdk.Rpc.Tx.Helper do
     end
 
     address = address || wallet.address
-    nonce = Rpc.get_nonce(address, chan)
-
-    if nonce === 0 and type !== :declare do
-      raise "There's no valid state for this wallet address. Please declare this wallet first."
-    end
 
     nonce =
       case type === :poke do
         true -> 0
-        false -> nonce
+        false -> Enum.random(1..10_000_000_000)
       end
 
     case sign? do
       true ->
-        req = build_sign(any, nonce, wallet, address, token)
-
-        case Rpc.create_tx(req, chan) do
+        case create_tx(any, nonce, wallet, address, token) do
           {:error, _} = error ->
             error
 
@@ -67,8 +61,8 @@ defmodule ForgeSdk.Rpc.Tx.Helper do
         nonce: nonce
       )
 
-  defp build_sign(any, nonce, wallet, address, token),
-    do:
+  defp create_tx(any, nonce, %{sk: ""} = wallet, address, token) do
+    req =
       RequestCreateTx.new(
         itx: any,
         from: address,
@@ -76,6 +70,25 @@ defmodule ForgeSdk.Rpc.Tx.Helper do
         wallet: wallet,
         token: token
       )
+
+    Rpc.create_tx(req)
+  end
+
+  defp create_tx(any, nonce, wallet, address, _token) do
+    chain_id = ForgeSdk.get_env(:chain_id)
+
+    tx =
+      Transaction.new(
+        itx: any,
+        from: address,
+        nonce: nonce,
+        chain_id: chain_id
+      )
+
+    tx = %Transaction{tx | signature: <<>>}
+    signature = WalletUtil.sign!(wallet, Transaction.encode(tx))
+    %Transaction{tx | signature: signature}
+  end
 
   defp send_tx(req, chan) do
     case ForgeSdk.send_tx(req, chan) do

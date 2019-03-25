@@ -1,3 +1,10 @@
+## 0.20.0 (March 25, 2019)
+  - upgrade forge abi
+  - put several params in forge config
+  - fix various issues
+  - add pk in transaction
+  - create tx locally
+
 ## 0.19.6 (March 23, 2019)
   - bump forge abi to include ex_abci_proto change
 

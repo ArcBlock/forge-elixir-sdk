@@ -203,7 +203,11 @@ persistent_peers = ""
 seed_peers = ""
 
 # timeout for commiting a new block
-timeout_commit = "5s"                # TODO: need to test if this need to be in forge state
+timeout_propose = "2s"
+timeout_prevote = "2s"
+timeout_precommit = "2s"
+timeout_commit = "3s"
+skip_timeout_commit = false
 
 # create empty blocks in 5s interval
 create_empty_blocks = true           # TODO: same

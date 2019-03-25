@@ -141,8 +141,8 @@ defmodule ForgeSdk.Util do
   @doc """
   Generate address for asset. Use owner's address + owner's nonce when creating this asset.
   """
-  @spec to_asset_address(String.t(), CreateAssetTx.t(), WalletType.t() | nil) :: String.t()
-  def to_asset_address(address, itx, _) do
+  @spec to_asset_address(String.t(), CreateAssetTx.t()) :: String.t()
+  def to_asset_address(address, itx) do
     hash = Mcrypto.hash(%Mcrypto.Hasher.Sha3{}, CreateAssetTx.encode(itx))
     data = address <> hash
     did_type = address |> AbtDid.get_did_type() |> Map.put(:role_type, :asset)

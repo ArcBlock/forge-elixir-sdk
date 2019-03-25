@@ -55,7 +55,7 @@ defmodule ForgeSdk.Rpc.Tx.Helper do
         itx: any,
         from: wallet.address,
         nonce: nonce,
-        chain_id: chain_id,
+        chain_id: ForgeSdk.get_env(:chain_id),
         pk: wallet.pk
       )
 
@@ -73,14 +73,12 @@ defmodule ForgeSdk.Rpc.Tx.Helper do
   end
 
   defp create_tx(any, nonce, wallet, _token) do
-    chain_id = ForgeSdk.get_env(:chain_id)
-
     tx =
       Transaction.new(
         itx: any,
         from: wallet.address,
         nonce: nonce,
-        chain_id: chain_id,
+        chain_id: ForgeSdk.get_env(:chain_id),
         pk: wallet.pk
       )
 

@@ -112,14 +112,17 @@ defmodule ForgeSdk.Util do
 
   @spec gen_config(map()) :: String.t()
   def gen_config(params) do
-    content = "forge_release.toml.eex" |> get_priv_file() |> File.read!()
-    params = Keyword.new(params, fn {k, v} -> {:"#{k}", v} end)
-    validators = EEx.eval_string(content, params)
     toml = ForgeSdk.get_env(:toml)
 
     case String.contains?(toml, "### begin validators") do
-      true -> String.replace(toml, ~r/### begin validators.*?### end validators/s, validators)
-      false -> String.replace(toml, "[[tendermint.genesis.validators]]", validators)
+      true ->
+        content = "forge_release.toml.eex" |> get_priv_file() |> File.read!()
+        params = Keyword.new(params, fn {k, v} -> {:"#{k}", v} end)
+        validators = EEx.eval_string(content, params)
+        String.replace(toml, ~r/### begin validators.*?### end validators/s, validators)
+
+      false ->
+        toml
     end
   end
 

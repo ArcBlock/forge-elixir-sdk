@@ -95,4 +95,5 @@ defmodule ForgeSdk do
   defdelegate list_asset_transactions(request, chan \\ nil), to: Rpc
   defdelegate list_blocks(request, chan \\ nil), to: Rpc
   defdelegate list_assets(request, chan \\ nil), to: Rpc
+  defdelegate get_health_status(request, chan \\ nil), to: Rpc
 end

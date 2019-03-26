@@ -76,8 +76,10 @@ defmodule ForgeSdk.Rpc do
     ResponseUnsubscribe,
 
     # statistics related
+    HealthStatus,
     RequestGetAssets,
     RequestGetForgeStatistics,
+    RequestGetHealthStatus,
     RequestGetStakes,
     RequestGetTopAccounts,
     RequestListAssetTransactions,
@@ -478,5 +480,14 @@ defmodule ForgeSdk.Rpc do
         ) :: {[IndexedAssetState.t()], IndexedAccountState.t(), PageInfo.t()} | {:error, term()}
   rpc :list_assets do
     {res.assets, res.account, res.page}
+  end
+
+  @spec get_health_status(
+          RequestGetHealthStatus.t() | Keyword.t(),
+          Channel.t() | nil,
+          Keyword.t()
+        ) :: HealthStatus.t() | {:error, term()}
+  rpc :get_health_status do
+    res.health_status
   end
 end

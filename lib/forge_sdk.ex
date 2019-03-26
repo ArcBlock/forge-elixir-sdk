@@ -39,6 +39,9 @@ defmodule ForgeSdk do
   defdelegate get_config(chan \\ nil), to: Rpc
   defdelegate get_asset_address(request, chan \\ nil), to: Rpc
   defdelegate sign_data(request, chan \\ nil), to: Rpc
+  defdelegate start_simulator(chan \\ nil), to: Rpc
+  defdelegate stop_simulator(chan \\ nil), to: Rpc
+  defdelegate get_simulator_status(chan \\ nil), to: Rpc
 
   # wallet related
   defdelegate create_wallet(request, chan \\ nil), to: Rpc

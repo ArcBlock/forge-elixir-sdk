@@ -84,7 +84,7 @@ defmodule ForgeSdk do
   defdelegate get_chan, to: Util
   defdelegate datetime_to_proto(dt), to: Util
   defdelegate proto_to_datetime(ts), to: Util
-  defdelegate update_config, to: Util
+  defdelegate update_config(forge_config), to: Util
 
   # init sdk and handler registration
   defdelegate init(otp_app, app_hash \\ "", filename \\ nil), to: Util

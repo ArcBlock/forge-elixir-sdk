@@ -174,53 +174,51 @@ defmodule ForgeSdk.Util do
   def proto_to_datetime(%{seconds: seconds}), do: DateTime.from_unix!(seconds)
 
   @doc """
-  Update few config env from forge state.
+   Update few config env from forge state.
 
-    - token
-    - tx_config
-    - stake_config
-    - poke_config
+     - token
+     - tx_config
+     - stake_config
+     - poke_config
 
-  This function needs to be called after ForgeSdk.init was called.
+   This function needs to be called after ForgeSdk.init was called.
   """
-  def update_config do
-    case ForgeSdk.get_forge_state() do
-      %ForgeState{} = forge_state ->
-        # for the rest time, we cache the configs from forge state
+  def update_config(%ForgeState{} = forge_state) do
+    # for the rest time, we cache the configs from forge state
 
-        token = Map.from_struct(forge_state.token)
-        tx_config = Map.from_struct(forge_state.tx_config)
-        stake_config = Map.from_struct(forge_state.stake_config)
-        poke_config = Map.from_struct(forge_state.poke_config)
+    token = Map.from_struct(forge_state.token)
+    tx_config = Map.from_struct(forge_state.tx_config)
+    stake_config = Map.from_struct(forge_state.stake_config)
+    poke_config = Map.from_struct(forge_state.poke_config)
 
-        Application.put_env(:forge_abi, :decimal, token.decimal)
-        ForgeSdk.put_env(:token, token)
-        ForgeSdk.put_env(:tx_config, tx_config)
-        ForgeSdk.put_env(:stake_config, stake_config)
-        ForgeSdk.put_env(:poke_config, poke_config)
+    Application.put_env(:forge_abi, :decimal, token.decimal)
+    ForgeSdk.put_env(:token, token)
+    ForgeSdk.put_env(:tx_config, tx_config)
+    ForgeSdk.put_env(:stake_config, stake_config)
+    ForgeSdk.put_env(:poke_config, poke_config)
+  end
 
-      _ ->
-        # for the first time forge started, there's no forge state yet
-        # hence we cache the config from forge_config
+  def update_config(_) do
+    # for the first time forge started, there's no forge state yet
+    # hence we cache the config from forge_config
 
-        config = ForgeSdk.get_env(:forge_config)
-        token = Enum.into(config["token"], %{}, fn {k, v} -> {String.to_atom(k), v} end)
+    config = ForgeSdk.get_env(:forge_config)
+    token = Enum.into(config["token"], %{}, fn {k, v} -> {String.to_atom(k), v} end)
 
-        tx_config = Enum.into(config["transaction"], %{}, fn {k, v} -> {String.to_atom(k), v} end)
+    tx_config = Enum.into(config["transaction"], %{}, fn {k, v} -> {String.to_atom(k), v} end)
 
-        stake_config =
-          config
-          |> get_in(["stake", "timeout"])
-          |> Enum.into(%{}, fn {k, v} -> {String.to_atom("timeout_#{k}"), v} end)
+    stake_config =
+      config
+      |> get_in(["stake", "timeout"])
+      |> Enum.into(%{}, fn {k, v} -> {String.to_atom("timeout_#{k}"), v} end)
 
-        poke_config = Enum.into(config["poke"], %{}, fn {k, v} -> {String.to_atom(k), v} end)
+    poke_config = Enum.into(config["poke"], %{}, fn {k, v} -> {String.to_atom(k), v} end)
 
-        Application.put_env(:forge_abi, :decimal, token.decimal)
-        ForgeSdk.put_env(:token, token)
-        ForgeSdk.put_env(:tx_config, tx_config)
-        ForgeSdk.put_env(:stake_config, stake_config)
-        ForgeSdk.put_env(:poke_config, poke_config)
-    end
+    Application.put_env(:forge_abi, :decimal, token.decimal)
+    ForgeSdk.put_env(:token, token)
+    ForgeSdk.put_env(:tx_config, tx_config)
+    ForgeSdk.put_env(:stake_config, stake_config)
+    ForgeSdk.put_env(:poke_config, poke_config)
   end
 
   # private function

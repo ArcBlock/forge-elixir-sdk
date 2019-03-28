@@ -28,6 +28,12 @@ defmodule ForgeSdk.Configuration.Helper do
     end
   end
 
+  def parse_workshop_db(config) do
+    db = get_in(config, ["web", "workshop_db"])
+    filename = Path.join(config["path"], db)
+    put_in(config, ["web", "workshop_db"], filename)
+  end
+
   @spec add_paths(nil | keyword() | map(), any()) :: any()
   def add_paths(config, paths) do
     Enum.reduce(paths, config, fn {k, v}, acc ->

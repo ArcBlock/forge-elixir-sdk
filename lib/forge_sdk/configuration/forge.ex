@@ -17,6 +17,7 @@ defimpl ForgeSdk.Configuration, for: ForgeSdk.Configuration.Forge do
     chain_id = get_in(conf, [consensus, "genesis", "chain_id"])
     config = Helper.parse_config(config, ["bitmap", "db", "keystore", "logpath"])
     config = Helper.parse_index_db(config, "index_db")
+    config = Helper.parse_workshop_db(config)
     Helper.put_env(:forge_config, config)
     Helper.put_env(:consensus, String.to_existing_atom(consensus))
     Helper.put_env(:storage, String.to_existing_atom(config["storage_engine"]))

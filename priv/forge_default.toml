@@ -102,6 +102,9 @@ compression = "zstd"
   # the port for forge web
   port = 8210
 
+  # The db for DID workshop
+  workshop_db = "workshop/workshop.sqlite3"
+
   [forge.stake.timeout]
 
   # for general stake, we do T+1

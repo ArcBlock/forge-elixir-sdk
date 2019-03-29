@@ -47,6 +47,9 @@ db = "data"
 # sqlite://index/index.sqlite3 or postgres://postgres:postgres@localhost:5432/index
 index_db = "sqlite://index/index.sqlite3"
 
+# geo_info
+geo_info = "{\"D6E0D997173D4452E295DCA528F890D0F02B48CD\":{\"city\":\"Tokyo\",\"country\":\"Japan\",\"latitude\":35.652832,\"longitude\":139.839478}}"
+
 # bitmap path
 bitmap = "bitmap"
 

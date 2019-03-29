@@ -10,6 +10,7 @@ defimpl ForgeSdk.Display, for: ForgeAbi.AssetState do
     Map.merge(basic, %{
       data: Display.display(basic.data),
       stake: Display.display(basic.stake),
+      consumed_time: Display.display(basic.consumed_time),
       context: Display.display(basic.context, expand?)
     })
   end

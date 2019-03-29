@@ -29,7 +29,7 @@ defmodule ForgeSdk.Util.App do
   def set_ranch_port(port, app) do
     Application.put_env(app, :ranch_opts, %{
       max_connections: 3,
-      socket_opts: [port: port, buffer: 65_535, sndbuf: 65_535, recbuf: 65_535]
+      socket_opts: [port: port, buffer: 655_350, sndbuf: 65_535, recbuf: 655_350]
     })
   end
 

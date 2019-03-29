@@ -13,7 +13,7 @@ defimpl ForgeSdk.Display, for: ForgeAbi.BlockInfo do
     Map.merge(basic, %{
       time: Display.display(basic.time),
       app_hash: Base.encode16(basic.app_hash || ""),
-      proposer: Base.encode16(basic.proposer),
+      proposer: basic.proposer,
       txs: Display.display(basic.txs),
       invalid_txs: Display.display(basic.invalid_txs),
       consensus_hash: Base.encode16(basic.consensus_hash || ""),

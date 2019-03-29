@@ -20,6 +20,9 @@ defmodule ForgeSdkTest.ConfigParser do
           consensus_engine = "tendermint"
           storage_engine = "ipfs"
 
+          [forge.web]
+          workshop_db = "workshop/workshop.sqlite3"
+
           [tendermint]
           path = "~/.forge/tendermint"
 

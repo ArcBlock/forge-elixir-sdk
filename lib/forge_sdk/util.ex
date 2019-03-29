@@ -5,7 +5,7 @@ defmodule ForgeSdk.Util do
 
   use ForgeAbi.Unit
 
-  alias ForgeAbi.{CreateAssetTx, ForgeState, WalletType}
+  alias ForgeAbi.{CreateAssetTx, ForgeState}
   alias ForgeSdk.{AbiServer, Configuration}
   alias Configuration.{Cache, Forge, ForgeApp, Ipfs, Tendermint}
   alias Google.Protobuf.Timestamp
@@ -165,8 +165,8 @@ defmodule ForgeSdk.Util do
       end
 
     # complex address uses :sha3 and :base58
-    type = WalletType.new(role: :role_stake, pk: :ed25519, address: :base58, hash: :sha3)
-    ForgeSdk.Wallet.Util.to_address(pk, type)
+    did_type = %AbtDid.Type{role_type: :stake, key_type: :ed25519, hash_type: :sha3}
+    ForgeSdk.Wallet.Util.to_address(pk, did_type)
   end
 
   def datetime_to_proto(dt), do: Google.Protobuf.Timestamp.new(seconds: DateTime.to_unix(dt))

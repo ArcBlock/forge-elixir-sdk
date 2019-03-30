@@ -22,12 +22,14 @@ defimpl ForgeSdk.Display, for: Google.Protobuf.Any do
             |> Display.display(expand?)
             |> Map.put(:_type, get_type(any, type))
             |> Map.put(:type_url, any.type_url)
+            |> Map.put(:value, Base.url_encode64(any.value, padding: false))
 
           _ ->
             %{
               _type: get_type(any, type),
               type_url: any.type_url,
-              data: Display.display(data, expand?)
+              data: Display.display(data, expand?),
+              value: Base.url_encode64(any.value, padding: false)
             }
         end
     end

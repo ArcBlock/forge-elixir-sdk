@@ -5,7 +5,7 @@ defmodule ForgeSdk.Util do
 
   use ForgeAbi.Unit
 
-  alias ForgeAbi.{CreateAssetTx, ForgeState}
+  alias ForgeAbi.{CreateAssetTx, DeployProtocolTx, ForgeState}
   alias ForgeSdk.{AbiServer, Configuration}
   alias Configuration.{Cache, Forge, ForgeApp, Ipfs, Tendermint}
   alias Google.Protobuf.Timestamp
@@ -153,12 +153,22 @@ defmodule ForgeSdk.Util do
   end
 
   @doc """
+  Generate address for tx.
+  """
+  @spec to_tx_address(DeployProtocolTx.t()) :: String.t()
+  def to_tx_address(itx) do
+    data = Mcrypto.hash(%Mcrypto.Hasher.Sha3{}, DeployProtocolTx.encode(itx))
+    did_type = %AbtDid.Type{role_type: :tx, key_type: :ed25519, hash_type: :sha3}
+    ForgeSdk.Wallet.Util.to_address(data, did_type)
+  end
+
+  @doc """
   Generate stake address. Use sender's address + receiver's address as pseudo public key.
   Use `ed25519` as pseudo key type. Use sha3 and base58 by default.
   """
   @spec to_stake_address(String.t(), String.t()) :: String.t()
   def to_stake_address(addr1, addr2) do
-    pk =
+    data =
       case addr1 < addr2 do
         true -> addr1 <> addr2
         _ -> addr2 <> addr1
@@ -166,7 +176,7 @@ defmodule ForgeSdk.Util do
 
     # complex address uses :sha3 and :base58
     did_type = %AbtDid.Type{role_type: :stake, key_type: :ed25519, hash_type: :sha3}
-    ForgeSdk.Wallet.Util.to_address(pk, did_type)
+    ForgeSdk.Wallet.Util.to_address(data, did_type)
   end
 
   def datetime_to_proto(dt), do: Google.Protobuf.Timestamp.new(seconds: DateTime.to_unix(dt))

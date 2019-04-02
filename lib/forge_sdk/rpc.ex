@@ -377,7 +377,9 @@ defmodule ForgeSdk.Rpc do
   tx :create_asset
   tx :declare
   tx :declare_file
-  tx :deploy_protocol
+
+  tx :deploy_protocol, preprocessor: [ForgeSdk.Rpc.Tx.Helper, :preprocess_deploy_protocol]
+
   tx :exchange, multisig: true
   tx :poke
   tx :stake

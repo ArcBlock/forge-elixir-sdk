@@ -49,6 +49,12 @@ defmodule ForgeSdk.Rpc.Tx.Helper do
     end
   end
 
+  def preprocess_deploy_protocol(itx) do
+    address = ForgeSdk.Util.to_tx_address(itx)
+    %{itx | address: address}
+  end
+
+  # private functions
   defp create_unsigned_tx(any, nonce, wallet),
     do:
       Transaction.new(

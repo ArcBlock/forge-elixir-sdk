@@ -42,10 +42,14 @@ defmodule ForgeSdk.MixProject do
       # forge family dependencies
       {:mcrypto, "~> 0.2"},
       {:abt_did_elixir,
-       git: "git@github.com:arcblock/abt-did-elixir.git", branch: "feature/509-tx-in-state-db"},
+       git: "git@github.com:arcblock/abt-did-elixir.git",
+       branch: "feature/509-tx-in-state-db",
+       override: true},
       # {:abt_did_elixir, path: "../abt-did-elixir"},
       {:forge_abi,
-       git: "git@github.com:arcblock/forge-abi.git", branch: "feature/509-tx-in-state-db"},
+       git: "git@github.com:arcblock/forge-abi.git",
+       branch: "feature/509-tx-in-state-db",
+       override: true},
       # {:forge_abi, path: "../forge-abi"},
 
       # dev and test

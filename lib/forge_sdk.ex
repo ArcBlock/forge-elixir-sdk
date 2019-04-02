@@ -56,6 +56,7 @@ defmodule ForgeSdk do
   defdelegate get_account_state(request, chan \\ nil), to: Rpc
   defdelegate get_asset_state(request, chan \\ nil), to: Rpc
   defdelegate get_forge_state(chan \\ nil), to: Rpc
+  defdelegate get_protocol_state(request, chan \\ nil), to: Rpc
   defdelegate get_stake_state(request, chan \\ nil), to: Rpc
 
   # filesystem related

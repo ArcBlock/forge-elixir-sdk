@@ -15,6 +15,7 @@ defmodule ForgeSdk.Rpc do
     AccountState,
     AssetState,
     ForgeState,
+    ProtocolState,
     StakeState,
 
     # block
@@ -292,6 +293,18 @@ defmodule ForgeSdk.Rpc do
           Keyword.t()
         ) :: AssetState.t() | [AssetState.t()] | {:error, term()}
   rpc :get_asset_state, request_stream: true do
+    res.state
+  end
+
+  @spec get_protocol_state(
+          RequestGetProtocolState.t()
+          | [RequestGetProtocolState.t()]
+          | Keyword.t()
+          | [Keyword.t()],
+          Channel.t() | nil,
+          Keyword.t()
+        ) :: ProtocolState.t() | [ProtocolState.t()] | {:error, term()}
+  rpc :get_protocol_state, request_stream: true do
     res.state
   end
 

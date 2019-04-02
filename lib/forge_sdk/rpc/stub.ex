@@ -33,8 +33,9 @@ defmodule ForgeSdk.Rpc.Stub do
   # state rpc
   defdelegate get_account_state(chan, opts \\ []), to: ForgeAbi.StateRpc.Stub
   defdelegate get_asset_state(chan, opts \\ []), to: ForgeAbi.StateRpc.Stub
-  defdelegate get_stake_state(chan, opts \\ []), to: ForgeAbi.StateRpc.Stub
   defdelegate get_forge_state(chan, req, opts \\ []), to: ForgeAbi.StateRpc.Stub
+  defdelegate get_protocol_state(chan, opts \\ []), to: ForgeAbi.StateRpc.Stub
+  defdelegate get_stake_state(chan, opts \\ []), to: ForgeAbi.StateRpc.Stub
 
   # file rpc
   defdelegate store_file(chan, opts \\ []), to: ForgeAbi.FileRpc.Stub

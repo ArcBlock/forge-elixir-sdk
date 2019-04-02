@@ -25,7 +25,7 @@ defmodule ForgeSdk.Rpc.Tx.Helper do
     end
 
     nonce =
-      case type === :poke do
+      case type in [:poke, :deploy_protocol] do
         true -> 0
         false -> Enum.random(1..10_000_000_000)
       end

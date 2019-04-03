@@ -94,7 +94,7 @@ defmodule ForgeSdk.Rpc.Tx.Helper do
   end
 
   defp send_tx(req, chan) do
-    case ForgeSdk.send_tx(req, chan) do
+    case ForgeSdk.Rpc.send_tx(req, chan) do
       {:error, _} = error -> error
       res -> res
     end

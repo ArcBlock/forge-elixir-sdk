@@ -5,7 +5,7 @@ defmodule ForgeSdk.Rpc do
 
   use ForgeAbi.Unit
   import ForgeSdk.Rpc.Builder, only: [rpc: 2, rpc: 3]
-  import ForgeSdk.Rpc.Tx.Builder, only: [tx: 1, tx: 2]
+  import ForgeSdk.Rpc.Tx.Builder, only: [tx: 2]
   require Logger
 
   @subscription_timeout 900 * 1000
@@ -63,6 +63,7 @@ defmodule ForgeSdk.Rpc do
     RequestGetAccountState,
     RequestGetAssetState,
     # RequestGetForgeState,
+    RequestGetProtocolState,
     RequestGetStakeState,
 
     # filesystem related
@@ -265,18 +266,6 @@ defmodule ForgeSdk.Rpc do
     res.wallet
   end
 
-  @doc """
-  Allow user to checkin to get reward
-  """
-  @spec checkin(Keyword.t()) :: String.t() | {:error, term()}
-  def checkin(opts) do
-    date = Date.to_string(Date.utc_today())
-    address = ForgeSdk.get_env(:forge_config)["poke"]["address"]
-    itx = ForgeAbi.PokeTx.new(date: date, address: address)
-
-    poke(itx, opts)
-  end
-
   # account related
   @spec get_account_state(
           RequestGetAccountState.t() | [RequestGetAccountState.t()] | Keyword.t() | [Keyword.t()],
@@ -384,22 +373,8 @@ defmodule ForgeSdk.Rpc do
     res.code
   end
 
-  tx :account_migrate
-  tx :consensus_upgrade
-  tx :consume_asset, multisig: true
-  tx :create_asset
-  tx :declare
-  tx :declare_file
-
+  # tx helpers
   tx :deploy_protocol, preprocessor: [ForgeSdk.Rpc.Tx.Helper, :preprocess_deploy_protocol]
-
-  tx :exchange, multisig: true
-  tx :poke
-  tx :stake
-  tx :sys_upgrade
-  tx :transfer
-  tx :update_asset
-  tx :upgrade_task
 
   # account related
 
@@ -415,29 +390,6 @@ defmodule ForgeSdk.Rpc do
     e ->
       Logger.warn("#{inspect(e)}")
       1
-  end
-
-  # stake related
-
-  @doc """
-  Allow user to stake for a node easily
-  """
-  @spec stake_for_node(String.t(), integer(), Keyword.t()) :: String.t()
-  def stake_for_node(address, amount, opts) do
-    wallet = opts[:wallet]
-    message = opts[:message] || ""
-    data = ForgeAbi.encode_any!(:stake_for_node, ForgeAbi.StakeForNode.new())
-
-    itx =
-      ForgeAbi.StakeTx.new(
-        to: address,
-        from: wallet.address,
-        value: bigsint(amount * ForgeAbi.one_token()),
-        data: data,
-        message: message
-      )
-
-    stake(itx, opts)
   end
 
   # statistics related

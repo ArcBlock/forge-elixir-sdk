@@ -8,7 +8,7 @@ defmodule ForgeSdk.Rpc.Tx.Helper do
 
   # credo:disable-for-lines:40
   def build(itx, opts) do
-    type_url = ForgeAbi.Util.TypeUrl.get(itx.__struct__)
+    type_url = ForgeAbi.get_type_url(itx.__struct__)
     any = ForgeAbi.encode_any!(itx, type_url)
 
     wallet = opts[:wallet]

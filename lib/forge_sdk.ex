@@ -6,20 +6,20 @@ defmodule ForgeSdk do
   alias ForgeSdk.{Configuration.Helper, Display, Rpc, Util}
   # Transaction
 
-  # defdelegate account_migrate(itx, opts), to: Rpc
-  # defdelegate consensus_upgrade(itx, opts), to: Rpc
-  # defdelegate consume_asset(itx, opts), to: Rpc
-  # defdelegate create_asset(itx, opts), to: Rpc
-  # defdelegate declare(itx, opts), to: Rpc
-  # defdelegate declare_file(itx, opts), to: Rpc
-  # defdelegate deploy_protocol(itx, opts), to: Rpc
-  # defdelegate exchange(itx, opts), to: Rpc
-  # defdelegate poke(itx, opts), to: Rpc
-  # defdelegate stake(itx, opts), to: Rpc
-  # defdelegate sys_upgrade(itx, opts), to: Rpc
-  # defdelegate transfer(itx, opts), to: Rpc
-  # defdelegate update_asset(itx, opts), to: Rpc
-  # defdelegate upgrade_task(itx, opts), to: Rpc
+  defdelegate account_migrate(itx, opts), to: Rpc
+  defdelegate consensus_upgrade(itx, opts), to: Rpc
+  defdelegate consume_asset(itx, opts), to: Rpc
+  defdelegate create_asset(itx, opts), to: Rpc
+  defdelegate declare(itx, opts), to: Rpc
+  defdelegate declare_file(itx, opts), to: Rpc
+  defdelegate deploy_protocol(itx, opts), to: Rpc
+  defdelegate exchange(itx, opts), to: Rpc
+  defdelegate poke(itx, opts), to: Rpc
+  defdelegate stake(itx, opts), to: Rpc
+  defdelegate sys_upgrade(itx, opts), to: Rpc
+  defdelegate transfer(itx, opts), to: Rpc
+  defdelegate update_asset(itx, opts), to: Rpc
+  defdelegate upgrade_task(itx, opts), to: Rpc
 
   # RPC
 

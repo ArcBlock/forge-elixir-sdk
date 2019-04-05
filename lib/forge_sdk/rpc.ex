@@ -374,8 +374,20 @@ defmodule ForgeSdk.Rpc do
   end
 
   # tx helpers
+  tx :account_migrate
+  tx :consensus_upgrade
+  tx :consume_asset, multisig: true
+  tx :create_asset
   tx :declare
+  tx :declare_file
   tx :deploy_protocol, preprocessor: [ForgeSdk.Rpc.Tx.Helper, :preprocess_deploy_protocol]
+  tx :exchange, multisig: true
+  tx :poke
+  tx :stake
+  tx :sys_upgrade
+  tx :transfer
+  tx :update_asset
+  tx :upgrade_task
 
   # account related
 

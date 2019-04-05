@@ -3,12 +3,11 @@ defimpl ForgeSdk.Display, for: Google.Protobuf.Any do
   Implementation of `Display` protocol for `Timestamp`
   """
 
-  alias ForgeAbi.Util.TypeUrl
   alias ForgeSdk.Display
 
   @spec display(nil | Google.Protobuf.Any.t(), any()) :: {any(), any()} | %{type: atom()}
   def display(any, expand? \\ false) do
-    case TypeUrl.decode(any) do
+    case ForgeAbi.decode_any(any) do
       {:error, _} ->
         case String.valid?(any.value) do
           true -> Map.from_struct(any)

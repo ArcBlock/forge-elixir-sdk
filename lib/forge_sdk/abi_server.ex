@@ -15,8 +15,6 @@ defmodule ForgeSdk.AbiServer do
     StatusCode
   }
 
-  alias ForgeAbi.Util.TypeUrl
-
   alias ForgeSdk.Tx
   alias ForgeSdk.Util.SocketData
 
@@ -139,7 +137,9 @@ defmodule ForgeSdk.AbiServer do
       "ABI: info request: forge_version=#{version} app_hash=#{ForgeSdk.display(app_hash)}"
     end)
 
-    type_urls = TypeUrl.get_extended() |> Enum.map(fn {_, url, _} -> url end)
+    # TODO: fixme
+    type_urls = []
+    # type_urls = TypeUrl.get_extended() |> Enum.map(fn {_, url, _} -> url end)
 
     response = ResponseInfo.new(type_urls: type_urls, app_hash: app_hash)
     :ok = send_response(%Response{value: {:info, response}}, state)

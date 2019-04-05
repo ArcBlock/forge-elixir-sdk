@@ -15,19 +15,21 @@ defimpl ForgeSdk.Display, for: Google.Protobuf.Any do
           false -> Map.from_struct(%{any | value: Base.url_encode64(any.value, padding: false)})
         end
 
-      {type, data} ->
+      {:ok, data} ->
+        type_url = any.type_url
+
         case is_map(data) do
           true ->
             data
             |> Display.display(expand?)
-            |> Map.put(:_type, get_type(any, type))
-            |> Map.put(:type_url, any.type_url)
+            |> Map.put(:_type, get_type(type_url))
+            |> Map.put(:type_url, type_url)
             |> Map.put(:value, Base.url_encode64(any.value, padding: false))
 
           _ ->
             %{
-              _type: get_type(any, type),
-              type_url: any.type_url,
+              _type: get_type(type_url),
+              type_url: type_url,
               data: Display.display(data, expand?),
               value: Base.url_encode64(any.value, padding: false)
             }
@@ -36,6 +38,6 @@ defimpl ForgeSdk.Display, for: Google.Protobuf.Any do
   end
 
   # TODO(tchen): we shall unify the name of tx (covert things like :confirm to :confirm_tx)
-  defp get_type(%{type_url: "fg:t:" <> _}, type), do: :"#{type}_tx"
-  defp get_type(_, type), do: type
+  defp get_type(<<_::size(16)>> <> ":t:" <> type), do: "#{type}_tx"
+  defp get_type(type_url), do: type_url
 end

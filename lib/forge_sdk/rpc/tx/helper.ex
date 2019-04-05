@@ -7,8 +7,9 @@ defmodule ForgeSdk.Rpc.Tx.Helper do
   alias ForgeSdk.Wallet.Util, as: WalletUtil
 
   # credo:disable-for-lines:40
-  def build(type, itx, opts) do
-    any = ForgeAbi.encode_any!(type, itx)
+  def build(itx, opts) do
+    type_url = ForgeAbi.Util.TypeUrl.get(itx.__struct__)
+    any = ForgeAbi.encode_any!(itx, type_url)
 
     wallet = opts[:wallet]
     token = Keyword.get(opts, :token, "")
@@ -24,8 +25,9 @@ defmodule ForgeSdk.Rpc.Tx.Helper do
       raise "Tx requires signature but no sk or valid token found"
     end
 
+    # TODO: here we need to rethink this
     nonce =
-      case type in [:poke, :deploy_protocol] do
+      case type_url in ["fg:t:poke", "fg:t:deploy_protocol"] do
         true -> 0
         false -> Enum.random(1..10_000_000_000)
       end

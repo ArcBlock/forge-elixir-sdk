@@ -5,7 +5,7 @@ defmodule ForgeSdk.Rpc do
 
   use ForgeAbi.Unit
   import ForgeSdk.Rpc.Builder, only: [rpc: 2, rpc: 3]
-  import ForgeSdk.Rpc.Tx.Builder, only: [tx: 2]
+  import ForgeSdk.Rpc.Tx.Builder, only: [tx: 1, tx: 2]
   require Logger
 
   @subscription_timeout 900 * 1000
@@ -374,6 +374,7 @@ defmodule ForgeSdk.Rpc do
   end
 
   # tx helpers
+  tx :declare
   tx :deploy_protocol, preprocessor: [ForgeSdk.Rpc.Tx.Helper, :preprocess_deploy_protocol]
 
   # account related

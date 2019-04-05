@@ -27,7 +27,7 @@ path = "~/.forge_release/tendermint"
 keypath = "~/.forge_cli/keys"
 logpath = "logs"
 # socket to proxy app
-sock_proxy_app = "tcp://127.0.0.1:28220"
+sock_proxy_app = "unix://socks/tm_proxy_app.sock"
 
 # socket for tendermint json rpc
 sock_rpc = "tcp://127.0.0.1:28221"

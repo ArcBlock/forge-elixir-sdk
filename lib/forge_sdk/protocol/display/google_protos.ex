@@ -23,7 +23,7 @@ defimpl ForgeSdk.Display, for: Google.Protobuf.Any do
             |> Display.display(expand?)
             |> Map.put(:_type, get_type(type_url))
             |> Map.put(:type_url, type_url)
-            |> Map.put(:value, Base.url_encode64(any.value, padding: false))
+            |> Map.put(:encoded_value, Base.url_encode64(any.value, padding: false))
 
           _ ->
             %{

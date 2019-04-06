@@ -337,21 +337,6 @@ defmodule ForgeSdk.Rpc do
     ForgeAbi.StatusCode.key(res.code)
   end
 
-  @spec start_simulator(Channel.t() | nil, Keyword.t()) :: String.t() | {:error, term()}
-  rpc :start_simulator, no_params: true do
-    res.result
-  end
-
-  @spec stop_simulator(Channel.t() | nil, Keyword.t()) :: String.t() | {:error, term()}
-  rpc :stop_simulator, no_params: true do
-    res.result
-  end
-
-  @spec get_simulator_status(Channel.t() | nil, Keyword.t()) :: String.t() | {:error, term()}
-  rpc :get_simulator_status, no_params: true do
-    res.result
-  end
-
   # event rpc
   @doc """
   Subscribe to a specific topic. User must first create their own channel for this.

@@ -359,20 +359,25 @@ defmodule ForgeSdk.Rpc do
   end
 
   # tx helpers
-  tx :account_migrate
-  tx :consensus_upgrade
-  tx :consume_asset, multisig: true
-  tx :create_asset
   tx :declare
-  tx :declare_file
   tx :deploy_protocol, preprocessor: [ForgeSdk.Rpc.Tx.Helper, :preprocess_deploy_protocol]
-  tx :exchange, multisig: true
-  tx :poke
-  tx :stake
-  tx :sys_upgrade
-  tx :transfer
-  tx :update_asset
-  tx :upgrade_task
+
+  def account_migrate(itx, opts),
+    do: apply(CoreTx.AccountMigrate.Rpc, :account_migrate, [itx, opts])
+
+  def consume_asset(itx, opts), do: apply(CoreTx.ConsumeAsset.Rpc, :consume_asset, [itx, opts])
+  def create_asset(itx, opts), do: apply(CoreTx.CreateAsset.Rpc, :create_asset, [itx, opts])
+  def declare_file(itx, opts), do: apply(CoreTx.DeclareFile.Rpc, :declare_file, [itx, opts])
+  def exchange(itx, opts), do: apply(CoreTx.Exchange.Rpc, :exchange, [itx, opts])
+  def poke(itx, opts), do: apply(CoreTx.Poke.Rpc, :poke, [itx, opts])
+  def checkin(opts), do: apply(CoreTx.Poke.Rpc, :checkin, [opts])
+  def stake(itx, opts), do: apply(CoreTx.Stake.Rpc, :stake, [itx, opts])
+
+  def stake_for_node(address, value, opts),
+    do: apply(CoreTx.Stake.Rpc, :stake_for_node, [address, value, opts])
+
+  def transfer(itx, opts), do: apply(CoreTx.Transfer.Rpc, :transfer, [itx, opts])
+  def update_asset(itx, opts), do: apply(CoreTx.UpdateAsset.Rpc, :update_asset, [itx, opts])
 
   # account related
 

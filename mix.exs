@@ -44,7 +44,7 @@ defmodule ForgeSdk.MixProject do
       {:abt_did_elixir, git: "git@github.com:arcblock/abt-did-elixir.git", tag: "v0.2.2"},
       # {:abt_did_elixir, path: "../abt-did-elixir"},
       {:forge_abi, git: "git@github.com:arcblock/forge-abi.git"},
-      # {:forge_abi, path: "../forge-abi"},
+      # {:forge_abi, path: "../forge_abi"},
 
       # dev and test
       {:credo, "~> 1.0.0", only: [:dev, :test]},

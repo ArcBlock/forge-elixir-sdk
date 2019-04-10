@@ -1,6 +1,6 @@
-defimpl ForgeSdk.Display, for: ForgeAbi.ForgeStatistics do
+defimpl ForgeSdk.Display, for: ForgeAbi.ForgeStats do
   @moduledoc """
-  Implementation of `Display` protocol for `ForgeStatistics`
+  Implementation of `Display` protocol for `ForgeStats`
   """
   alias ForgeSdk.Display
 

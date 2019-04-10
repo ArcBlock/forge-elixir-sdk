@@ -76,18 +76,18 @@ defmodule ForgeSdk.Rpc do
     RequestUnsubscribe,
     ResponseUnsubscribe,
 
-    # statistics related
+    # stats related
     HealthStatus,
     RequestListAccount,
     RequestListAssets,
-    RequestGetForgeStatistics,
+    RequestGetForgeStats,
     RequestGetHealthStatus,
     RequestListStakes,
     RequestListTopAccounts,
     RequestListAssetTransactions,
     RequestListBlocks,
     RequestListTransactions,
-    ForgeStatistics
+    ForgeStats
   }
 
   alias GRPC.Channel
@@ -410,14 +410,14 @@ defmodule ForgeSdk.Rpc do
     stake(itx, opts)
   end
 
-  # statistics related
-  @spec get_forge_statistics(
-          RequestGetForgeStatistics.t() | Keyword.t(),
+  # stats related
+  @spec get_forge_stats(
+          RequestGetForgeStats.t() | Keyword.t(),
           Channel.t() | nil,
           Keyword.t()
-        ) :: ForgeStatistics.t() | {:error, term()}
-  rpc :get_forge_statistics do
-    res.forge_statistics
+        ) :: ForgeStats.t() | {:error, term()}
+  rpc :get_forge_stats do
+    res.forge_stats
   end
 
   @spec list_transactions(

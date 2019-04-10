@@ -86,8 +86,8 @@ defmodule ForgeSdk do
   # init sdk and handler registration
   defdelegate init(otp_app, app_hash \\ "", filename \\ nil), to: Util
 
-  # statistics
-  defdelegate get_forge_statistics(requests, chan \\ nil), to: Rpc
+  # stats
+  defdelegate get_forge_stats(requests, chan \\ nil), to: Rpc
   defdelegate list_transactions(request, chan \\ nil), to: Rpc
   defdelegate list_assets(request, chan \\ nil), to: Rpc
   defdelegate list_stakes(request, chan \\ nil), to: Rpc

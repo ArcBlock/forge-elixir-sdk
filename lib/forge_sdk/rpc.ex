@@ -43,7 +43,6 @@ defmodule ForgeSdk.Rpc do
     # chain related
     RequestCreateTx,
     RequestDeclareNode,
-    RequestGetAssetAddress,
     RequestGetBlock,
     RequestGetBlocks,
     RequestGetTx,
@@ -51,7 +50,6 @@ defmodule ForgeSdk.Rpc do
     RequestMultisig,
     RequestSearch,
     RequestSendTx,
-    RequestSignData,
 
     # wallet related
     RequestCreateWallet,
@@ -77,18 +75,18 @@ defmodule ForgeSdk.Rpc do
     RequestUnsubscribe,
     ResponseUnsubscribe,
 
-    # statistics related
+    # stats related
     HealthStatus,
-    RequestGetAssets,
-    RequestGetForgeStatistics,
+    RequestListAccount,
+    RequestListAssets,
+    RequestGetForgeStats,
     RequestGetHealthStatus,
-    RequestGetStakes,
-    RequestGetTopAccounts,
+    RequestListStakes,
+    RequestListTopAccounts,
     RequestListAssetTransactions,
     RequestListBlocks,
-    RequestListAssets,
     RequestListTransactions,
-    ForgeStatistics
+    ForgeStats
   }
 
   alias GRPC.Channel
@@ -194,7 +192,7 @@ defmodule ForgeSdk.Rpc do
           Keyword.t()
         ) :: UnconfirmedTxs.t() | {:error, term()}
   rpc :get_unconfirmed_txs do
-    res.unconfirmed_txs
+    {res.unconfirmed_txs, res.page}
   end
 
   @spec get_net_info(Channel.t() | nil, Keyword.t()) :: NetInfo.t() | {:error, term()}
@@ -211,21 +209,6 @@ defmodule ForgeSdk.Rpc do
   @spec get_config(Channel.t() | nil, Keyword.t()) :: String.t() | {:error, term()}
   rpc :get_config, no_params: true do
     res.config
-  end
-
-  @spec get_asset_address(
-          RequestGetAssetAddress.t() | Keyword.t(),
-          Channel.t() | nil,
-          Keyword.t()
-        ) :: String.t() | {:error, term()}
-  rpc :get_asset_address do
-    res.asset_address
-  end
-
-  @spec sign_data(RequestSignData.t() | Keyword.t(), Channel.t() | nil, Keyword.t()) ::
-          binary | {:error, term()}
-  rpc :sign_data do
-    res.signature
   end
 
   # wallet related
@@ -395,14 +378,14 @@ defmodule ForgeSdk.Rpc do
       1
   end
 
-  # statistics related
-  @spec get_forge_statistics(
-          RequestGetForgeStatistics.t() | Keyword.t(),
+  # stats related
+  @spec get_forge_stats(
+          RequestGetForgeStats.t() | Keyword.t(),
           Channel.t() | nil,
           Keyword.t()
-        ) :: ForgeStatistics.t() | {:error, term()}
-  rpc :get_forge_statistics do
-    res.forge_statistics
+        ) :: ForgeStats.t() | {:error, term()}
+  rpc :get_forge_stats do
+    res.forge_stats
   end
 
   @spec list_transactions(
@@ -414,30 +397,39 @@ defmodule ForgeSdk.Rpc do
     {res.transactions, res.page}
   end
 
-  @spec get_assets(
-          RequestGetAssets.t() | Keyword.t(),
+  @spec list_assets(
+          RequestListAssets.t() | Keyword.t(),
           Channel.t() | nil,
           Keyword.t()
         ) :: {[IndexedAssetState.t()], PageInfo.t()} | {:error, term()}
-  rpc :get_assets do
+  rpc :list_assets do
     {res.assets, res.page}
   end
 
-  @spec get_stakes(
-          RequestGetStakes.t() | Keyword.t(),
+  @spec list_stakes(
+          RequestListStakes.t() | Keyword.t(),
           Channel.t() | nil,
           Keyword.t()
         ) :: {[IndexedStakeState.t()], PageInfo.t()} | {:error, term()}
-  rpc :get_stakes do
+  rpc :list_stakes do
     {res.stakes, res.page}
   end
 
-  @spec get_top_accounts(
-          RequestGetTopAccounts.t() | Keyword.t(),
+  @spec list_account(
+          RequestListAccount.t() | Keyword.t(),
+          Channel.t() | nil,
+          Keyword.t()
+        ) :: IndexedAccountState.t() | nil | {:error, term()}
+  rpc :list_account do
+    res.account
+  end
+
+  @spec list_top_accounts(
+          RequestListTopAccounts.t() | Keyword.t(),
           Channel.t() | nil,
           Keyword.t()
         ) :: {[IndexedAccountState.t()], PageInfo.t()} | {:error, term()}
-  rpc :get_top_accounts do
+  rpc :list_top_accounts do
     {res.accounts, res.page}
   end
 
@@ -457,15 +449,6 @@ defmodule ForgeSdk.Rpc do
         ) :: {[IndexedBlock.t()], PageInfo.t()} | {:error, term()}
   rpc :list_blocks do
     {res.blocks, res.page}
-  end
-
-  @spec list_assets(
-          RequestListAssets.t() | Keyword.t(),
-          Channel.t() | nil,
-          Keyword.t()
-        ) :: {[IndexedAssetState.t()], IndexedAccountState.t(), PageInfo.t()} | {:error, term()}
-  rpc :list_assets do
-    {res.assets, res.account, res.page}
   end
 
   @spec get_health_status(

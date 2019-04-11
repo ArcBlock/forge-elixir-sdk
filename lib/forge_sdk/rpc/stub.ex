@@ -16,8 +16,6 @@ defmodule ForgeSdk.Rpc.Stub do
   defdelegate get_net_info(chan, req, opts \\ []), to: ForgeAbi.ChainRpc.Stub
   defdelegate get_validators_info(chan, req, opts \\ []), to: ForgeAbi.ChainRpc.Stub
   defdelegate get_config(chan, req, opts \\ []), to: ForgeAbi.ChainRpc.Stub
-  defdelegate get_asset_address(chan, req, opts \\ []), to: ForgeAbi.ChainRpc.Stub
-  defdelegate sign_data(chan, req, opts \\ []), to: ForgeAbi.ChainRpc.Stub
 
   # wallet rpc
   defdelegate create_wallet(chan, req, opts \\ []), to: ForgeAbi.WalletRpc.Stub
@@ -43,14 +41,14 @@ defmodule ForgeSdk.Rpc.Stub do
   defdelegate subscribe(chan, req, opts \\ []), to: ForgeAbi.EventRpc.Stub
   defdelegate unsubscribe(chan, req, opts \\ []), to: ForgeAbi.EventRpc.Stub
 
-  # statistics rpc
-  defdelegate get_forge_statistics(chan, req, opts \\ []), to: ForgeAbi.StatisticRpc.Stub
-  defdelegate list_transactions(chan, req, opts \\ []), to: ForgeAbi.StatisticRpc.Stub
-  defdelegate get_assets(chan, req, opts \\ []), to: ForgeAbi.StatisticRpc.Stub
-  defdelegate get_stakes(chan, req, opts \\ []), to: ForgeAbi.StatisticRpc.Stub
-  defdelegate get_top_accounts(chan, req, opts \\ []), to: ForgeAbi.StatisticRpc.Stub
-  defdelegate list_asset_transactions(chan, req, opts \\ []), to: ForgeAbi.StatisticRpc.Stub
-  defdelegate list_blocks(chan, req, opts \\ []), to: ForgeAbi.StatisticRpc.Stub
-  defdelegate list_assets(chan, req, opts \\ []), to: ForgeAbi.StatisticRpc.Stub
-  defdelegate get_health_status(chan, req, opts \\ []), to: ForgeAbi.StatisticRpc.Stub
+  # stats rpc
+  defdelegate get_forge_stats(chan, req, opts \\ []), to: ForgeAbi.StatsRpc.Stub
+  defdelegate list_transactions(chan, req, opts \\ []), to: ForgeAbi.StatsRpc.Stub
+  defdelegate list_assets(chan, req, opts \\ []), to: ForgeAbi.StatsRpc.Stub
+  defdelegate list_stakes(chan, req, opts \\ []), to: ForgeAbi.StatsRpc.Stub
+  defdelegate list_account(chan, req, opts \\ []), to: ForgeAbi.StatsRpc.Stub
+  defdelegate list_top_accounts(chan, req, opts \\ []), to: ForgeAbi.StatsRpc.Stub
+  defdelegate list_asset_transactions(chan, req, opts \\ []), to: ForgeAbi.StatsRpc.Stub
+  defdelegate list_blocks(chan, req, opts \\ []), to: ForgeAbi.StatsRpc.Stub
+  defdelegate get_health_status(chan, req, opts \\ []), to: ForgeAbi.StatsRpc.Stub
 end

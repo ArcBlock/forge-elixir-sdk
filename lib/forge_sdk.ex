@@ -42,8 +42,6 @@ defmodule ForgeSdk do
   defdelegate get_blocks(request, chan \\ nil), to: Rpc
   defdelegate search(request, chan \\ nil), to: Rpc
   defdelegate get_config(chan \\ nil), to: Rpc
-  defdelegate get_asset_address(request, chan \\ nil), to: Rpc
-  defdelegate sign_data(request, chan \\ nil), to: Rpc
 
   # wallet related
   defdelegate create_wallet(request, chan \\ nil), to: Rpc
@@ -91,13 +89,13 @@ defmodule ForgeSdk do
   defdelegate init(otp_app, app_hash \\ "", filename \\ nil), to: Util
 
   # statistics
-  defdelegate get_forge_statistics(requests, chan \\ nil), to: Rpc
+  defdelegate get_forge_stats(requests, chan \\ nil), to: Rpc
   defdelegate list_transactions(request, chan \\ nil), to: Rpc
-  defdelegate get_assets(request, chan \\ nil), to: Rpc
-  defdelegate get_stakes(request, chan \\ nil), to: Rpc
-  defdelegate get_top_accounts(request, chan \\ nil), to: Rpc
+  defdelegate list_assets(request, chan \\ nil), to: Rpc
+  defdelegate list_stakes(request, chan \\ nil), to: Rpc
+  defdelegate list_account(request, chan \\ nil), to: Rpc
+  defdelegate list_top_accounts(request, chan \\ nil), to: Rpc
   defdelegate list_asset_transactions(request, chan \\ nil), to: Rpc
   defdelegate list_blocks(request, chan \\ nil), to: Rpc
-  defdelegate list_assets(request, chan \\ nil), to: Rpc
   defdelegate get_health_status(request, chan \\ nil), to: Rpc
 end

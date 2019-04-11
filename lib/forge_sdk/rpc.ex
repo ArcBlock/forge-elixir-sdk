@@ -35,6 +35,7 @@ defmodule ForgeSdk.Rpc do
     ChainInfo,
     NodeInfo,
     BlockInfo,
+    BlockInfoSimple,
     NetInfo,
     ValidatorsInfo,
     WalletInfo,
@@ -175,7 +176,7 @@ defmodule ForgeSdk.Rpc do
   end
 
   @spec get_blocks(RequestGetBlocks.t() | Keyword.t(), Channel.t() | nil, Keyword.t()) ::
-          {[BlockInfo.t()], PageInfo.t()} | {:error, term()}
+          {[BlockInfoSimple.t()], PageInfo.t()} | {:error, term()}
   rpc :get_blocks do
     {res.blocks, res.page}
   end
@@ -190,7 +191,7 @@ defmodule ForgeSdk.Rpc do
           RequestGetUnconfirmedTxs.t() | Keyword.t(),
           Channel.t() | nil,
           Keyword.t()
-        ) :: UnconfirmedTxs.t() | {:error, term()}
+        ) :: {[UnconfirmedTxs.t()], PageInfo.t()} | {:error, term()}
   rpc :get_unconfirmed_txs do
     {res.unconfirmed_txs, res.page}
   end

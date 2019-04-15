@@ -345,7 +345,7 @@ defmodule ForgeSdk.Rpc do
   @spec pin_file(RequestPinFile.t() | Keyword.t(), Channel.t() | nil, Keyword.t()) ::
           :ok | {:error, term()}
   rpc :pin_file do
-    ForgeAbi.StatusCode.key(res.code)
+    res.code
   end
 
   # event rpc

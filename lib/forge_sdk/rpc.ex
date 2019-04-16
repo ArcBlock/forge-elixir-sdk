@@ -191,7 +191,7 @@ defmodule ForgeSdk.Rpc do
           RequestGetUnconfirmedTxs.t() | Keyword.t(),
           Channel.t() | nil,
           Keyword.t()
-        ) :: {[UnconfirmedTxs.t()], PageInfo.t()} | {:error, term()}
+        ) :: {UnconfirmedTxs.t(), PageInfo.t()} | {:error, term()}
   rpc :get_unconfirmed_txs do
     {res.unconfirmed_txs, res.page}
   end

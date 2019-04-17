@@ -191,7 +191,7 @@ defmodule ForgeSdk.Rpc do
           RequestGetUnconfirmedTxs.t() | Keyword.t(),
           Channel.t() | nil,
           Keyword.t()
-        ) :: {[UnconfirmedTxs.t()], PageInfo.t()} | {:error, term()}
+        ) :: {UnconfirmedTxs.t(), PageInfo.t()} | {:error, term()}
   rpc :get_unconfirmed_txs do
     {res.unconfirmed_txs, res.page}
   end
@@ -362,6 +362,7 @@ defmodule ForgeSdk.Rpc do
 
   def transfer(itx, opts), do: apply(CoreTx.Transfer.Rpc, :transfer, [itx, opts])
   def update_asset(itx, opts), do: apply(CoreTx.UpdateAsset.Rpc, :update_asset, [itx, opts])
+  def upgrade_node(itx, opts), do: apply(CoreTx.UpdateNode.Rpc, :upgrade_node, [itx, opts])
 
   # account related
 

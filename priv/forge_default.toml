@@ -169,6 +169,14 @@ compression = "zstd"
   # the amount account get with poke tx
   amount = 25
 
+  [forge.moderator]
+
+  # address of interrim moderator
+  address = "z11N3R6GZrNingR11Dub9EbVMJGgyZTJGMQB"
+
+  # public key of the moderator
+  pk = "EyNstcu1Jk9FPgtDT9QJMkW-gh6ihSm6Atj9I412G6Q"
+
 # ------------------------------------------------------------------
 # tendermint configuration
 # ------------------------------------------------------------------

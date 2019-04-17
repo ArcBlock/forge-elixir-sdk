@@ -370,6 +370,7 @@ defmodule ForgeSdk.Rpc do
   tx :transfer
   tx :update_asset
   tx :upgrade_task
+  tx :upgrade_node
 
   # account related
 

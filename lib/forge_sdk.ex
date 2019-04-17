@@ -18,6 +18,7 @@ defmodule ForgeSdk do
   defdelegate sys_upgrade(itx, opts), to: Rpc
   defdelegate transfer(itx, opts), to: Rpc
   defdelegate update_asset(itx, opts), to: Rpc
+  defdelegate upgrade_node(itx, opts), to: Rpc
   defdelegate upgrade_task(itx, opts), to: Rpc
 
   # RPC

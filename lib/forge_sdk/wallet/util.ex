@@ -49,7 +49,7 @@ defmodule ForgeSdk.Wallet.Util do
   Sign the transaction with extra private key, usually used for exchange and other transactions that requires involvment for multiple party. Note this is not for multisig wallet, but for a multisig transaction.
   """
   @spec multisig!(WalletInfo.t(), Transaction.t()) :: Transaction.t()
-  def multisig!(%{signature: ""} = tx, _), do: tx
+  def multisig!(_, %{signature: ""} = tx), do: tx
 
   def multisig!(wallet, tx) do
     sig = sign!(wallet, Transaction.encode(tx))

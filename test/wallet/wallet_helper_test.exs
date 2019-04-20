@@ -16,7 +16,6 @@ defmodule ForgeSdkTest.WalletUtils do
               encoding_type <- integer(0..1) do
       type = WalletType.new(address: encoding_type, hash: hash_type, pk: pk_type)
       wallet = Util.create(type, @pass)
-      assert wallet.type == nil
 
       case pk_type do
         0 -> assert Mcrypto.sk_to_pk(%Ed25519{}, wallet.sk) === wallet.pk

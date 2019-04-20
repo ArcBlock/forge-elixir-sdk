@@ -5,9 +5,13 @@ defmodule ForgeSdk.Util do
 
   use ForgeAbi.Unit
 
-  alias ForgeAbi.{CreateAssetTx, ForgeState}
+  alias ForgeAbi.ForgeState
+
   alias ForgeSdk.{AbiServer, Configuration}
   alias Configuration.{Cache, Forge, ForgeApp, Ipfs, Tendermint}
+
+  alias ForgeSdk.Wallet.Util, as: WalletUtil
+
   alias Google.Protobuf.Timestamp
 
   @config_priorities [:env, :home, :priv]
@@ -144,12 +148,23 @@ defmodule ForgeSdk.Util do
   @doc """
   Generate address for asset. Use owner's address + owner's nonce when creating this asset.
   """
-  @spec to_asset_address(String.t(), CreateAssetTx.t()) :: String.t()
+  @spec to_asset_address(String.t(), map()) :: String.t()
   def to_asset_address(address, itx) do
-    hash = Mcrypto.hash(%Mcrypto.Hasher.Sha3{}, CreateAssetTx.encode(itx))
+    # TODO: in future we shall just use itx to generate asset address. Thus one cannot generate duplicate asset with different wallet.
+    hash = Mcrypto.hash(%Mcrypto.Hasher.Sha3{}, itx.__struct__.encode(itx))
     data = address <> hash
     did_type = address |> AbtDid.get_did_type() |> Map.put(:role_type, :asset)
-    ForgeSdk.Wallet.Util.to_address(data, did_type)
+    WalletUtil.to_address(data, did_type)
+  end
+
+  @doc """
+  Generate address for tx.
+  """
+  @spec to_tx_address(map()) :: String.t()
+  def to_tx_address(itx) do
+    data = Mcrypto.hash(%Mcrypto.Hasher.Sha3{}, itx.__struct__.encode(itx))
+    did_type = %AbtDid.Type{role_type: :tx, key_type: :ed25519, hash_type: :sha3}
+    WalletUtil.to_address(data, did_type)
   end
 
   @doc """
@@ -158,7 +173,7 @@ defmodule ForgeSdk.Util do
   """
   @spec to_stake_address(String.t(), String.t()) :: String.t()
   def to_stake_address(addr1, addr2) do
-    pk =
+    data =
       case addr1 < addr2 do
         true -> addr1 <> addr2
         _ -> addr2 <> addr1
@@ -166,7 +181,7 @@ defmodule ForgeSdk.Util do
 
     # complex address uses :sha3 and :base58
     did_type = %AbtDid.Type{role_type: :stake, key_type: :ed25519, hash_type: :sha3}
-    ForgeSdk.Wallet.Util.to_address(pk, did_type)
+    ForgeSdk.Wallet.Util.to_address(data, did_type)
   end
 
   def datetime_to_proto(dt), do: Google.Protobuf.Timestamp.new(seconds: DateTime.to_unix(dt))

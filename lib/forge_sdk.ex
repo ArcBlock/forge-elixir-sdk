@@ -4,22 +4,27 @@ defmodule ForgeSdk do
   """
 
   alias ForgeSdk.{Configuration.Helper, Display, File, Rpc, Util}
-  # Transaction
 
+  # Transaction helper
   defdelegate account_migrate(itx, opts), to: Rpc
-  defdelegate consensus_upgrade(itx, opts), to: Rpc
+  # defdelegate consensus_upgrade(itx, opts), to: Rpc
   defdelegate consume_asset(itx, opts), to: Rpc
   defdelegate create_asset(itx, opts), to: Rpc
   defdelegate declare(itx, opts), to: Rpc
   defdelegate declare_file(itx, opts), to: Rpc
+  defdelegate deploy_protocol(itx, opts), to: Rpc
   defdelegate exchange(itx, opts), to: Rpc
   defdelegate poke(itx, opts), to: Rpc
   defdelegate stake(itx, opts), to: Rpc
-  defdelegate sys_upgrade(itx, opts), to: Rpc
+  # defdelegate sys_upgrade(itx, opts), to: Rpc
   defdelegate transfer(itx, opts), to: Rpc
   defdelegate update_asset(itx, opts), to: Rpc
   defdelegate upgrade_node(itx, opts), to: Rpc
-  defdelegate upgrade_task(itx, opts), to: Rpc
+  # defdelegate upgrade_task(itx, opts), to: Rpc
+
+  # extended tx helper
+  defdelegate stake_for_node(address, amount, opts), to: Rpc
+  defdelegate checkin(opts), to: Rpc
 
   # RPC
 
@@ -38,8 +43,6 @@ defmodule ForgeSdk do
   defdelegate get_blocks(request, chan \\ nil), to: Rpc
   defdelegate search(request, chan \\ nil), to: Rpc
   defdelegate get_config(chan \\ nil), to: Rpc
-  defdelegate get_asset_address(request, chan \\ nil), to: Rpc
-  defdelegate sign_data(request, chan \\ nil), to: Rpc
 
   # wallet related
   defdelegate create_wallet(request, chan \\ nil), to: Rpc
@@ -53,6 +56,7 @@ defmodule ForgeSdk do
   defdelegate get_account_state(request, chan \\ nil), to: Rpc
   defdelegate get_asset_state(request, chan \\ nil), to: Rpc
   defdelegate get_forge_state(chan \\ nil), to: Rpc
+  defdelegate get_protocol_state(request, chan \\ nil), to: Rpc
   defdelegate get_stake_state(request, chan \\ nil), to: Rpc
 
   # filesystem related
@@ -64,13 +68,11 @@ defmodule ForgeSdk do
   defdelegate subscribe(request, chan \\ nil, opts \\ []), to: Rpc
   defdelegate unsubscribe(request, chan \\ nil, opts \\ []), to: Rpc
 
-  # display a data structure
-  defdelegate display(data, expand? \\ false), to: Display
-
   # extended
   defdelegate get_nonce(address, chan \\ nil, app_hash \\ ""), to: Rpc
-  defdelegate stake_for_node(address, amount, opts), to: Rpc
-  defdelegate checkin(opts), to: Rpc
+
+  # display a data structure
+  defdelegate display(data, expand? \\ false), to: Display
 
   # other
   defdelegate parse_config(name, file \\ ""), to: Util, as: :parse

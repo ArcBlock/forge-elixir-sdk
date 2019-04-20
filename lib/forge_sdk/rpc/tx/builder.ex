@@ -18,12 +18,19 @@ defmodule ForgeSdk.Rpc.Tx.Builder do
         options[:multisig] == true ->
           def unquote(type)(itx, opts) do
             opts = Keyword.put(opts, :send, :nosend)
-            Helper.build(unquote(type), itx, opts)
+            Helper.build(itx, opts)
+          end
+
+        options[:preprocessor] !== nil ->
+          def unquote(type)(itx, opts) do
+            [mod, fun] = unquote(options[:preprocessor])
+            itx = apply(mod, fun, [itx])
+            Helper.build(itx, opts)
           end
 
         true ->
           def unquote(type)(itx, opts) do
-            Helper.build(unquote(type), itx, opts)
+            Helper.build(itx, opts)
           end
       end
     end

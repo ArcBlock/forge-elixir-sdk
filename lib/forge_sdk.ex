@@ -13,6 +13,7 @@ defmodule ForgeSdk do
   defdelegate declare(itx, opts), to: Rpc
   defdelegate declare_file(itx, opts), to: Rpc
   defdelegate deploy_protocol(itx, opts), to: Rpc
+  defdelegate deposit_tether(itx, opts), to: Rpc
   defdelegate exchange(itx, opts), to: Rpc
   defdelegate poke(itx, opts), to: Rpc
   defdelegate stake(itx, opts), to: Rpc

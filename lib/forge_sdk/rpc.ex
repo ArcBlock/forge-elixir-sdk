@@ -347,10 +347,13 @@ defmodule ForgeSdk.Rpc do
   tx :deploy_protocol, preprocessor: [ForgeSdk.Rpc.Tx.Helper, :preprocess_deploy_protocol]
 
   def account_migrate(itx, opts),
-    do: apply(CoreTx.AccountMigrate.Rpc, :account_migrate, [itx, opts])
+    do: apply(CoreTx.AccountMigrate.Rpc, :account_migrate_with_addr, [itx, opts])
 
   def consume_asset(itx, opts), do: apply(CoreTx.ConsumeAsset.Rpc, :consume_asset, [itx, opts])
-  def create_asset(itx, opts), do: apply(CoreTx.CreateAsset.Rpc, :create_asset, [itx, opts])
+
+  def create_asset(itx, opts),
+    do: apply(CoreTx.CreateAsset.Rpc, :create_asset_with_addr, [itx, opts])
+
   def declare_file(itx, opts), do: apply(CoreTx.DeclareFile.Rpc, :declare_file, [itx, opts])
   def exchange(itx, opts), do: apply(CoreTx.Exchange.Rpc, :exchange, [itx, opts])
   def poke(itx, opts), do: apply(CoreTx.Poke.Rpc, :poke, [itx, opts])

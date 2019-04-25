@@ -64,6 +64,7 @@ defmodule ForgeSdk.Rpc do
     # RequestGetForgeState,
     RequestGetProtocolState,
     RequestGetStakeState,
+    RequestGetTetherInfo,
 
     # filesystem related
     RequestStoreFile,
@@ -288,6 +289,15 @@ defmodule ForgeSdk.Rpc do
         ) :: StakeState.t() | [StakeState.t()] | {:error, term()}
   rpc :get_stake_state, request_stream: true do
     res.state
+  end
+
+  @spec get_tether_info(
+          RequestGetTetherInfo.t() | [RequestGetTetherInfo.t()] | Keyword.t() | [Keyword.t()],
+          Channel.t() | nil,
+          Keyword.t()
+        ) :: TetherInfo.t() | [TetherInfo.t()] | {:error, term()}
+  rpc :get_tether_info, request_stream: true do
+    res.info
   end
 
   @spec get_forge_state(Channel.t() | nil, Keyword.t()) :: ForgeState.t() | {:error, term()}

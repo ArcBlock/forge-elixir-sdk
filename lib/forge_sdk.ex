@@ -59,6 +59,7 @@ defmodule ForgeSdk do
   defdelegate get_forge_state(chan \\ nil), to: Rpc
   defdelegate get_protocol_state(request, chan \\ nil), to: Rpc
   defdelegate get_stake_state(request, chan \\ nil), to: Rpc
+  defdelegate get_tether_info(request, chan \\ nil), to: Rpc
 
   # filesystem related
   defdelegate store_file(request, chan \\ nil), to: File

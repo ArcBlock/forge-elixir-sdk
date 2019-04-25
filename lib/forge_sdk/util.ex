@@ -7,7 +7,7 @@ defmodule ForgeSdk.Util do
 
   alias ForgeAbi.ForgeState
 
-  alias ForgeSdk.{AbiServer, Configuration}
+  alias ForgeSdk.Configuration
   alias Configuration.{Cache, Forge, ForgeApp, Ipfs, Tendermint}
 
   alias ForgeSdk.Wallet.Util, as: WalletUtil
@@ -240,30 +240,10 @@ defmodule ForgeSdk.Util do
 
   defp get_servers(config) do
     forge_config = parse(:forge, config)
-    forge_app_config = parse(:forge_app, config)
 
-    tcp_addr = forge_app_config["sock_tcp"]
     grpc_addr = forge_config["sock_grpc"]
 
-    get_abi_server_spec(tcp_addr) ++ get_rpc_conn_spec(grpc_addr)
-  end
-
-  defp get_abi_server_spec(""), do: []
-
-  defp get_abi_server_spec(addr) do
-    case Process.whereis(AbiServer) do
-      nil -> [do_get_abi_server_spec(addr)]
-      _ -> []
-    end
-  end
-
-  defp do_get_abi_server_spec("tcp://" <> addr) do
-    [_ip, port] = String.split(addr, ":")
-    AbiServer.child_spec(port: String.to_integer(port))
-  end
-
-  defp do_get_abi_server_spec("unix://" <> name) do
-    AbiServer.child_spec(port: 0, ip: {:local, String.to_charlist(name)})
+    get_rpc_conn_spec(grpc_addr)
   end
 
   defp get_rpc_conn_spec(addr) do

@@ -24,6 +24,7 @@ defmodule ForgeSdk.Rpc do
     # tx
     IndexedTransaction,
     Transaction,
+    TransactionInfo,
     UnconfirmedTxs,
 
     # index state
@@ -82,7 +83,6 @@ defmodule ForgeSdk.Rpc do
     RequestListAccount,
     RequestListAssets,
     RequestGetForgeStats,
-    RequestGetHealthStatus,
     RequestListStakes,
     RequestListTopAccounts,
     RequestListAssetTransactions,
@@ -162,7 +162,7 @@ defmodule ForgeSdk.Rpc do
           RequestGetTx.t() | [RequestGetTx.t()] | Keyword.t() | [Keyword.t()],
           Channel.t() | nil,
           Keyword.t()
-        ) :: Transaction.t() | [Transaction.t()] | {:error, term()}
+        ) :: TransactionInfo.t() | [TransactionInfo.t()] | {:error, term()}
   rpc :get_tx, request_stream: true do
     res.info
   end
@@ -355,12 +355,10 @@ defmodule ForgeSdk.Rpc do
   # tx helpers
   tx :declare
   tx :deploy_protocol, preprocessor: [ForgeSdk.Rpc.Tx.Helper, :preprocess_deploy_protocol]
-
-  def account_migrate(itx, opts),
-    do: apply(CoreTx.AccountMigrate.Rpc, :account_migrate, [itx, opts])
+  tx :account_migrate, preprocessor: [ForgeSdk.Rpc.Tx.Helper, :preprocess_account_migrate]
+  tx :create_asset, preprocessor: [ForgeSdk.Rpc.Tx.Helper, :preprocess_create_asset]
 
   def consume_asset(itx, opts), do: apply(CoreTx.ConsumeAsset.Rpc, :consume_asset, [itx, opts])
-  def create_asset(itx, opts), do: apply(CoreTx.CreateAsset.Rpc, :create_asset, [itx, opts])
   def declare_file(itx, opts), do: apply(CoreTx.DeclareFile.Rpc, :declare_file, [itx, opts])
   def deposit_tether(itx, opts), do: apply(CoreTx.DepositTether.Rpc, :deposit_tether, [itx, opts])
   def exchange(itx, opts), do: apply(CoreTx.Exchange.Rpc, :exchange, [itx, opts])
@@ -465,7 +463,7 @@ defmodule ForgeSdk.Rpc do
   end
 
   @spec get_health_status(
-          RequestGetHealthStatus.t() | Keyword.t(),
+          map() | Keyword.t(),
           Channel.t() | nil,
           Keyword.t()
         ) :: HealthStatus.t() | {:error, term()}

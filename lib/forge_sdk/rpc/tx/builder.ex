@@ -24,7 +24,7 @@ defmodule ForgeSdk.Rpc.Tx.Builder do
         options[:preprocessor] !== nil ->
           def unquote(type)(itx, opts) do
             [mod, fun] = unquote(options[:preprocessor])
-            itx = apply(mod, fun, [itx])
+            itx = apply(mod, fun, [itx, opts])
             Helper.build(itx, opts)
           end
 

@@ -12,12 +12,11 @@ defimpl ForgeSdk.Display, for: ForgeAbi.CircularQueue do
 
     items =
       Enum.map(data.items, fn item ->
-        {type, data} = ForgeAbi.decode_any(%Any{type_url: data.type_url, value: item})
+        data = ForgeAbi.decode_any!(%Any{type_url: data.type_url, value: item})
 
-        # TODO (tchen): once did is merged we shall be able to tell if this address is an account or asset, etc.
-        case type === :address and expand? do
+        case expand? do
           true -> Display.display(data)
-          _ -> Display.display(data)
+          _ -> data
         end
       end)
 

@@ -6,8 +6,6 @@ defprotocol ForgeSdk.StateDb do
 
   @type t :: StateDb.t()
 
-  alias ForgeSdk.State
-
   @doc """
   Open a database for write/read
   """
@@ -23,13 +21,13 @@ defprotocol ForgeSdk.StateDb do
   @doc """
   Retrieve the state from an address
   """
-  @spec get(t(), binary()) :: State.t() | nil
+  @spec get(t(), binary()) :: map() | nil
   def get(handler, address)
 
   @doc """
   Retrieve the state from an address by given height
   """
-  @spec get(t(), binary(), non_neg_integer()) :: State.t() | nil
+  @spec get(t(), binary(), non_neg_integer()) :: map() | nil
   def get(handler, address, height)
 
   @doc """
@@ -41,7 +39,7 @@ defprotocol ForgeSdk.StateDb do
   @doc """
   Put the state into to address in the db. This will lead to a change of root_hash.
   """
-  @spec put(t(), binary(), State.t()) :: {:ok, t()} | {:error, term()}
+  @spec put(t(), binary(), map()) :: {:ok, t()} | {:error, term()}
   def put(handler, address, data)
 
   @doc """

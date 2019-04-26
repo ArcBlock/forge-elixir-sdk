@@ -24,6 +24,7 @@ defmodule ForgeSdk.Rpc do
     # tx
     IndexedTransaction,
     Transaction,
+    TransactionInfo,
     UnconfirmedTxs,
 
     # index state
@@ -81,7 +82,6 @@ defmodule ForgeSdk.Rpc do
     RequestListAccount,
     RequestListAssets,
     RequestGetForgeStats,
-    RequestGetHealthStatus,
     RequestListStakes,
     RequestListTopAccounts,
     RequestListAssetTransactions,
@@ -161,7 +161,7 @@ defmodule ForgeSdk.Rpc do
           RequestGetTx.t() | [RequestGetTx.t()] | Keyword.t() | [Keyword.t()],
           Channel.t() | nil,
           Keyword.t()
-        ) :: Transaction.t() | [Transaction.t()] | {:error, term()}
+        ) :: TransactionInfo.t() | [TransactionInfo.t()] | {:error, term()}
   rpc :get_tx, request_stream: true do
     res.info
   end
@@ -452,7 +452,7 @@ defmodule ForgeSdk.Rpc do
   end
 
   @spec get_health_status(
-          RequestGetHealthStatus.t() | Keyword.t(),
+          map() | Keyword.t(),
           Channel.t() | nil,
           Keyword.t()
         ) :: HealthStatus.t() | {:error, term()}

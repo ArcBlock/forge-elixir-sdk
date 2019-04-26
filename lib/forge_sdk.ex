@@ -3,7 +3,7 @@ defmodule ForgeSdk do
   Public interfaces for ForgeSdk.
   """
 
-  alias ForgeSdk.{Configuration.Helper, Display, File, Rpc, Util}
+  alias ForgeSdk.{Configuration.Helper, Display, File, Loader, Rpc, Util}
 
   # Transaction helper
   defdelegate account_migrate(itx, opts), to: Rpc
@@ -84,7 +84,9 @@ defmodule ForgeSdk do
   defdelegate get_chan, to: Util
   defdelegate datetime_to_proto(dt), to: Util
   defdelegate proto_to_datetime(ts), to: Util
-  defdelegate update_config(forge_config), to: Util
+  defdelegate update_config(forge_state), to: Util
+  defdelegate update_type_url(forge_state), to: Loader
+  defdelegate get_tx_protocols(forge_state), to: Loader
 
   # init sdk and handler registration
   defdelegate init(otp_app, app_hash \\ "", filename \\ nil), to: Util

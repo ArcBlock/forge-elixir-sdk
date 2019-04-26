@@ -37,8 +37,6 @@ defimpl ForgeSdk.Display, for: ForgeAbi.BlockInfo do
   end
 end
 
-# TODO (lei): once blockInfoSImple in forge abi is enable we will use it to resolve get_blocks.
-
 defimpl ForgeSdk.Display, for: ForgeAbi.BlockInfoSimple do
   @moduledoc """
   Implementation of `Display` protocol for `BlockInfoSimple`

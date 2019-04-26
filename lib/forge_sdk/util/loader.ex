@@ -50,7 +50,7 @@ defmodule ForgeSdk.Loader do
         load_result = :code.load_binary(mod, '', binary)
 
         Logger.info(
-          "#{} - Purged old code: #{inspect(purge_result)}, and loaded new code: #{
+          "#{name} - Purged old code: #{inspect(purge_result)}, and loaded new code: #{
             inspect(load_result)
           }"
         )

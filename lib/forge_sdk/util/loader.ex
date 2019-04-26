@@ -42,19 +42,24 @@ defmodule ForgeSdk.Loader do
     code
     |> Enum.each(fn %{binary: binary} ->
       {:ok, {mod, _}} = :beam_lib.md5(binary)
+      name = Atom.to_string(mod)
 
-      if String.starts_with?(Atom.to_string(mod), "Elixir.ForgeAbi") do
+      if need_load?(name) do
         # purge old code
         purge_result = :code.soft_purge(mod)
         load_result = :code.load_binary(mod, '', binary)
 
         Logger.info(
-          "#{Atom.to_string(mod)} - Purged old code: #{inspect(purge_result)}, and loaded new code: #{
+          "#{name} - Purged old code: #{inspect(purge_result)}, and loaded new code: #{
             inspect(load_result)
           }"
         )
       end
     end)
+  end
+
+  defp need_load?(name) do
+    String.starts_with?(name, "Elixir.ForgeAbi") or String.ends_with?(name, ".Rpc")
   end
 
   defp load_type_urls(urls) do

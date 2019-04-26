@@ -8,14 +8,14 @@ defmodule ForgeSdk.Loader do
 
   def update_type_url(forge_state) do
     forge_state
-    |> get_protocols()
+    |> get_tx_protocols()
     |> Enum.each(fn itx ->
       load_code(itx.code)
       load_type_urls(itx.type_urls)
     end)
   end
 
-  def get_protocols(forge_state, address \\ "") do
+  def get_tx_protocols(forge_state, address \\ "") do
     forge_state
     |> Map.get(:protocols, [])
     |> Enum.filter(fn %{address: protocol_address} ->
@@ -24,11 +24,11 @@ defmodule ForgeSdk.Loader do
         false -> protocol_address === address
       end
     end)
-    |> Task.async_stream(fn %{address: address} -> get_one_protocol(address) end)
+    |> Task.async_stream(fn %{address: address} -> get_one_tx_protocol(address) end)
     |> Enum.map(fn {:ok, res} -> res end)
   end
 
-  defp get_one_protocol(address) do
+  defp get_one_tx_protocol(address) do
     %{tx_hash: tx_hash} = Rpc.get_protocol_state(address: address)
     %{tx: tx} = Rpc.get_tx(hash: tx_hash)
     ForgeAbi.decode_any!(tx.itx)

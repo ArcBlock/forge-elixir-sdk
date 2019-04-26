@@ -86,6 +86,7 @@ defmodule ForgeSdk do
   defdelegate proto_to_datetime(ts), to: Util
   defdelegate update_config(forge_state), to: Util
   defdelegate update_type_url(forge_state), to: Loader
+  defdelegate get_tx_protocols(forge_state), to: Loader
 
   # init sdk and handler registration
   defdelegate init(otp_app, app_hash \\ "", filename \\ nil), to: Util

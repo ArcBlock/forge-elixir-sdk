@@ -65,6 +65,7 @@ defmodule ForgeSdk.Rpc do
     # RequestGetForgeState,
     RequestGetProtocolState,
     RequestGetStakeState,
+    RequestGetTetherInfo,
 
     # filesystem related
     RequestStoreFile,
@@ -290,6 +291,15 @@ defmodule ForgeSdk.Rpc do
     res.state
   end
 
+  @spec get_tether_info(
+          RequestGetTetherInfo.t() | [RequestGetTetherInfo.t()] | Keyword.t() | [Keyword.t()],
+          Channel.t() | nil,
+          Keyword.t()
+        ) :: TetherInfo.t() | [TetherInfo.t()] | {:error, term()}
+  rpc :get_tether_info, request_stream: true do
+    res.info
+  end
+
   @spec get_forge_state(Channel.t() | nil, Keyword.t()) :: ForgeState.t() | {:error, term()}
   rpc :get_forge_state, no_params: true do
     res.state
@@ -350,6 +360,7 @@ defmodule ForgeSdk.Rpc do
 
   def consume_asset(itx, opts), do: apply(CoreTx.ConsumeAsset.Rpc, :consume_asset, [itx, opts])
   def declare_file(itx, opts), do: apply(CoreTx.DeclareFile.Rpc, :declare_file, [itx, opts])
+  def deposit_tether(itx, opts), do: apply(CoreTx.DepositTether.Rpc, :deposit_tether, [itx, opts])
   def exchange(itx, opts), do: apply(CoreTx.Exchange.Rpc, :exchange, [itx, opts])
   def poke(itx, opts), do: apply(CoreTx.Poke.Rpc, :poke, [itx, opts])
   def checkin(opts), do: apply(CoreTx.Poke.Rpc, :checkin, [opts])

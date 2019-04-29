@@ -7,9 +7,11 @@ defmodule ForgeSdk do
 
   # Transaction helper
   defdelegate account_migrate(itx, opts), to: Rpc
+  defdelegate acquire_asset(itx, opts), to: Rpc
   # defdelegate consensus_upgrade(itx, opts), to: Rpc
   defdelegate consume_asset(itx, opts), to: Rpc
   defdelegate create_asset(itx, opts), to: Rpc
+  defdelegate create_asset_factory(moniker, factory, opts), to: Rpc
   defdelegate declare(itx, opts), to: Rpc
   defdelegate declare_file(itx, opts), to: Rpc
   defdelegate deploy_protocol(itx, opts), to: Rpc

@@ -355,8 +355,15 @@ defmodule ForgeSdk.Rpc do
   # tx helpers
   tx :declare
   tx :deploy_protocol, preprocessor: [ForgeSdk.Rpc.Tx.Helper, :preprocess_deploy_protocol]
-  tx :account_migrate, preprocessor: [ForgeSdk.Rpc.Tx.Helper, :preprocess_account_migrate]
-  tx :create_asset, preprocessor: [ForgeSdk.Rpc.Tx.Helper, :preprocess_create_asset]
+
+  def account_migrate(itx, opts),
+    do: apply(CoreTx.AccountMigrate.Rpc, :account_migrate, [itx, opts])
+
+  def acquire_asset(itx, opts), do: apply(CoreTx.AcquireAsset.Rpc, :acquire_asset, [itx, opts])
+  def create_asset(itx, opts), do: apply(CoreTx.CreateAsset.Rpc, :create_asset, [itx, opts])
+
+  def create_asset_factory(moniker, factory, opts),
+    do: apply(CoreTx.CreateAsset.Rpc, :create_asset_factory, [moniker, factory, opts])
 
   def consume_asset(itx, opts), do: apply(CoreTx.ConsumeAsset.Rpc, :consume_asset, [itx, opts])
   def declare_file(itx, opts), do: apply(CoreTx.DeclareFile.Rpc, :declare_file, [itx, opts])

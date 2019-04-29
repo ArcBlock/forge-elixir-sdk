@@ -63,15 +63,6 @@ defmodule ForgeSdk.Rpc.Tx.Helper do
     end
   end
 
-  def preprocess_create_asset(itx, opt) do
-    wallet = Keyword.get(opt, :wallet)
-
-    case itx.address === "" do
-      true -> %{itx | address: ForgeSdk.Util.to_asset_address(wallet.address, itx)}
-      false -> itx
-    end
-  end
-
   # private functions
   defp create_unsigned_tx(any, nonce, wallet),
     do:

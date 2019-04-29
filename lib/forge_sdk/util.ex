@@ -149,6 +149,12 @@ defmodule ForgeSdk.Util do
   Generate address for asset. Use owner's address + owner's nonce when creating this asset.
   """
   @spec to_asset_address(String.t(), map()) :: String.t()
+  def to_asset_address("", itx) do
+    hash = Mcrypto.hash(%Mcrypto.Hasher.Sha3{}, itx.__struct__.encode(itx))
+    did_type = %AbtDid.Type{hash_type: :sha3, key_type: :ed25519, role_type: :asset}
+    WalletUtil.to_address(hash, did_type)
+  end
+
   def to_asset_address(address, itx) do
     # TODO: in future we shall just use itx to generate asset address. Thus one cannot generate duplicate asset with different wallet.
     hash = Mcrypto.hash(%Mcrypto.Hasher.Sha3{}, itx.__struct__.encode(itx))

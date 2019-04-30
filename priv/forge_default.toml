@@ -177,6 +177,9 @@ compression = "zstd"
   # public key of the moderator
   pk = "EyNstcu1Jk9FPgtDT9QJMkW-gh6ihSm6Atj9I412G6Q"
 
+	[forge.tx]
+	protocol_url = "https://releases.arcblock.io/forge-core-protocols/#{version}/all.json"
+
 # ------------------------------------------------------------------
 # tendermint configuration
 # ------------------------------------------------------------------

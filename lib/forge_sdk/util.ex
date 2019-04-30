@@ -222,18 +222,20 @@ defmodule ForgeSdk.Util do
   def update_config(_) do
     # for the first time forge started, there's no forge state yet
     # hence we cache the config from forge_config
+    # TODO: we shall parse configuration as atom keys during initialization. Thus this conversion is not needed
 
     config = ForgeSdk.get_env(:forge_config)
-    token = Enum.into(config["token"], %{}, fn {k, v} -> {String.to_atom(k), v} end)
+    token = to_atom_map(config["token"])
 
-    tx_config = Enum.into(config["transaction"], %{}, fn {k, v} -> {String.to_atom(k), v} end)
+    tx_config = to_atom_map(config["transaction"])
+    tx_config = %{tx_config | declare: to_atom_map(tx_config.declare)}
 
     stake_config =
       config
       |> get_in(["stake", "timeout"])
-      |> Enum.into(%{}, fn {k, v} -> {String.to_atom("timeout_#{k}"), v} end)
+      |> to_atom_map("timeout")
 
-    poke_config = Enum.into(config["poke"], %{}, fn {k, v} -> {String.to_atom(k), v} end)
+    poke_config = to_atom_map(config["poke"])
 
     Application.put_env(:forge_abi, :decimal, token.decimal)
     ForgeSdk.put_env(:token, token)
@@ -270,4 +272,10 @@ defmodule ForgeSdk.Util do
   end
 
   defp get_priv_file(name), do: :forge_sdk |> :code.priv_dir() |> Path.join(name)
+
+  defp to_atom_map(map),
+    do: Enum.into(map, %{}, fn {k, v} -> {String.to_atom(k), v} end)
+
+  defp to_atom_map(map, prefix),
+    do: Enum.into(map, %{}, fn {k, v} -> {String.to_atom("#{prefix}_#{k}"), v} end)
 end

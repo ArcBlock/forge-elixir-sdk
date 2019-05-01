@@ -170,6 +170,8 @@ compression = "zstd"
 
   [forge.poke]
 
+  enabled = true
+
   # the address for poke tx
   address = "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz"
 

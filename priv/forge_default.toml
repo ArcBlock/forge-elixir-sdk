@@ -133,6 +133,8 @@ compression = "zstd"
   whitelist = "*"
 
   [forge.release]
+  # forge release path
+  path = "~/.forge_cli/release/forge"
 
   # url for forge release
   url = "http://releases.arcblock.io/forge"

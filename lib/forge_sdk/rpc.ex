@@ -369,6 +369,10 @@ defmodule ForgeSdk.Rpc do
   def declare_file(itx, opts), do: apply(CoreTx.DeclareFile.Rpc, :declare_file, [itx, opts])
   def deposit_tether(itx, opts), do: apply(CoreTx.DepositTether.Rpc, :deposit_tether, [itx, opts])
   def exchange(itx, opts), do: apply(CoreTx.Exchange.Rpc, :exchange, [itx, opts])
+
+  def exchange_tether(itx, opts),
+    do: apply(CoreTx.ExchangeTether.Rpc, :exchange_tether, [itx, opts])
+
   def poke(itx, opts), do: apply(CoreTx.Poke.Rpc, :poke, [itx, opts])
   def checkin(opts), do: apply(CoreTx.Poke.Rpc, :checkin, [opts])
   def stake(itx, opts), do: apply(CoreTx.Stake.Rpc, :stake, [itx, opts])

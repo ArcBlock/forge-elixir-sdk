@@ -59,7 +59,8 @@ defmodule ForgeSdk.Loader do
   end
 
   defp need_load?(name) do
-    String.starts_with?(name, "Elixir.ForgeAbi") or String.ends_with?(name, ".Rpc")
+    String.starts_with?(name, "Elixir.ForgeAbi") or String.ends_with?(name, ".Rpc") or
+      String.ends_with?(name, ".Helper")
   end
 
   defp load_type_urls(urls) do

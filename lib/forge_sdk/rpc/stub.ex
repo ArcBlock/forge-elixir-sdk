@@ -31,7 +31,7 @@ defmodule ForgeSdk.Rpc.Stub do
   defdelegate get_forge_state(chan, req, opts \\ []), to: ForgeAbi.StateRpc.Stub
   defdelegate get_protocol_state(chan, opts \\ []), to: ForgeAbi.StateRpc.Stub
   defdelegate get_stake_state(chan, opts \\ []), to: ForgeAbi.StateRpc.Stub
-  defdelegate get_tether_info(chan, opts \\ []), to: ForgeAbi.StateRpc.Stub
+  defdelegate get_tether_state(chan, opts \\ []), to: ForgeAbi.StateRpc.Stub
 
   # file rpc
   defdelegate store_file(chan, opts \\ []), to: ForgeAbi.FileRpc.Stub

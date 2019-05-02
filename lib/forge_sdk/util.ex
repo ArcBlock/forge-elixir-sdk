@@ -145,6 +145,12 @@ defmodule ForgeSdk.Util do
     Timestamp.new(seconds: DateTime.to_unix(dt))
   end
 
+  @spec to_tether_address(String.t()) :: String.t()
+  def to_tether_address(hash) do
+    <<pk_hash::binary-size(40), _::binary-size(24)>> = hash
+    AbtDid.pkhash_to_did(:tether, pk_hash, form: :short)
+  end
+
   @doc """
   Generate address for asset. Use owner's address + owner's nonce when creating this asset.
   """

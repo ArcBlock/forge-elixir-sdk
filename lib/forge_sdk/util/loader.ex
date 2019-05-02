@@ -4,17 +4,20 @@ defmodule ForgeSdk.Loader do
   """
   require Logger
 
-  alias ForgeAbi.{ForgeState, TransactionInfo}
+  alias ForgeAbi.ForgeState
   alias ForgeSdk.Rpc
 
   @spec update_type_url(ForgeState.t()) :: :ok
   def update_type_url(forge_state) do
     forge_state
     |> get_tx_protocols()
-    |> Enum.each(fn itx ->
-      load_code(itx.code)
-      load_type_urls(itx.type_urls)
-    end)
+    |> Enum.each(fn %{code: code, type_urls: type_urls} -> update_type_url(code, type_urls) end)
+  end
+
+  @spec update_type_url(list(), list()) :: :ok
+  def update_type_url(code, type_urls) do
+    load_code(code)
+    load_type_urls(type_urls)
   end
 
   @spec get_tx_protocols(ForgeState.t(), String.t()) :: [map()]
@@ -32,10 +35,8 @@ defmodule ForgeSdk.Loader do
   end
 
   defp get_one_tx_protocol(address) do
-    %{tx_hash: tx_hash, context: context} = Rpc.get_protocol_state(address: address)
-    %TransactionInfo{tx: tx} = Rpc.get_tx(hash: tx_hash)
-    protocol_meta = ForgeAbi.decode_any!(tx.itx)
-    Map.put(protocol_meta, :installed_at, context.genesis_time)
+    %{itx: itx, context: context} = Rpc.get_protocol_state(address: address)
+    Map.put(itx, :installed_at, context.genesis_time)
   end
 
   defp load_code(code) do

@@ -51,18 +51,6 @@ defmodule ForgeSdk.Rpc.Tx.Helper do
     end
   end
 
-  def preprocess_deploy_protocol(itx, _) do
-    address = ForgeSdk.Util.to_tx_address(itx)
-    %{itx | address: address}
-  end
-
-  def preprocess_account_migrate(itx, _) do
-    case itx.address === "" and itx.pk !== "" and itx.type !== nil do
-      true -> %{itx | address: ForgeSdk.Wallet.Util.to_address(itx.pk, itx.type)}
-      false -> itx
-    end
-  end
-
   # private functions
   defp create_unsigned_tx(any, nonce, wallet),
     do:

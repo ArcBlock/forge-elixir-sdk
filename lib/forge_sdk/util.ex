@@ -5,8 +5,6 @@ defmodule ForgeSdk.Util do
 
   use ForgeAbi.Unit
 
-  alias ForgeAbi.ForgeState
-
   alias ForgeSdk.Configuration
   alias Configuration.{Cache, Forge, ForgeApp, Ipfs, Tendermint}
 
@@ -195,31 +193,17 @@ defmodule ForgeSdk.Util do
   def proto_to_datetime(%{seconds: seconds}), do: DateTime.from_unix!(seconds)
 
   @doc """
-   Update few config env from forge state.
+    Update few config env from forge state.
 
-     - token
-     - tx_config
-     - stake_config
-     - poke_config
+      - token
+      - tx_config
+      - stake_config
+      - poke_config
 
-   This function needs to be called after ForgeSdk.init was called.
+    This function needs to be called after ForgeSdk.init was called.
   """
-  def update_config(%ForgeState{} = forge_state) do
-    # for the rest time, we cache the configs from forge state
 
-    token = Map.from_struct(forge_state.token)
-    tx_config = Map.from_struct(forge_state.tx_config)
-    stake_config = Map.from_struct(forge_state.stake_config)
-    poke_config = Map.from_struct(forge_state.poke_config)
-
-    Application.put_env(:forge_abi, :decimal, token.decimal)
-    ForgeSdk.put_env(:token, token)
-    ForgeSdk.put_env(:tx_config, tx_config)
-    ForgeSdk.put_env(:stake_config, stake_config)
-    ForgeSdk.put_env(:poke_config, poke_config)
-  end
-
-  def update_config(_) do
+  def update_config(nil) do
     # for the first time forge started, there's no forge state yet
     # hence we cache the config from forge_config
     # TODO: we shall parse configuration as atom keys during initialization. Thus this conversion is not needed
@@ -236,6 +220,21 @@ defmodule ForgeSdk.Util do
       |> to_atom_map("timeout")
 
     poke_config = to_atom_map(config["poke"])
+
+    Application.put_env(:forge_abi, :decimal, token.decimal)
+    ForgeSdk.put_env(:token, token)
+    ForgeSdk.put_env(:tx_config, tx_config)
+    ForgeSdk.put_env(:stake_config, stake_config)
+    ForgeSdk.put_env(:poke_config, poke_config)
+  end
+
+  def update_config(forge_state) do
+    # for the rest time, we cache the configs from forge state
+
+    token = Map.from_struct(forge_state.token)
+    tx_config = Map.from_struct(forge_state.tx_config)
+    stake_config = Map.from_struct(forge_state.stake_config)
+    poke_config = Map.from_struct(forge_state.poke_config)
 
     Application.put_env(:forge_abi, :decimal, token.decimal)
     ForgeSdk.put_env(:token, token)

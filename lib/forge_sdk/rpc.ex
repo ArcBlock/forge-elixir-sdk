@@ -5,7 +5,6 @@ defmodule ForgeSdk.Rpc do
 
   use ForgeAbi.Unit
   import ForgeSdk.Rpc.Builder, only: [rpc: 2, rpc: 3]
-  import ForgeSdk.Rpc.Tx.Builder, only: [tx: 1, tx: 2]
   require Logger
 
   @subscription_timeout 900 * 1000
@@ -354,8 +353,6 @@ defmodule ForgeSdk.Rpc do
   end
 
   # tx helpers
-  tx :declare
-  tx :deploy_protocol, preprocessor: [ForgeSdk.Rpc.Tx.Helper, :preprocess_deploy_protocol]
 
   def account_migrate(itx, opts),
     do: apply(CoreTx.AccountMigrate.Rpc, :account_migrate, [itx, opts])
@@ -367,7 +364,14 @@ defmodule ForgeSdk.Rpc do
     do: apply(CoreTx.CreateAsset.Rpc, :create_asset_factory, [moniker, factory, opts])
 
   def consume_asset(itx, opts), do: apply(CoreTx.ConsumeAsset.Rpc, :consume_asset, [itx, opts])
-  def declare_file(itx, opts), do: apply(CoreTx.DeclareFile.Rpc, :declare_file, [itx, opts])
+
+  def declare(itx, opts), do: apply(CoreTx.Declare.Rpc, :declare, [itx, opts])
+
+  # def declare_file(itx, opts), do: apply(CoreTx.DeclareFile.Rpc, :declare_file, [itx, opts])
+
+  def deploy_protocol(itx, opts),
+    do: apply(CoreTx.DeployProtocol.Rpc, :deploy_protocol, [itx, opts])
+
   def deposit_tether(itx, opts), do: apply(CoreTx.DepositTether.Rpc, :deposit_tether, [itx, opts])
   def exchange(itx, opts), do: apply(CoreTx.Exchange.Rpc, :exchange, [itx, opts])
 

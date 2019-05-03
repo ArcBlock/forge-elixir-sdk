@@ -1,9 +1,8 @@
-defmodule ForgeSdk.Rpc.Tx.Helper do
+defmodule ForgeSdk.Tx.Builder.Helper do
   @moduledoc """
   Helper function for building tx rpc.
   """
   alias ForgeAbi.{RequestCreateTx, RequestSendTx, Transaction}
-  alias ForgeSdk.Rpc
   alias ForgeSdk.Wallet.Util, as: WalletUtil
 
   # credo:disable-for-lines:40
@@ -72,7 +71,7 @@ defmodule ForgeSdk.Rpc.Tx.Helper do
         token: token
       )
 
-    Rpc.create_tx(req)
+    ForgeSdk.create_tx(req)
   end
 
   defp create_tx(any, nonce, wallet, _token) do
@@ -91,7 +90,7 @@ defmodule ForgeSdk.Rpc.Tx.Helper do
   end
 
   defp send_tx(req, chan) do
-    case ForgeSdk.Rpc.send_tx(req, chan) do
+    case ForgeSdk.send_tx(req, chan) do
       {:error, _} = error -> error
       res -> res
     end

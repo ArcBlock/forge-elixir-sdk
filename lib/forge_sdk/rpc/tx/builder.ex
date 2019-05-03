@@ -1,8 +1,8 @@
-defmodule ForgeSdk.Rpc.Tx.Builder do
+defmodule ForgeSdk.Tx.Builder do
   @moduledoc """
   Macro for building Tx RPC easily
   """
-  alias ForgeSdk.Rpc.Tx.Helper
+  alias ForgeSdk.Tx.Builder.Helper
 
   defmacro tx(type, options \\ []) do
     build(type, options)

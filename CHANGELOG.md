@@ -1,3 +1,53 @@
+## 0.25.2 (May 03, 2019)
+  - add the tx builder back
+  - clean up forge sdk
+  - support embedded protocols (#96)
+  - Use address to query tether state. (#95)
+  - add enabled for forge poke config
+  - add default configuration for forge release
+  - update deps
+  - Support exchange tether tx. (#94)
+  - fix sdk loader. Client need the functionalities from Helper
+  - load forge transaction configuration correctly
+  - update deps
+  - add declare config
+  - add forge tx configuration
+  - support asset factory (#93)
+  - uptake forge-abi (#92)
+  - update get_tx_protocols parameter (#91)
+  - Implement deposit tether transaction. (#87)
+  - load rpc helper (#90)
+  - support update type url in elixir sdk (#89)
+  - deprecate accountMigrate and createAsset in TransactionInfo (#86)
+  - deprecate unused protocols (#88)
+  - update deps
+  - fix typo
+  - update dep
+  - uptake forge_abi version: remove data_version (#85)
+  - support generating tx address (#76)
+  - Swaps the arguments for multisig! function. (#84)
+  - support upgrade node tx (#83)
+  - bug-fix/get_unconfirmed_txs-issue (#82)
+  - Apis refactoring batch 2 (#81)
+  - deprecate graqhql apis and fields (#80)
+  - Use unix domian socket for forge/tendermint connection (#79)
+  - Put the encoded protobuf binary value when displaying Any. (#77)
+  - remove simlator start/stop from grpc (#78)
+  - uptake abi version: add avgBlockTime to stat apis (#75)
+  - Always show value when dispalying Google.Protobuf.Any (#74)
+  - add geoip config in toml file (#73)
+  - Use did type to create asset address (#71)
+  - use default consume_time for unconsumed asset (#72)
+  - Larger recv buffer for ex_abci server (#70)
+  - convert tendermint hash to abt did (#69)
+  - Add workshop db path into config. (#68)
+  - uptake latest abi version (#67)
+  - fix deps
+  - fix update_config.
+  - add apis to start/stop/get_status simulator (#66)
+  - add-get-health-status-api (#65)
+  - fix get config api (#64)
+
 ## 0.20.0 (March 25, 2019)
   - upgrade forge abi
   - put several params in forge config

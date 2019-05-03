@@ -13,7 +13,7 @@ defmodule ForgeSdk do
   defdelegate create_asset(itx, opts), to: Rpc
   defdelegate create_asset_factory(moniker, factory, opts), to: Rpc
   defdelegate declare(itx, opts), to: Rpc
-  defdelegate declare_file(itx, opts), to: Rpc
+  # defdelegate declare_file(itx, opts), to: Rpc
   defdelegate deploy_protocol(itx, opts), to: Rpc
   defdelegate deposit_tether(itx, opts), to: Rpc
   defdelegate exchange(itx, opts), to: Rpc

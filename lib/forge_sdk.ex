@@ -25,6 +25,7 @@ defmodule ForgeSdk do
   defdelegate update_asset(itx, opts), to: Rpc
   defdelegate upgrade_node(itx, opts), to: Rpc
   # defdelegate upgrade_task(itx, opts), to: Rpc
+  defdelegate withdraw_tether(itx, opts), to: Rpc
 
   # extended tx helper
   defdelegate stake_for_node(address, amount, opts), to: Rpc

@@ -92,6 +92,11 @@ defmodule ForgeSdk do
   defdelegate update_config(forge_state), to: Util
   defdelegate update_type_url(forge_state), to: Loader
   defdelegate get_tx_protocols(forge_state, address), to: Loader
+  defdelegate get_address(hash), to: Rpc
+  defdelegate encode_any(data, type_url \\ nil), to: ForgeAbi
+  defdelegate encode_any!(data, type_url \\ nil), to: ForgeAbi
+  defdelegate decode_any(data), to: ForgeAbi
+  defdelegate decode_any!(data), to: ForgeAbi
 
   # init sdk and handler registration
   defdelegate init(otp_app, app_hash \\ "", filename \\ nil), to: Util

@@ -10,7 +10,7 @@ defmodule ForgeSdk do
   defdelegate acquire_asset(itx, opts), to: Rpc
   # defdelegate consensus_upgrade(itx, opts), to: Rpc
   defdelegate prepare_consume_asset(itx, opts), to: Rpc
-  defdelegate finalize_consume_asset(tx, wallet), to: Rpc
+  defdelegate finalize_consume_asset(tx, asset_address, wallet), to: Rpc
   defdelegate create_asset(itx, opts), to: Rpc
   defdelegate create_asset_factory(moniker, factory, opts), to: Rpc
   defdelegate declare(itx, opts), to: Rpc

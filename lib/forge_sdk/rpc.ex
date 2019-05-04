@@ -366,8 +366,8 @@ defmodule ForgeSdk.Rpc do
   def prepare_consume_asset(itx, opts),
     do: apply(CoreTx.ConsumeAsset.Rpc, :prepare_consume_asset, [itx, opts])
 
-  def finalize_consume_asset(tx, wallet),
-    do: apply(CoreTx.ConsumeAsset.Rpc, :finalize_consume_asset, [tx, wallet])
+  def finalize_consume_asset(tx, asset_address, wallet),
+    do: apply(CoreTx.ConsumeAsset.Rpc, :finalize_consume_asset, [tx, asset_address, wallet])
 
   def declare(itx, opts), do: apply(CoreTx.Declare.Rpc, :declare, [itx, opts])
 

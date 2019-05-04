@@ -363,7 +363,11 @@ defmodule ForgeSdk.Rpc do
   def create_asset_factory(moniker, factory, opts),
     do: apply(CoreTx.CreateAsset.Rpc, :create_asset_factory, [moniker, factory, opts])
 
-  def consume_asset(itx, opts), do: apply(CoreTx.ConsumeAsset.Rpc, :consume_asset, [itx, opts])
+  def prepare_consume_asset(itx, opts),
+    do: apply(CoreTx.ConsumeAsset.Rpc, :prepare_consume_asset, [itx, opts])
+
+  def finalize_consume_asset(tx, wallet),
+    do: apply(CoreTx.ConsumeAsset.Rpc, :finalize_consume_asset, [tx, wallet])
 
   def declare(itx, opts), do: apply(CoreTx.Declare.Rpc, :declare, [itx, opts])
 
@@ -373,7 +377,10 @@ defmodule ForgeSdk.Rpc do
     do: apply(CoreTx.DeployProtocol.Rpc, :deploy_protocol, [itx, opts])
 
   def deposit_tether(itx, opts), do: apply(CoreTx.DepositTether.Rpc, :deposit_tether, [itx, opts])
-  def exchange(itx, opts), do: apply(CoreTx.Exchange.Rpc, :exchange, [itx, opts])
+  def prepare_exchange(itx, opts), do: apply(CoreTx.Exchange.Rpc, :prepare_exchange, [itx, opts])
+
+  def finalize_exchange(tx, wallet),
+    do: apply(CoreTx.Exchange.Rpc, :finalize_exchange, [tx, wallet])
 
   def exchange_tether(itx, opts),
     do: apply(CoreTx.ExchangeTether.Rpc, :exchange_tether, [itx, opts])

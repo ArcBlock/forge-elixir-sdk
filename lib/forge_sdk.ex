@@ -3,7 +3,7 @@ defmodule ForgeSdk do
   Public interfaces for ForgeSdk.
   """
 
-  alias ForgeSdk.{Configuration.Helper, Display, File, Loader, Rpc, Util}
+  alias ForgeSdk.{Configuration.Helper, Display, File, Loader, Rpc, Util, Wallet}
 
   # Transaction helper
   defdelegate account_migrate(itx, opts), to: Rpc
@@ -49,6 +49,7 @@ defmodule ForgeSdk do
   defdelegate get_config(chan \\ nil), to: Rpc
 
   # wallet related
+  def create_wallet, do: Wallet.create(%Wallet.Type.Forge{})
   defdelegate create_wallet(request, chan \\ nil), to: Rpc
   defdelegate load_wallet(request, chan \\ nil), to: Rpc
   defdelegate recover_wallet(request, chan \\ nil), to: Rpc

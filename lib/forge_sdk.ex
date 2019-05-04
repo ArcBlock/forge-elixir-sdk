@@ -20,6 +20,7 @@ defmodule ForgeSdk do
   defdelegate exchange_tether(itx, opts), to: Rpc
   defdelegate poke(itx, opts), to: Rpc
   defdelegate stake(itx, opts), to: Rpc
+  defdelegate unstake(itx, opts), to: Rpc
   # defdelegate sys_upgrade(itx, opts), to: Rpc
   defdelegate transfer(itx, opts), to: Rpc
   defdelegate update_asset(itx, opts), to: Rpc

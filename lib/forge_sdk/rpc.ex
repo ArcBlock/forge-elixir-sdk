@@ -381,9 +381,13 @@ defmodule ForgeSdk.Rpc do
   def poke(itx, opts), do: apply(CoreTx.Poke.Rpc, :poke, [itx, opts])
   def checkin(opts), do: apply(CoreTx.Poke.Rpc, :checkin, [opts])
   def stake(itx, opts), do: apply(CoreTx.Stake.Rpc, :stake, [itx, opts])
+  def unstake(itx, opts), do: apply(CoreTx.Unstake.Rpc, :unstake, [itx, opts])
 
   def stake_for_node(address, value, opts),
     do: apply(CoreTx.Stake.Rpc, :stake_for_node, [address, value, opts])
+
+  def unstake_for_node(address, value, opts),
+    do: apply(CoreTx.Unstake.Rpc, :unstake_for_node, [address, value, opts])
 
   def transfer(itx, opts), do: apply(CoreTx.Transfer.Rpc, :transfer, [itx, opts])
   def update_asset(itx, opts), do: apply(CoreTx.UpdateAsset.Rpc, :update_asset, [itx, opts])

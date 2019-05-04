@@ -486,4 +486,14 @@ defmodule ForgeSdk.Rpc do
   rpc :get_health_status do
     res.health_status
   end
+
+  # other helpers
+  def get_address(hash) do
+    tx = (get_tx(hash: hash) || %{tx: nil}).tx
+
+    case ForgeSdk.display(tx) do
+      nil -> nil
+      v -> get_in(v, [:itx, :address])
+    end
+  end
 end

@@ -91,6 +91,7 @@ defmodule ForgeSdk.Rpc do
     ForgeStats
   }
 
+  alias ForgeSdk.Wallet.Util, as: WalletUtil
   alias GRPC.Channel
 
   # chain related
@@ -146,9 +147,22 @@ defmodule ForgeSdk.Rpc do
     res.tx
   end
 
-  @spec multisig(RequestMultisig.t() | Keyword.t(), Channel.t() | nil, Keyword.t()) ::
+  @spec multisig(RequestMultisig.t() | Keyword.t(), Channel.t() | nil) ::
           Transaction.t() | {:error, term()}
-  rpc :multisig do
+  def multisig(req, chan \\ nil) do
+    wallet = req.wallet
+
+    case wallet.sk === "" do
+      true -> multisig_rpc(req, chan)
+      _ -> WalletUtil.multisig!(wallet, req.tx)
+    end
+  rescue
+    _ -> {:error, :internal}
+  end
+
+  @spec multisig_rpc(RequestMultisig.t() | Keyword.t(), Channel.t() | nil, Keyword.t()) ::
+          Transaction.t() | {:error, term()}
+  rpc :multisig_rpc do
     res.tx
   end
 

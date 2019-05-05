@@ -9,14 +9,16 @@ defmodule ForgeSdk do
   defdelegate account_migrate(itx, opts), to: Rpc
   defdelegate acquire_asset(itx, opts), to: Rpc
   # defdelegate consensus_upgrade(itx, opts), to: Rpc
-  defdelegate consume_asset(itx, opts), to: Rpc
+  defdelegate prepare_consume_asset(itx, opts), to: Rpc
+  defdelegate finalize_consume_asset(tx, asset_address, wallet), to: Rpc
   defdelegate create_asset(itx, opts), to: Rpc
   defdelegate create_asset_factory(moniker, factory, opts), to: Rpc
   defdelegate declare(itx, opts), to: Rpc
   # defdelegate declare_file(itx, opts), to: Rpc
   defdelegate deploy_protocol(itx, opts), to: Rpc
   defdelegate deposit_tether(itx, opts), to: Rpc
-  defdelegate exchange(itx, opts), to: Rpc
+  defdelegate prepare_exchange(itx, opts), to: Rpc
+  defdelegate finalize_exchange(tx, wallet), to: Rpc
   defdelegate exchange_tether(itx, opts), to: Rpc
   defdelegate poke(itx, opts), to: Rpc
   defdelegate stake(itx, opts), to: Rpc

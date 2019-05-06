@@ -3,20 +3,22 @@ defmodule ForgeSdk do
   Public interfaces for ForgeSdk.
   """
 
-  alias ForgeSdk.{Configuration.Helper, Display, File, Loader, Rpc, Util}
+  alias ForgeSdk.{Configuration.Helper, Display, File, Loader, Rpc, Util, Wallet}
 
   # Transaction helper
   defdelegate account_migrate(itx, opts), to: Rpc
   defdelegate acquire_asset(itx, opts), to: Rpc
   # defdelegate consensus_upgrade(itx, opts), to: Rpc
-  defdelegate consume_asset(itx, opts), to: Rpc
+  defdelegate prepare_consume_asset(itx, opts), to: Rpc
+  defdelegate finalize_consume_asset(tx, asset_address, wallet), to: Rpc
   defdelegate create_asset(itx, opts), to: Rpc
   defdelegate create_asset_factory(moniker, factory, opts), to: Rpc
   defdelegate declare(itx, opts), to: Rpc
   # defdelegate declare_file(itx, opts), to: Rpc
   defdelegate deploy_protocol(itx, opts), to: Rpc
   defdelegate deposit_tether(itx, opts), to: Rpc
-  defdelegate exchange(itx, opts), to: Rpc
+  defdelegate prepare_exchange(itx, opts), to: Rpc
+  defdelegate finalize_exchange(tx, wallet), to: Rpc
   defdelegate exchange_tether(itx, opts), to: Rpc
   defdelegate poke(itx, opts), to: Rpc
   defdelegate stake(itx, opts), to: Rpc
@@ -50,6 +52,7 @@ defmodule ForgeSdk do
   defdelegate get_config(chan \\ nil), to: Rpc
 
   # wallet related
+  def create_wallet, do: Wallet.create(%Wallet.Type.Forge{})
   defdelegate create_wallet(request, chan \\ nil), to: Rpc
   defdelegate load_wallet(request, chan \\ nil), to: Rpc
   defdelegate recover_wallet(request, chan \\ nil), to: Rpc
@@ -93,6 +96,11 @@ defmodule ForgeSdk do
   defdelegate update_config(forge_state), to: Util
   defdelegate update_type_url(forge_state), to: Loader
   defdelegate get_tx_protocols(forge_state, address), to: Loader
+  defdelegate get_address(hash), to: Rpc
+  defdelegate encode_any(data, type_url \\ nil), to: ForgeAbi
+  defdelegate encode_any!(data, type_url \\ nil), to: ForgeAbi
+  defdelegate decode_any(data), to: ForgeAbi
+  defdelegate decode_any!(data), to: ForgeAbi
 
   # init sdk and handler registration
   defdelegate init(otp_app, app_hash \\ "", filename \\ nil), to: Util

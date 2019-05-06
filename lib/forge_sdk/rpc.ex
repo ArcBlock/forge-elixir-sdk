@@ -91,6 +91,8 @@ defmodule ForgeSdk.Rpc do
     ForgeStats
   }
 
+  alias ForgeSdk.Rpc.Helper
+  alias ForgeSdk.Wallet.Util, as: WalletUtil
   alias GRPC.Channel
 
   # chain related
@@ -146,9 +148,23 @@ defmodule ForgeSdk.Rpc do
     res.tx
   end
 
-  @spec multisig(RequestMultisig.t() | Keyword.t(), Channel.t() | nil, Keyword.t()) ::
+  @spec multisig(RequestMultisig.t() | Keyword.t(), Channel.t() | nil) ::
           Transaction.t() | {:error, term()}
-  rpc :multisig do
+  def multisig(req, chan \\ nil) do
+    req = Helper.to_req(req, RequestMultisig)
+    wallet = req.wallet
+
+    case wallet.sk === "" do
+      true -> multisig_rpc(req, chan)
+      _ -> WalletUtil.multisig!(wallet, req.tx, req.data)
+    end
+  rescue
+    _ -> {:error, :internal}
+  end
+
+  @spec multisig_rpc(RequestMultisig.t() | Keyword.t(), Channel.t() | nil, Keyword.t()) ::
+          Transaction.t() | {:error, term()}
+  rpc :multisig_rpc do
     res.tx
   end
 
@@ -363,7 +379,11 @@ defmodule ForgeSdk.Rpc do
   def create_asset_factory(moniker, factory, opts),
     do: apply(CoreTx.CreateAsset.Rpc, :create_asset_factory, [moniker, factory, opts])
 
-  def consume_asset(itx, opts), do: apply(CoreTx.ConsumeAsset.Rpc, :consume_asset, [itx, opts])
+  def prepare_consume_asset(itx, opts),
+    do: apply(CoreTx.ConsumeAsset.Rpc, :prepare_consume_asset, [itx, opts])
+
+  def finalize_consume_asset(tx, asset_address, wallet),
+    do: apply(CoreTx.ConsumeAsset.Rpc, :finalize_consume_asset, [tx, asset_address, wallet])
 
   def declare(itx, opts), do: apply(CoreTx.Declare.Rpc, :declare, [itx, opts])
 
@@ -373,7 +393,10 @@ defmodule ForgeSdk.Rpc do
     do: apply(CoreTx.DeployProtocol.Rpc, :deploy_protocol, [itx, opts])
 
   def deposit_tether(itx, opts), do: apply(CoreTx.DepositTether.Rpc, :deposit_tether, [itx, opts])
-  def exchange(itx, opts), do: apply(CoreTx.Exchange.Rpc, :exchange, [itx, opts])
+  def prepare_exchange(itx, opts), do: apply(CoreTx.Exchange.Rpc, :prepare_exchange, [itx, opts])
+
+  def finalize_exchange(tx, wallet),
+    do: apply(CoreTx.Exchange.Rpc, :finalize_exchange, [tx, wallet])
 
   def exchange_tether(itx, opts),
     do: apply(CoreTx.ExchangeTether.Rpc, :exchange_tether, [itx, opts])
@@ -488,5 +511,15 @@ defmodule ForgeSdk.Rpc do
         ) :: HealthStatus.t() | {:error, term()}
   rpc :get_health_status do
     res.health_status
+  end
+
+  # other helpers
+  def get_address(hash) do
+    tx = (get_tx(hash: hash) || %{tx: nil}).tx
+
+    case ForgeSdk.display(tx) do
+      nil -> nil
+      v -> get_in(v, [:itx, :address])
+    end
   end
 end

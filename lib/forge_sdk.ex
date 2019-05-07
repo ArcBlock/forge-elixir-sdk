@@ -275,7 +275,10 @@ defmodule ForgeSdk do
   @spec upgrade_node(map(), Keyword.t()) :: String.t() | {:error, term()}
   defdelegate upgrade_node(itx, opts), to: Rpc
   # defdelegate upgrade_task(itx, opts), to: Rpc
+
   defdelegate withdraw_tether(itx, opts), to: Rpc
+
+  defdelegate approve_tether(itx, opts), to: Rpc
 
   # extended tx helper
   defdelegate stake_for_node(address, amount, opts), to: Rpc

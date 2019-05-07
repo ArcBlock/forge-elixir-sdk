@@ -66,7 +66,7 @@ defmodule ForgeSdk do
   alias GRPC.Channel
 
   @doc """
-  Migrate a wallet from old address (as well as pk, sk) to a new address.
+  Migrate a `wallet` from old address (as well as pk, sk) to a new address.
 
   ## Example
 
@@ -82,7 +82,7 @@ defmodule ForgeSdk do
   defdelegate account_migrate(itx, opts), to: Rpc
 
   @doc """
-  Create a new asset.
+  Acquire an asset from an existing asset factory.
 
   ## Example
 
@@ -107,12 +107,15 @@ defmodule ForgeSdk do
       attributes: %ForgeAbi.AssetAttributes{
         transferrable: true,
         ttl: 3600 * 3
-      }
+        }
       }
 
       ForgeSdk.create_asset_factory("Avenerages: Endgame", factory, wallet: w)
 
-      specs = Enum.map(["0", "2"], fn seat -> apply(ForgeAbi.AssetSpec, :new, [%{data: ~s({"row": "15", "seat": "#{seat}"})}])end)
+      specs =
+        Enum.map(["0", "2"], fn seat ->
+          apply(ForgeAbi.AssetSpec, :new, [%{data: ~s({"row": "15", "seat": "\#{seat}"})}])
+        end)
 
       itx = ForgeAbi.AcquireAssetTx.new(to: address, specs: specs)
 

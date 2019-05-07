@@ -1,5 +1,5 @@
 %{
-  "abt_did_elixir": {:git, "git@github.com:arcblock/abt-did-elixir.git", "d72d3f6329c115128ecc154b2b9156d6452d4626", []},
+  "abt_did_elixir": {:hex, :abt_did_elixir, "0.3.1", "e58260b45519426b0a1a53447c9671b26d10d3b5ed6c5988d1d0d175141ac4ee", [:mix], [{:distillery, "~> 2.0", [hex: :distillery, repo: "hexpm", optional: false]}, {:jason, "~> 1.1", [hex: :jason, repo: "hexpm", optional: false]}, {:mcrypto, "~> 0.2", [hex: :mcrypto, repo: "hexpm", optional: false]}, {:multibase, "~> 0.0.1", [hex: :multibase, repo: "hexpm", optional: false]}, {:typed_struct, "~> 0.1.4", [hex: :typed_struct, repo: "hexpm", optional: false]}], "hexpm"},
   "artificery": {:hex, :artificery, "0.4.1", "90b1fcedb9034853b36dbea2174f9fc1172bd50b0686a723178103def5c9c1c8", [:mix], [], "hexpm"},
   "base1": {:hex, :base1, "0.1.0", "493a46bb5b34bf38d3b69ea6eaff33416d222f1621231cb1a04af42a351117ea", [:mix], [], "hexpm"},
   "base2": {:hex, :base2, "0.1.0", "bc9e19f1578e1439010d26b1bee456f3ac980481a46c3643b24e15c40e1db0ed", [:mix], [], "hexpm"},
@@ -19,7 +19,7 @@
   "ex_abci_proto": {:hex, :ex_abci_proto, "0.8.0", "aacbb8adc3087a51820e42204a09669c935eee341d22fccfac5ddf333d5c5f45", [:mix], [{:google_protos, "~> 0.1", [hex: :google_protos, repo: "hexpm", optional: false]}, {:grpc, "~> 0.3", [hex: :grpc, repo: "hexpm", optional: false]}], "hexpm"},
   "ex_doc": {:hex, :ex_doc, "0.19.3", "3c7b0f02851f5fc13b040e8e925051452e41248f685e40250d7e40b07b9f8c10", [:mix], [{:earmark, "~> 1.2", [hex: :earmark, repo: "hexpm", optional: false]}, {:makeup_elixir, "~> 0.10", [hex: :makeup_elixir, repo: "hexpm", optional: false]}], "hexpm"},
   "excoveralls": {:hex, :excoveralls, "0.11.0", "1427780f327902f099ef948bbc107b06a200a14a80e5badc1f9624d0f059235f", [:mix], [{:hackney, "~> 1.0", [hex: :hackney, repo: "hexpm", optional: false]}, {:jason, "~> 1.0", [hex: :jason, repo: "hexpm", optional: false]}], "hexpm"},
-  "forge_abi": {:git, "git@github.com:arcblock/forge-abi.git", "2d6d9605af2d73c067045dd4ff4a9d7f11a3a87b", []},
+  "forge_abi": {:hex, :forge_abi, "1.5.0", "0d00a0f79913a968da91b075f7943cdfb418c827120de3af51f27c7b6142f785", [:mix], [{:ex_abci_proto, "~> 0.8", [hex: :ex_abci_proto, repo: "hexpm", optional: false]}, {:jason, "~> 1.1", [hex: :jason, repo: "hexpm", optional: false]}, {:protobuf, "~> 0.5.3", [hex: :protobuf, repo: "hexpm", optional: false]}, {:typed_struct, "~> 0.1.4", [hex: :typed_struct, repo: "hexpm", optional: false]}], "hexpm"},
   "google_protos": {:hex, :google_protos, "0.1.0", "c6b9e12092d17571b093d4156d004494ca143b65dbbcbfc3ffff463ea03467c0", [:mix], [{:protobuf, "~> 0.5", [hex: :protobuf, repo: "hexpm", optional: false]}], "hexpm"},
   "grpc": {:hex, :grpc, "0.3.1", "bba240631f1a262db865d9bc620b3e3abc0acfab27a922ad47727d057a734ab3", [:mix], [{:cowboy, "~> 2.5", [hex: :cowboy, repo: "hexpm", optional: false]}, {:gun, "~> 1.2", [hex: :gun, repo: "hexpm", optional: false]}, {:protobuf, "~> 0.5", [hex: :protobuf, repo: "hexpm", optional: false]}], "hexpm"},
   "gun": {:hex, :gun, "1.3.0", "18e5d269649c987af95aec309f68a27ffc3930531dd227a6eaa0884d6684286e", [:rebar3], [{:cowlib, "~> 2.6.0", [hex: :cowlib, repo: "hexpm", optional: false]}], "hexpm"},

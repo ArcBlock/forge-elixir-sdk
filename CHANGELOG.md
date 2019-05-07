@@ -1,3 +1,11 @@
+## 0.26.0 (May 07, 2019)
+  - make sdk ready for release
+  - add sdk docs (#104)
+  - Update readme (#103)
+  - alias unit_to_token / token_to_unit in forge sdk
+  - fix multisig type display issue (#101)
+  - better API for multisig txs (#100)
+
 ## 0.25.2 (May 03, 2019)
   - add the tx builder back
   - clean up forge sdk

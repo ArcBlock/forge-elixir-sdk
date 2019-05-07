@@ -97,16 +97,16 @@ compression = "zstd"
   # minimum stake value
   minimum_stake = 10000000000000000
 
-	# tx protocol download url
-	protocol_url = "https://releases.arcblock.io/forge-core-protocols/#{version}/all.json"
+  # tx protocol download url
+  protocol_url = "https://releases.arcblock.io/forge-core-protocols/#{version}/all.json"
 
-	[forge.transaction.declare]
+  [forge.transaction.declare]
 
-	# if restricted, a new wallet must have the endorsement of an existing wallet
-	restricted = false
+  # if restricted, a new wallet must have the endorsement of an existing wallet
+  restricted = false
 
-	# how many levels could the hierarchy be. say A -> B means A endoresed B, if A -> B -> C -> D -> E, E cannot endorese others.
-	hierarchy = 5
+  # how many levels could the hierarchy be. say A -> B means A endoresed B, if A -> B -> C -> D -> E, E cannot endorese others.
+  hierarchy = 5
 
   [forge.web]
 

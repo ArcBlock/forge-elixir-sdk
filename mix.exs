@@ -52,7 +52,7 @@ defmodule ForgeSdk.MixProject do
       # forge family dependencies
       {:mcrypto, "~> 0.2"},
       {:abt_did_elixir, "~> 0.3"},
-      {:forge_abi, "~> 1.5"},
+      {:forge_abi, "~> 1.6"},
 
       # dev and test
       {:credo, "~> 1.0.0", only: [:dev, :test]},
@@ -75,6 +75,7 @@ defmodule ForgeSdk.MixProject do
       files: [
         "config",
         "lib",
+        "priv",
         "mix.exs",
         "README*",
         "version",

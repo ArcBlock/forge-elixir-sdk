@@ -378,7 +378,7 @@ defmodule ForgeSdk do
       itx = ForgeAbi.ExchangeTx.new(to: w2.address, sender: sender_info, receiver: receiver_info)
       tx = ForgeSdk.prepare_exchange(itx, wallet: w1)
       tx1 = ForgeSdk.multisig(tx, w2)
-      ForgeSdk.send_tx(tx1)
+      ForgeSdk.send_tx(tx: tx1)
 
   """
   @spec multisig(RequestMultisig.t() | Keyword.t(), Channel.t() | nil) ::

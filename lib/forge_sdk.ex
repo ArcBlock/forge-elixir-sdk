@@ -16,7 +16,7 @@ defmodule ForgeSdk do
 
   """
   alias ForgeAbi.{
-    #
+    # tx
     AccountMigrateTx,
     AcquireAssetTx,
     ConsumeAssetTx,
@@ -65,8 +65,6 @@ defmodule ForgeSdk do
   alias ForgeSdk.{Configuration.Helper, Display, File, Loader, Rpc, Util, Wallet}
   alias GRPC.Channel
 
-  # Transaction helper
-
   @doc """
   Migrate a wallet from old address (as well as pk, sk) to a new address.
 
@@ -83,6 +81,44 @@ defmodule ForgeSdk do
   @spec account_migrate(AccountMigrateTx.t(), Keyword.t()) :: String.t() | {:error, term()}
   defdelegate account_migrate(itx, opts), to: Rpc
 
+  @doc """
+  Create a new asset.
+
+  ## Example
+
+      w = ForgeSdk.create_wallet()
+      ForgeSdk.declare(ForgeAbi.DeclareTx.new(moniker: "theater"), wallet: w)
+      w1 = ForgeSdk.create_wallet()
+      ForgeSdk.declare(ForgeAbi.DeclareTx.new(moniker: "tyr"), wallet: w)
+
+      # Note application shall already registered `Ticket` into Forge via `deploy_protocol`.
+      factory = %{
+      description: "movie ticket factory",
+      limit: 5,
+      price: ForgeAbi.token_to_unit(1),
+      template: ~s({
+          "row": "{{ row }}",
+          "seat": "{{ seat }}",
+          "time": "11:00am 04/30/2019",
+          "room": "4"
+        }),
+      allowed_spec_args: ["row", "seat"],
+      asset_name: "Ticket",
+      attributes: %ForgeAbi.AssetAttributes{
+        transferrable: true,
+        ttl: 3600 * 3
+      }
+      }
+
+      ForgeSdk.create_asset_factory("Avenerages: Endgame", factory, wallet: w)
+
+      specs = Enum.map(["0", "2"], fn seat -> apply(ForgeAbi.AssetSpec, :new, [%{data: ~s({"row": "15", "seat": "#{seat}"})}])end)
+
+      itx = ForgeAbi.AcquireAssetTx.new(to: address, specs: specs)
+
+      ForgeSdk.acquire_asset(itx, wallet: w1)
+
+  """
   @spec acquire_asset(AcquireAssetTx.t(), Keyword.t()) :: String.t() | {:error, term()}
   defdelegate acquire_asset(itx, opts), to: Rpc
   # defdelegate consensus_upgrade(itx, opts), to: Rpc
@@ -186,6 +222,7 @@ defmodule ForgeSdk do
   One wallet can poke in a daily basis to get some free tokens (for test chains only), nonce should be 0.
 
   ## Example
+
       w = ForgeSdk.create_wallet()
       ForgeSdk.declare(ForgeAbi.DeclareTx.new(moniker: "alice"), wallet: w)
       itx = ForgeAbi.PokeTx.new(date: "2019-03-13", address: "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz")
@@ -194,7 +231,7 @@ defmodule ForgeSdk do
       hash = ForgeSdk.send_tx(tx: tx)
 
   """
-  @spec create_asset(PokeTx.t(), Keyword.t()) :: String.t() | {:error, term()}
+  @spec poke(PokeTx.t(), Keyword.t()) :: String.t() | {:error, term()}
   defdelegate poke(itx, opts), to: Rpc
 
   defdelegate stake(itx, opts), to: Rpc
@@ -380,6 +417,7 @@ defmodule ForgeSdk do
   defdelegate send_tx(request, chan \\ nil), to: Rpc
 
   @doc """
+  Return an already processed transaction by its hash. If this API returns nil, mostly your tx hasn't been.
 
   ## Example
 
@@ -455,7 +493,6 @@ defmodule ForgeSdk do
 
   @doc """
   Load a node managed wallet by its address and passphrase from the keystore.
-
 
   ## Example
 
@@ -657,6 +694,7 @@ defmodule ForgeSdk do
   # init sdk and handler registration
 
   @doc """
+  Init forge SDK (it will setup client RPC socket for you).
 
   ## Examples
 

@@ -259,7 +259,6 @@ defmodule ForgeSdk do
       new_post = ForgeAbi.Post.new(title: "a new post", content: "Yeah!")
       itx = ForgeAbi.UpdateAssetTx.new(data: ForgeSdk.encode_any!(post), address: address)
       ForgeSdk.get_asset_state(address: address)
-  ```
 
   """
   @spec update_asset(map(), Keyword.t()) :: String.t() | {:error, term()}

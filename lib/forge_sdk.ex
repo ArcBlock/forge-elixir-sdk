@@ -282,10 +282,8 @@ defmodule ForgeSdk do
 
   ## Example
 
-    # say that your moderator wallet is `wallet`, your current version is 0.23.4,
-    # and your block height is 10000, you'd like to upgrade to 0.26.0 at height 12000
-    itx = ForgeAbi.UpgradeNodeTx.new(version: "0.26.0", height: 12000)
-    ForgeSdk.upgrade_node(itx, wallet: wallet)
+      itx = ForgeAbi.UpgradeNodeTx.new(version: "0.26.0", height: 12000)
+      ForgeSdk.upgrade_node(itx, wallet: wallet)
 
   """
   @spec upgrade_node(UpgradeNodeTx.t(), Keyword.t()) :: String.t() | {:error, term()}

@@ -1,18 +1,16 @@
 defmodule ForgeSdk do
   @moduledoc """
 
-  Forge is a full fledge blockchain framework for developers to build decentralized applications easily.
-
-  Unlike other public chain solutions (e.g. Ethereum), forge gives the developers / operators the freedom to launch their own customized chains with their own application logic. For example, one can easily build a chain on top of forge to allow their users to host events and sell event tickets - although centralized services can do this kind of requirements perfectly, giving that data is not owned by centralized service, people can easily exchange tickets freely, without the permission of the original service.
+  Forge is a full fledge blockchain framework for developers to build decentralized applications easily. Forge gives the developers / operators the freedom to launch their own customized chains with their own application logic.
 
   This is the Elixir / Erlang version of the SDK for Forge framework. To develop applications on top of the forge, you shall pick up a SDK. Forge SDK is intended to make the interaction with the chain built by Forge as easy as possible. All SDK APIs are organized into the following categories:
 
-  - chain APIs: provide the client wrapper for chain related gRPC
-  - wallet APIs: provide the client wrapper for wallet related gRPC
-  - state APIs: provide the client wrapper for state related gRPC
-  - subscription APIs: provide the client wrapper for subscription related gRPC
-  - transaction APIs: the gRPC for transaction is send_tx, this set of APIs provide helper functions to make building and sending a tx easy.
-  - misc APIs: parsing configuration, initialize sdk and more.
+  - chain APIs: provide the client wrapper for `chain` related gRPC
+  - wallet APIs: provide the client wrapper for `wallet` related gRPC
+  - state APIs: provide the client wrapper for `state` related gRPC
+  - subscription APIs: provide the client wrapper for `subscription` related gRPC
+  - transaction APIs: the gRPC for transaction is `send_tx`, this set of APIs provide helper functions to make building and sending a tx easy.
+  - misc APIs: parsing `configuration`, initialize sdk and more.
 
   """
   alias ForgeAbi.{
@@ -123,15 +121,17 @@ defmodule ForgeSdk do
   defdelegate finalize_consume_asset(tx, asset_address, wallet), to: Rpc
 
   @doc """
-  Create a new asset.
+  Create a new `asset`.
 
   ## Example
 
       wallet = ForgeSdk.create_wallet()
       declare_tx = ForgeAbi.DeclareTx.new(moniker: "sisyphus")
       ForgeSdk.declare(declare_tx, wallet: wallet)
-      ticket = ForgeAbi.Ticket.new(row: "K", seat: "22", room: "3A", time: "03/04/2019 11:00am PST", name: "Avengers: Endgame")
-      itx = ForgeAbi.CreateAsset.new(data: ForgeSdk.encode_any!(ticket), readonly: true, transferrable: true, ttl: 7200)
+      ticket = ForgeAbi.Ticket.new(row: "K", seat: "22", room: "3A", time: "03/04/2019 11:00am PST",
+      name: "Avengers: Endgame")
+      itx = ForgeAbi.CreateAsset.new(data: ForgeSdk.encode_any!(ticket), readonly: true,
+      transferrable: true, ttl: 7200)
       ForgeSdk.create_asset(itx, wallet: wallet)
 
   """
@@ -188,7 +188,7 @@ defmodule ForgeSdk do
   # defdelegate declare_file(itx, opts), to: Rpc
 
   @doc """
-  Deploy a `new protocol` into the chain at a **given block height**.
+  Deploy a `new protocol` into the chain at a given `block height`.
 
   ## Example
 
@@ -217,7 +217,8 @@ defmodule ForgeSdk do
       w = ForgeSdk.create_wallet()
       ForgeSdk.declare(ForgeAbi.DeclareTx.new(moniker: "alice"), wallet: w)
       itx = ForgeAbi.PokeTx.new(date: "2019-03-13", address: "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz")
-      req = ForgeAbi.RequestCreateTx.new(from: w.address, itx: ForgeAbi.encode_any!(:poke, itx), nonce: 0, token: t, wallet: w)
+      req = ForgeAbi.RequestCreateTx.new(from: w.address, itx: ForgeAbi.encode_any!(:poke, itx),
+      nonce: 0, token: t, wallet: w)
       tx = ForgeSdk.create_tx(req)
       hash = ForgeSdk.send_tx(tx: tx)
 
@@ -229,7 +230,7 @@ defmodule ForgeSdk do
   # defdelegate sys_upgrade(itx, opts), to: Rpc
 
   @doc """
-  Transfer tokens or/and assets from one wallet to another.
+  Transfer `tokens or/and assets` from one wallet to another.
 
   ## Example
 
@@ -246,7 +247,7 @@ defmodule ForgeSdk do
   defdelegate transfer(itx, opts), to: Rpc
 
   @doc """
-  Update an existing asset.
+  Update an existing `asset`.
 
   ## Example
 
@@ -265,7 +266,7 @@ defmodule ForgeSdk do
   defdelegate update_asset(itx, opts), to: Rpc
 
   @doc """
-  Upgrade the node to a new version at a given block height.
+  Upgrade the `node` to a new version at a given `block height`.
 
   ## Example
 
@@ -282,7 +283,7 @@ defmodule ForgeSdk do
 
   # chain related
   @doc """
-  One wallet can check in a **daily basis** to get some free tokens (for test chains only), `nonce` should be 0.
+  One wallet can check in a daily basis to get some free tokens (for test chains only), `nonce` should be 0.
 
   ## Example
       w = ForgeSdk.create_wallet()
@@ -319,7 +320,7 @@ defmodule ForgeSdk do
   defdelegate get_node_info(chan \\ nil), to: Rpc
 
   @doc """
-  Retrieve the network info.
+  Retrieve the `network info`.
 
   ## Example
 
@@ -405,7 +406,7 @@ defmodule ForgeSdk do
   defdelegate send_tx(request, chan \\ nil), to: Rpc
 
   @doc """
-  Return an already processed transaction by its hash. If this API returns `nil`, mostly your tx hasn't been.
+  Return an already processed `transaction` by its `hash`. If this API returns `nil`, mostly your tx hasn't been.
 
   ## Example
 
@@ -422,7 +423,7 @@ defmodule ForgeSdk do
   defdelegate get_unconfirmed_txs(request, chan \\ nil), to: Rpc
 
   @doc """
-  Get a block by its height. All txs included in this block will be returned.
+  Get a block by its `height`. All txs included in this block will be returned.
 
   ## Example
 
@@ -437,13 +438,14 @@ defmodule ForgeSdk do
   defdelegate get_block(requests, chan \\ nil), to: Rpc
 
   @doc """
-  Get a list of blocks between a range.
+  Get a `list` of blocks between a range.
 
   ## Example
 
       page_info = ForgeAbi.PageInfo.new
       range_filter = ForgeAbi.RangeFilter.new(from: 1000, to: 1015)
-      req = ForgeAbi.RequestGetBlocks.new(empty_excluded: true, height_filter: range_filter, paging: page_info)
+      req = ForgeAbi.RequestGetBlocks.new(empty_excluded: true, height_filter: range_filter,
+      paging: page_info)
       ForgeSdk.get_blocks(req)
 
   """
@@ -480,7 +482,7 @@ defmodule ForgeSdk do
   defdelegate create_wallet(request, chan \\ nil), to: Rpc
 
   @doc """
-  Load a node managed wallet by its address and passphrase from the keystore.
+  Load a node managed wallet by its `address` and `passphrase` from the keystore.
 
   ## Example
 
@@ -494,7 +496,9 @@ defmodule ForgeSdk do
   defdelegate load_wallet(request, chan \\ nil), to: Rpc
 
   @doc """
-  If you know the type and the secret key of the wallet, you can recover it into the current forge node. This is useful when you want to switch your wallet from one node to another. This will generate a keystore file.
+  If you know the `type` and the `secret key` of the wallet, you can recover it into the current forge node.
+  This is useful when you want to switch your wallet from one node to another.
+  This will generate a keystore file.
 
   ## Example
 
@@ -508,7 +512,7 @@ defmodule ForgeSdk do
   defdelegate recover_wallet(request, chan \\ nil), to: Rpc
 
   @doc """
-  Display the wallet addresses that current forge node hosts.
+  Display the `wallet addresses` that current forge node hosts.
 
   ## Example
 
@@ -519,7 +523,7 @@ defmodule ForgeSdk do
   defdelegate list_wallet(chan \\ nil), to: Rpc
 
   @doc """
-  Delete the keystore for a given wallet address. This is useful when you finished your work on the forge node and you'd remove the footprint for your wallet.
+  Delete the `keystore` for a given `wallet address`. This is useful when you finished your work on the forge node and you'd remove the footprint for your wallet.
 
   ## Example
 
@@ -551,7 +555,7 @@ defmodule ForgeSdk do
   defdelegate get_account_state(request, chan \\ nil), to: Rpc
 
   @doc """
-  Return the state for an asset.
+  Return the `state` for an asset.
 
   ## Example
 
@@ -604,7 +608,7 @@ defmodule ForgeSdk do
   # subscription related
 
   @doc """
-  Subscribe to a topic. You can event set a filter for the event that you'd listen.
+  Subscribe to a `topic`. You can event set a filter for the event that you'd listen.
 
   ## Example
 

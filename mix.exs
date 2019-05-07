@@ -15,7 +15,17 @@ defmodule ForgeSdk.MixProject do
       start_permanent: Mix.env() == :prod,
       test_coverage: [tool: ExCoveralls],
       deps: deps(),
-      dialyzer: [ignore_warnings: ".dialyzer_ignore.exs", plt_add_apps: [:eex, :typed_struct]]
+      dialyzer: [ignore_warnings: ".dialyzer_ignore.exs", plt_add_apps: [:eex, :typed_struct]],
+      description: description(),
+      package: package(),
+      # Docs
+      name: "ForgeSdk",
+      source_url: "https://github.com/arcblock/forge-elixir-sdk",
+      homepage_url: "https://github.com/arcblock/forge-elixir-sdk",
+      docs: [
+        main: "ForgeSdk",
+        extras: ["README.md"]
+      ]
     ]
   end
 
@@ -41,10 +51,8 @@ defmodule ForgeSdk.MixProject do
 
       # forge family dependencies
       {:mcrypto, "~> 0.2"},
-      {:abt_did_elixir, git: "git@github.com:arcblock/abt-did-elixir.git"},
-      # {:abt_did_elixir, path: "../abt-did-elixir"},
-      {:forge_abi, git: "git@github.com:arcblock/forge-abi.git"},
-      # {:forge_abi, path: "../forge-abi"},
+      {:abt_did_elixir, "~> 0.3"},
+      {:forge_abi, "~> 1.5"},
 
       # dev and test
       {:credo, "~> 1.0.0", only: [:dev, :test]},
@@ -53,6 +61,36 @@ defmodule ForgeSdk.MixProject do
       {:excoveralls, "~> 0.10", only: [:test]},
       {:pre_commit_hook, "~> 1.2", only: [:dev, :test], runtime: false},
       {:stream_data, "~> 0.4", only: [:test, :integration]}
+    ]
+  end
+
+  defp description do
+    """
+    Elixir / Erlang version of the SDK for Forge framework.
+    """
+  end
+
+  defp package do
+    [
+      files: [
+        "config",
+        "lib",
+        "mix.exs",
+        "README*",
+        "version",
+        ".elixir_version"
+      ],
+      licenses: ["Apache 2.0"],
+      maintainers: [
+        "christinaleizhou@gmail.com",
+        "dingpl716@gmail.com",
+        "sunboshan@gmail.com",
+        "tyr.chen@gmail.com"
+      ],
+      links: %{
+        "GitHub" => "https://github.com/arcblock/forge-elixir-sdk",
+        "Docs" => "https://hexdocs.pm/forge-elixir-sdk"
+      }
     ]
   end
 end

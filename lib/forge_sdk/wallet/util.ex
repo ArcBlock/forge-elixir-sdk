@@ -9,6 +9,8 @@ defmodule ForgeSdk.Wallet.Util do
   alias ForgeSdk.Util.Validator
   alias ForgeAbi.{KeyType, HashType, Multisig, RoleType, Transaction, WalletInfo, WalletType}
 
+  alias Google.Protobuf.Any
+
   alias Mcrypto.Crypter.AES
   alias Mcrypto.Hasher.{Keccak, Sha2, Sha3}
   alias Mcrypto.Signer.{Ed25519, Secp256k1}

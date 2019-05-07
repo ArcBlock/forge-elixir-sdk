@@ -16,30 +16,19 @@ defmodule ForgeSdk do
 
   """
   alias ForgeAbi.{
-    # tx
-    AccountMigrateTx,
-    AcquireAssetTx,
-    ConsumeAssetTx,
-    CreateAssetTx,
-    DeclareTx,
-    DeployProtocolTx,
-    ExchangeTx,
-    TransferTx,
-    UpdateAssetTx,
-    UpgradeNodeTx,
-
     # other
     AccountState,
     AssetState,
     BlockInfo,
+    BlockInfoSimple,
     ChainInfo,
     ForgeState,
     NetInfo,
     NodeInfo,
     PageInfo,
     ProtocolState,
-    StatusCode,
     Transaction,
+    TransactionInfo,
     ValidatorsInfo,
     WalletInfo,
 
@@ -78,11 +67,11 @@ defmodule ForgeSdk do
       ForgeSdk.account_migrate(itx, wallet: old_wallet)
 
   """
-  @spec account_migrate(AccountMigrateTx.t(), Keyword.t()) :: String.t() | {:error, term()}
+  @spec account_migrate(map(), Keyword.t()) :: String.t() | {:error, term()}
   defdelegate account_migrate(itx, opts), to: Rpc
 
   @doc """
-  Acquire an asset from an existing asset factory.
+  Acquire an `asset` from an existing asset factory.
 
   ## Example
 
@@ -122,12 +111,11 @@ defmodule ForgeSdk do
       ForgeSdk.acquire_asset(itx, wallet: w1)
 
   """
-  @spec acquire_asset(AcquireAssetTx.t(), Keyword.t()) :: String.t() | {:error, term()}
+  @spec acquire_asset(map(), Keyword.t()) :: String.t() | {:error, term()}
   defdelegate acquire_asset(itx, opts), to: Rpc
   # defdelegate consensus_upgrade(itx, opts), to: Rpc
 
-  @spec prepare_consume_asset(ConsumeAssetTx.t(), Keyword.t()) ::
-          Transaction.t() | {:error, term()}
+  @spec prepare_consume_asset(map(), Keyword.t()) :: Transaction.t() | {:error, term()}
   defdelegate prepare_consume_asset(itx, opts), to: Rpc
 
   @spec finalize_consume_asset(Transaction.t(), String.t(), WalletInfo.t()) ::
@@ -147,11 +135,11 @@ defmodule ForgeSdk do
       ForgeSdk.create_asset(itx, wallet: wallet)
 
   """
-  @spec create_asset(CreateAssetTx.t(), Keyword.t()) :: String.t() | {:error, term()}
+  @spec create_asset(map(), Keyword.t()) :: String.t() | {:error, term()}
   defdelegate create_asset(itx, opts), to: Rpc
 
   @doc """
-  Create a new asset factory.
+  Create a new `asset factory`.
 
   ## Example
 
@@ -186,7 +174,7 @@ defmodule ForgeSdk do
   defdelegate create_asset_factory(moniker, factory, opts), to: Rpc
 
   @doc """
-  Declare a wallet to the chain.
+  Declare a `wallet` to the chain.
 
   ## Example
 
@@ -195,12 +183,12 @@ defmodule ForgeSdk do
       ForgeSdk.declare(declare_tx, wallet: wallet)
 
   """
-  @spec declare(DeclareTx.t(), Keyword.t()) :: String.t() | {:error, term()}
+  @spec declare(map(), Keyword.t()) :: String.t() | {:error, term()}
   defdelegate declare(itx, opts), to: Rpc
   # defdelegate declare_file(itx, opts), to: Rpc
 
   @doc """
-  Deploy a new protocol into the chain at a given block height.
+  Deploy a `new protocol` into the chain at a **given block height**.
 
   ## Example
 
@@ -208,11 +196,11 @@ defmodule ForgeSdk do
       ForgeSdk.deploy_protocol(itx, wallet: wallet)
 
   """
-  @spec deploy_protocol(DeployProtocolTx.t(), Keyword.t()) :: String.t() | {:error, term()}
+  @spec deploy_protocol(map(), Keyword.t()) :: String.t() | {:error, term()}
   defdelegate deploy_protocol(itx, opts), to: Rpc
   defdelegate deposit_tether(itx, opts), to: Rpc
 
-  @spec prepare_exchange(ExchangeTx.t(), Keyword.t()) :: Transaction.t() | {:error, term()}
+  @spec prepare_exchange(map(), Keyword.t()) :: Transaction.t() | {:error, term()}
   defdelegate prepare_exchange(itx, opts), to: Rpc
 
   @spec finalize_exchange(Transaction.t(), WalletInfo.t()) :: {:error, term()} | Transaction.t()
@@ -222,7 +210,7 @@ defmodule ForgeSdk do
   # defdelegate sys_upgrade(itx, opts), to: Rpc
 
   @doc """
-  One wallet can poke in a daily basis to get some free tokens (for test chains only), nonce should be 0.
+  One wallet can poke in a **daily basis** to get some free tokens (for test chains only), `nonce` should be 0.
 
   ## Example
 
@@ -254,7 +242,7 @@ defmodule ForgeSdk do
       ForgeSdk.transfer(req, wallet: w1)
 
   """
-  @spec transfer(TransferTx.t(), Keyword.t()) :: String.t() | {:error, term()}
+  @spec transfer(map(), Keyword.t()) :: String.t() | {:error, term()}
   defdelegate transfer(itx, opts), to: Rpc
 
   @doc """
@@ -274,7 +262,7 @@ defmodule ForgeSdk do
   ```
 
   """
-  @spec update_asset(UpdateAssetTx.t(), Keyword.t()) :: String.t() | {:error, term()}
+  @spec update_asset(map(), Keyword.t()) :: String.t() | {:error, term()}
   defdelegate update_asset(itx, opts), to: Rpc
 
   @doc """
@@ -286,7 +274,7 @@ defmodule ForgeSdk do
       ForgeSdk.upgrade_node(itx, wallet: wallet)
 
   """
-  @spec upgrade_node(UpgradeNodeTx.t(), Keyword.t()) :: String.t() | {:error, term()}
+  @spec upgrade_node(map(), Keyword.t()) :: String.t() | {:error, term()}
   defdelegate upgrade_node(itx, opts), to: Rpc
   # defdelegate upgrade_task(itx, opts), to: Rpc
 
@@ -295,7 +283,7 @@ defmodule ForgeSdk do
 
   # chain related
   @doc """
-  One wallet can check in a daily basis to get some free tokens (for test chains only), nonce should be 0.
+  One wallet can check in a **daily basis** to get some free tokens (for test chains only), `nonce` should be 0.
 
   ## Example
       w = ForgeSdk.create_wallet()
@@ -373,8 +361,8 @@ defmodule ForgeSdk do
   defdelegate create_tx(request, chan \\ nil), to: Rpc
 
   @doc """
-  Forge we support multisig for a tx, you can use this to endorse an already signed tx.
-  ExchangeTx, ConsumeAssetTx and some other txs are using multisig technology.
+  Forge we support `multisig` for a tx, you can use this to endorse an already signed tx.
+  **ExchangeTx, ConsumeAssetTx and some other txs** are using multisig technology.
 
   ## Example
 
@@ -418,7 +406,7 @@ defmodule ForgeSdk do
   defdelegate send_tx(request, chan \\ nil), to: Rpc
 
   @doc """
-  Return an already processed transaction by its hash. If this API returns nil, mostly your tx hasn't been.
+  Return an already processed transaction by its hash. If this API returns `nil`, mostly your tx hasn't been.
 
   ## Example
 
@@ -469,7 +457,7 @@ defmodule ForgeSdk do
   # wallet related
 
   @doc """
-  This will generate a wallet with default DID type: public key type is ED25519, hash type is sha3(256), and DID role type is account.
+  This will generate a wallet with default DID type: public key type is `ED25519`, hash type is `sha3(256)`, and DID role type is account.
 
   ## Example
 
@@ -480,7 +468,7 @@ defmodule ForgeSdk do
   def create_wallet, do: Wallet.create(%Wallet.Type.Forge{})
 
   @doc """
-  You can pass in your own DID type in a map once you want to create a wallet with different settings.
+  You can pass in your own `DID` type in a map once you want to create a wallet with different settings.
 
   ## Example
 
@@ -549,7 +537,7 @@ defmodule ForgeSdk do
   # state related
 
   @doc """
-  Return the state for an account, node, validator or application address.
+  Return the `state` for an account, node, validator or application address.
 
   ## Example
 
@@ -630,7 +618,7 @@ defmodule ForgeSdk do
   defdelegate subscribe(request, chan \\ nil, opts \\ []), to: Rpc
 
   @doc """
-  Terminate the subscription by the topic id.
+  Terminate the subscription by the topic `id`.
 
   ## Example
 
@@ -642,7 +630,7 @@ defmodule ForgeSdk do
 
   """
   @spec unsubscribe(RequestUnsubscribe.t(), Channel.t() | nil, Keyword.t()) ::
-          StatusCode.t() | {:error, term()}
+          :ok | {:error, term()}
   defdelegate unsubscribe(request, chan \\ nil, opts \\ []), to: Rpc
 
   # extended
@@ -651,7 +639,7 @@ defmodule ForgeSdk do
   # display a data structure
 
   @doc """
-  Provide a display friendly result for a data structure
+  Provide a display friendly result for a data structure.
 
   ## Examples
 

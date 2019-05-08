@@ -53,8 +53,8 @@ defmodule ForgeSdk.MixProject do
       {:mcrypto, "~> 0.2"},
       {:abt_did_elixir, "~> 0.3"},
       # {:abt_did_elixir, path: "../abt-did-elixir"},
-      # {:forge_abi, "~> 1.5"},
-      {:forge_abi, path: "../forge-abi"},
+      {:forge_abi, "~> 1.6"},
+      # {:forge_abi, path: "../forge-abi"},
 
       # dev and test
       {:credo, "~> 1.0.0", only: [:dev, :test]},
@@ -77,6 +77,7 @@ defmodule ForgeSdk.MixProject do
       files: [
         "config",
         "lib",
+        "priv",
         "mix.exs",
         "README*",
         "version",

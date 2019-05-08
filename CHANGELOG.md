@@ -1,3 +1,6 @@
+## 0.26.1 (May 07, 2019)
+  - update docs (#105)
+
 ## 0.26.0 (May 07, 2019)
   - make sdk ready for release
   - add sdk docs (#104)

@@ -417,6 +417,8 @@ defmodule ForgeSdk.Rpc do
 
   def approve_tether(itx, opts), do: apply(CoreTx.ApproveTether.Rpc, :approve_tether, [itx, opts])
 
+  def revoke_tether(itx, opts), do: apply(CoreTx.RevokeTether.Rpc, :revoke_tether, [itx, opts])
+
   # account related
 
   @doc """

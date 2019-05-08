@@ -1,3 +1,6 @@
+## 0.26.2 (May 07, 2019)
+  - Support withdraw and approve tether transaction.
+  
 ## 0.26.1 (May 07, 2019)
   - update docs (#105)
 

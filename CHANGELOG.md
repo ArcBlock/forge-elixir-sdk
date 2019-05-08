@@ -1,6 +1,9 @@
+## 0.26.3 (May 08, 2019)
+	- add license
+
 ## 0.26.2 (May 07, 2019)
   - Support withdraw and approve tether transaction.
-  
+
 ## 0.26.1 (May 07, 2019)
   - update docs (#105)
 
@@ -157,4 +160,3 @@
 ## 0.13.3 (February 10, 2019)
   - fix credo issues
   - fix dialyzer
-

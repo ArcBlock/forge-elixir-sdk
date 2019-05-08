@@ -412,6 +412,11 @@ defmodule ForgeSdk.Rpc do
   def update_asset(itx, opts), do: apply(CoreTx.UpdateAsset.Rpc, :update_asset, [itx, opts])
   def upgrade_node(itx, opts), do: apply(CoreTx.UpgradeNode.Rpc, :upgrade_node, [itx, opts])
 
+  def withdraw_tether(itx, opts),
+    do: apply(CoreTx.WithdrawTether.Rpc, :withdraw_tether, [itx, opts])
+
+  def approve_tether(itx, opts), do: apply(CoreTx.ApproveTether.Rpc, :approve_tether, [itx, opts])
+
   # account related
 
   @doc """

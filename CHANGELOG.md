@@ -1,3 +1,6 @@
+## 0.26.4 (May 08, 2019)
+	- Support revoke tether transaction.
+
 ## 0.26.3 (May 08, 2019)
 	- add license
 

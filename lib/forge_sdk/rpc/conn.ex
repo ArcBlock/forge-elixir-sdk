@@ -55,8 +55,12 @@ defmodule ForgeSdk.Rpc.Conn do
     Logger.info("Forge ABI RPC: reconnect to #{addr}...")
 
     case Client.connect(addr, opts) do
-      {:ok, chan} -> {:ok, %{state | chan: chan}}
-      {:error, _} -> {:backoff, 5000, state}
+      {:ok, chan} ->
+        Process.monitor(chan.adapter_payload.conn_pid)
+        {:ok, %{state | chan: chan}}
+
+      {:error, _} ->
+        {:backoff, 5000, state}
     end
   end
 
@@ -83,5 +87,18 @@ defmodule ForgeSdk.Rpc.Conn do
 
   def handle_call(:close, from, state) do
     {:disconnect, {:close, from}, state}
+  end
+
+  def handle_info(
+        {:DOWN, _ref, :process, pid, reason},
+        %{chan: %{adapter_payload: %{conn_pid: pid}}} = state
+      ) do
+    Logger.info("Forge ABI RPC: connection down with reason #{inspect(reason)}...")
+    {:connect, :reconnect, %{state | chan: nil}}
+  end
+
+  def handle_info(msg, state) do
+    Logger.warn("#{inspect(msg)}")
+    {:noreply, state}
   end
 end

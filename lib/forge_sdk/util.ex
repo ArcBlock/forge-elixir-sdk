@@ -8,7 +8,7 @@ defmodule ForgeSdk.Util do
   alias ForgeSdk.Configuration
   alias Configuration.{Cache, Forge, ForgeApp, Ipfs, Tendermint}
 
-  alias Google.Protobuf.{Any, Timestamp}
+  alias Google.Protobuf.Timestamp
 
   @config_priorities [:env, :home, :priv]
 

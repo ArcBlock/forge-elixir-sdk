@@ -240,7 +240,7 @@ defmodule ForgeSdk.Wallet.Util do
         type: nil,
         sk: sk,
         pk: pk,
-        address: to_address(pk, type)
+        address: AbtDid.pk_to_did(type, pk, form: :short)
       })
 
     if passphrase !== "" do

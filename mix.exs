@@ -51,8 +51,8 @@ defmodule ForgeSdk.MixProject do
 
       # forge family dependencies
       {:mcrypto, "~> 0.2"},
-      {:abt_did_elixir, "~> 0.3"},
-      # {:abt_did_elixir, path: "../abt-did-elixir"},
+      # {:abt_did_elixir, "~> 0.3"},
+      {:abt_did_elixir, path: "../abt-did-elixir"},
       {:forge_abi, "~> 1.6.2"},
       # {:forge_abi, path: "../forge-abi"},
 

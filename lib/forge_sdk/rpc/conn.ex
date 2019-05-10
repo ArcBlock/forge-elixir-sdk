@@ -12,11 +12,9 @@ defmodule ForgeSdk.Rpc.Conn do
     Connection.start_link(__MODULE__, {addr, opts}, name: __MODULE__)
   end
 
+  @spec get_chan() :: GRPC.Channel.t() | {:error, :closed}
   def get_chan do
-    case Process.whereis(ForgeSdk.Rpc.Conn) do
-      nil -> nil
-      _ -> Connection.call(__MODULE__, :get_chan)
-    end
+    Connection.call(__MODULE__, :get_chan)
   end
 
   @spec close :: any()

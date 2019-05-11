@@ -8,8 +8,6 @@ defmodule ForgeSdk.Util do
   alias ForgeSdk.Configuration
   alias Configuration.{Cache, Forge, ForgeApp, Ipfs, Tendermint}
 
-  alias ForgeSdk.Wallet.Util, as: WalletUtil
-
   alias Google.Protobuf.Timestamp
 
   @config_priorities [:env, :home, :priv]
@@ -148,26 +146,16 @@ defmodule ForgeSdk.Util do
 
   @spec to_tether_address(String.t()) :: String.t()
   def to_tether_address(hash) do
-    <<pk_hash::binary-size(40), _::binary-size(24)>> = hash
-    AbtDid.pkhash_to_did(:tether, pk_hash, form: :short)
+    AbtDid.hash_to_did(:tether, hash, form: :short)
   end
 
   @doc """
-  Generate address for asset. Use owner's address + owner's nonce when creating this asset.
+  Generate address for asset. We only use itx.data to generate asset address. Thus same itx.data would be treated as duplicate asset.
   """
-  @spec to_asset_address(String.t(), map()) :: String.t()
-  def to_asset_address("", itx) do
+  @spec to_asset_address(map()) :: String.t()
+  def to_asset_address(itx) do
     hash = Mcrypto.hash(%Mcrypto.Hasher.Sha3{}, itx.__struct__.encode(itx))
-    did_type = %AbtDid.Type{hash_type: :sha3, key_type: :ed25519, role_type: :asset}
-    WalletUtil.to_address(hash, did_type)
-  end
-
-  def to_asset_address(address, itx) do
-    # TODO: in future we shall just use itx to generate asset address. Thus one cannot generate duplicate asset with different wallet.
-    hash = Mcrypto.hash(%Mcrypto.Hasher.Sha3{}, itx.__struct__.encode(itx))
-    data = address <> hash
-    did_type = address |> AbtDid.get_did_type() |> Map.put(:role_type, :asset)
-    WalletUtil.to_address(data, did_type)
+    AbtDid.hash_to_did(:asset, hash, form: :short)
   end
 
   @doc """
@@ -175,9 +163,8 @@ defmodule ForgeSdk.Util do
   """
   @spec to_tx_address(map()) :: String.t()
   def to_tx_address(itx) do
-    data = Mcrypto.hash(%Mcrypto.Hasher.Sha3{}, itx.__struct__.encode(itx))
-    did_type = %AbtDid.Type{role_type: :tx, key_type: :ed25519, hash_type: :sha3}
-    WalletUtil.to_address(data, did_type)
+    hash = Mcrypto.hash(%Mcrypto.Hasher.Sha3{}, itx.__struct__.encode(itx))
+    AbtDid.hash_to_did(:tx, hash, form: :short)
   end
 
   @doc """
@@ -186,15 +173,10 @@ defmodule ForgeSdk.Util do
   """
   @spec to_stake_address(String.t(), String.t()) :: String.t()
   def to_stake_address(addr1, addr2) do
-    data =
-      case addr1 < addr2 do
-        true -> addr1 <> addr2
-        _ -> addr2 <> addr1
-      end
+    data = addr1 <> addr2
 
-    # complex address uses :sha3 and :base58
-    did_type = %AbtDid.Type{role_type: :stake, key_type: :ed25519, hash_type: :sha3}
-    ForgeSdk.Wallet.Util.to_address(data, did_type)
+    hash = Mcrypto.hash(%Mcrypto.Hasher.Sha3{}, data)
+    AbtDid.hash_to_did(:stake, hash, form: :short)
   end
 
   def datetime_to_proto(dt), do: Google.Protobuf.Timestamp.new(seconds: DateTime.to_unix(dt))

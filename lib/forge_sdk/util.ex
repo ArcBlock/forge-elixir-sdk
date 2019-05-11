@@ -44,8 +44,12 @@ defmodule ForgeSdk.Util do
     |> get_servers()
   end
 
+  @doc """
+  Get the gRPC connection channel.
+  """
+  @spec get_chan() :: GRPC.Channel.t() | {:error, any}
   def get_chan do
-    case ForgeSdk.Rpc.Conn.get_chan() do
+    case Process.whereis(ForgeSdk.Rpc.Conn) do
       nil ->
         config = ForgeSdk.get_env(:forge_config)
 
@@ -56,11 +60,10 @@ defmodule ForgeSdk.Util do
             v -> v
           end
 
-        {:ok, chan} = GRPC.Stub.connect(addr)
-        chan
+        GRPC.Stub.connect(addr)
 
-      v ->
-        v
+      _pid ->
+        ForgeSdk.Rpc.Conn.get_chan()
     end
   end
 

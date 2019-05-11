@@ -1,3 +1,6 @@
+## 0.26.5 (May 10, 2019)
+  - support asset address change
+
 ## 0.26.4 (May 08, 2019)
 	- Support revoke tether transaction.
 

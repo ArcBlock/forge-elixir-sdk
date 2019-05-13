@@ -17,7 +17,7 @@ defmodule ForgeSdk.Rpc.Conn do
 
   * `addr` - the address of gRPC server in `host:port` format
   * `opts` - the options for gRPC http2 client `gun`
-  * `callback` - the function to be called when gRPC connection is established
+  * `callback` - the 0 arity function to be called when gRPC connection is established
   """
   @spec start_link(String.t(), Keyword.t(), (() -> any)) :: GenServer.on_start()
   def start_link(addr, opts, callback) do

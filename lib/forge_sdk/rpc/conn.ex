@@ -104,7 +104,7 @@ defmodule ForgeSdk.Rpc.Conn do
   end
 
   def handle_info(msg, state) do
-    Logger.debug("#{inspect(msg)}")
+    Logger.debug("Got unexpected info message: #{inspect(msg)}")
     {:noreply, state}
   end
 end

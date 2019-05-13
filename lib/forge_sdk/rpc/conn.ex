@@ -96,7 +96,7 @@ defmodule ForgeSdk.Rpc.Conn do
   end
 
   def handle_info(msg, state) do
-    Logger.warn("#{inspect(msg)}")
+    Logger.debug("#{inspect(msg)}")
     {:noreply, state}
   end
 end

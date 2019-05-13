@@ -1,11 +1,16 @@
+## 0.26.6 (May 13, 2019)
+  - Add support for callback function
+  - Add connection options for single connection for grpc server
+  - handle_info use logger debug
+
 ## 0.26.5 (May 10, 2019)
   - support asset address change
 
 ## 0.26.4 (May 08, 2019)
-	- Support revoke tether transaction.
+  - Support revoke tether transaction.
 
 ## 0.26.3 (May 08, 2019)
-	- add license
+  - add license
 
 ## 0.26.2 (May 07, 2019)
   - Support withdraw and approve tether transaction.

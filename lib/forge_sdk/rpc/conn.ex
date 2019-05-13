@@ -8,8 +8,20 @@ defmodule ForgeSdk.Rpc.Conn do
 
   alias GRPC.Stub, as: Client
 
-  def start_link(addr, opts) do
-    Connection.start_link(__MODULE__, {addr, opts}, name: __MODULE__)
+  # ------------------------------------------------------------------
+  # api
+  # ------------------------------------------------------------------
+
+  @doc """
+  The parameters for start_link/3 are:
+
+  * `addr` - the address of gRPC server in `host:port` format
+  * `opts` - the options for gRPC http2 client `gun`
+  * `callback` - the 0 arity function to be called when gRPC connection is established
+  """
+  @spec start_link(String.t(), Keyword.t(), (() -> any)) :: GenServer.on_start()
+  def start_link(addr, opts, callback) do
+    Connection.start_link(__MODULE__, {addr, opts, callback}, name: __MODULE__)
   end
 
   @spec get_chan() :: GRPC.Channel.t() | {:error, :closed}
@@ -20,41 +32,38 @@ defmodule ForgeSdk.Rpc.Conn do
   @spec close :: any()
   def close, do: Connection.call(__MODULE__, :close)
 
-  @spec child_spec(String.t()) :: map
-  def child_spec(addr) do
+  @spec child_spec(Keyword.t()) :: map
+  def child_spec(args) do
+    addr = Keyword.get(args, :addr)
+    callback = Keyword.get(args, :callback)
+
     %{
       id: __MODULE__,
-      start:
-        {__MODULE__, :start_link,
-         [
-           addr,
-           [
-             adapter_opts: %{
-               # turn off keepalive to prevent zombie connections for grpc server
-               http2_opts: %{keepalive: :infinity},
-               # disable retry on gun's part to prevent undesired zombie connections
-               retry: 0
-             }
-           ]
-         ]},
+      # disable retry on gun's part to prevent undesired zombie connections
+      start: {__MODULE__, :start_link, [addr, [adapter_opts: %{retry: 0}], callback]},
       type: :worker,
       restart: :permanent,
       shutdown: 500
     }
   end
 
+  # ------------------------------------------------------------------
   # callbacks
-  def init({"unix://" <> addr, opts}),
-    do: {:connect, :init, %{addr: addr, opts: opts, chan: nil}}
+  # ------------------------------------------------------------------
 
-  def init({"tcp://" <> addr, opts}), do: {:connect, :init, %{addr: addr, opts: opts, chan: nil}}
+  def init({"unix://" <> addr, opts, callback}),
+    do: {:connect, :init, %{addr: addr, opts: opts, chan: nil, callback: callback}}
 
-  def connect(_, %{chan: nil, addr: addr, opts: opts} = state) do
+  def init({"tcp://" <> addr, opts, callback}),
+    do: {:connect, :init, %{addr: addr, opts: opts, chan: nil, callback: callback}}
+
+  def connect(_, %{chan: nil, addr: addr, opts: opts, callback: callback} = state) do
     Logger.info("Forge ABI RPC: reconnect to #{addr}...")
 
     case Client.connect(addr, opts) do
       {:ok, chan} ->
         Process.monitor(chan.adapter_payload.conn_pid)
+        callback && spawn(callback)
         {:ok, %{state | chan: chan}}
 
       {:error, _} ->
@@ -74,7 +83,6 @@ defmodule ForgeSdk.Rpc.Conn do
     {:connect, :reconnect, %{state | chan: nil}}
   end
 
-  # callbacks
   def handle_call(_, _, %{chan: nil} = state) do
     {:reply, {:error, :closed}, state}
   end
@@ -91,12 +99,12 @@ defmodule ForgeSdk.Rpc.Conn do
         {:DOWN, _ref, :process, pid, reason},
         %{chan: %{adapter_payload: %{conn_pid: pid}}} = state
       ) do
-    Logger.info("Forge ABI RPC: connection down with reason #{inspect(reason)}...")
+    Logger.debug("Forge ABI RPC: connection down with reason #{inspect(reason)}...")
     {:connect, :reconnect, %{state | chan: nil}}
   end
 
   def handle_info(msg, state) do
-    Logger.warn("#{inspect(msg)}")
+    Logger.debug("Got unexpected info message: #{inspect(msg)}")
     {:noreply, state}
   end
 end

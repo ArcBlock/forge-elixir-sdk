@@ -58,7 +58,12 @@ defmodule ForgeSdk.Util do
             v -> v
           end
 
-        GRPC.Stub.connect(addr)
+        opts = %{retry: 0, http2_opts: %{keepalive: :infinity}}
+
+        case GRPC.Stub.connect(addr, adapter_opts: opts) do
+          {:ok, chan} -> chan
+          v -> v
+        end
 
       _pid ->
         ForgeSdk.Rpc.Conn.get_chan()

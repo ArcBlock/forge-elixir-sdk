@@ -24,19 +24,8 @@ defmodule ForgeSdk.Rpc.Conn do
   def child_spec(addr) do
     %{
       id: __MODULE__,
-      start:
-        {__MODULE__, :start_link,
-         [
-           addr,
-           [
-             adapter_opts: %{
-               # turn off keepalive to prevent zombie connections for grpc server
-               http2_opts: %{keepalive: :infinity},
-               # disable retry on gun's part to prevent undesired zombie connections
-               retry: 0
-             }
-           ]
-         ]},
+      # disable retry on gun's part to prevent undesired zombie connections
+      start: {__MODULE__, :start_link, [addr, [adapter_opts: %{retry: 0}]]},
       type: :worker,
       restart: :permanent,
       shutdown: 500
@@ -91,7 +80,7 @@ defmodule ForgeSdk.Rpc.Conn do
         {:DOWN, _ref, :process, pid, reason},
         %{chan: %{adapter_payload: %{conn_pid: pid}}} = state
       ) do
-    Logger.info("Forge ABI RPC: connection down with reason #{inspect(reason)}...")
+    Logger.debug("Forge ABI RPC: connection down with reason #{inspect(reason)}...")
     {:connect, :reconnect, %{state | chan: nil}}
   end
 

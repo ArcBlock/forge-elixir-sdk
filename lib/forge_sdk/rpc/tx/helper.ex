@@ -33,7 +33,7 @@ defmodule ForgeSdk.Tx.Builder.Helper do
 
     case sign? do
       true ->
-        case create_tx(any, nonce, wallet, token) do
+        case create_tx(any, nonce, wallet, token, chan) do
           {:error, _} = error ->
             error
 
@@ -61,7 +61,7 @@ defmodule ForgeSdk.Tx.Builder.Helper do
         pk: wallet.pk
       )
 
-  defp create_tx(any, nonce, %{sk: ""} = wallet, token) do
+  defp create_tx(any, nonce, %{sk: ""} = wallet, token, chan) do
     req =
       RequestCreateTx.new(
         itx: any,
@@ -71,16 +71,26 @@ defmodule ForgeSdk.Tx.Builder.Helper do
         token: token
       )
 
-    ForgeSdk.create_tx(req)
+    ForgeSdk.create_tx(req, chan)
   end
 
-  defp create_tx(any, nonce, wallet, _token) do
+  defp create_tx(any, nonce, wallet, _token, nil) do
+    chain_id = ForgeSdk.get_env(:chain_id)
+    do_create_tx(any, nonce, wallet, chain_id)
+  end
+
+  defp create_tx(any, nonce, wallet, _token, chan) do
+    chain_id = ForgeSdk.get_chain_info(chan).network
+    do_create_tx(any, nonce, wallet, chain_id)
+  end
+
+  defp do_create_tx(any, nonce, wallet, chain_id) do
     tx =
       Transaction.new(
         itx: any,
         from: wallet.address,
         nonce: nonce,
-        chain_id: ForgeSdk.get_env(:chain_id),
+        chain_id: chain_id,
         pk: wallet.pk
       )
 

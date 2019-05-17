@@ -53,7 +53,7 @@ defmodule ForgeSdk.MixProject do
       {:mcrypto, "~> 0.2"},
       {:abt_did_elixir, "~> 0.3"},
       # {:abt_did_elixir, path: "../abt-did-elixir"},
-      {:forge_abi, "~> 1.7"},
+      {:forge_abi, "~> 1.8"},
       # {:forge_abi, path: "../forge-abi"},
 
       # dev and test

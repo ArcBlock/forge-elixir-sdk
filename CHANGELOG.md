@@ -1,3 +1,7 @@
+## 0.27.2 (May 17, 2019)
+  - update deps
+
+
 ## 0.27.1 (May 17, 2019)
   - Correctly handle :chan option.
 

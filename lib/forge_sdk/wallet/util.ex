@@ -7,7 +7,7 @@ defmodule ForgeSdk.Wallet.Util do
   alias AbtDid
   alias AbtDid.Type, as: DidType
   alias ForgeSdk.Util.Validator
-  alias ForgeAbi.{KeyType, HashType, Multisig, RoleType, Transaction, WalletInfo, WalletType}
+  alias ForgeAbi.{Multisig, Transaction, WalletInfo, WalletType}
 
   alias Google.Protobuf.Any
 
@@ -19,7 +19,7 @@ defmodule ForgeSdk.Wallet.Util do
   def create(type, passphrase \\ "") do
     case passphrase == "" or Validator.valid_passphrase?(passphrase) do
       true ->
-        {pk, sk} = do_keypair(KeyType.key(type.pk))
+        {pk, sk} = do_keypair(type.pk)
         did_type = to_did_type(type)
         to_keystore(did_type, sk, pk, passphrase)
 
@@ -213,22 +213,21 @@ defmodule ForgeSdk.Wallet.Util do
   @spec to_did_type(WalletType.t()) :: AbtDid.Type.t()
   def to_did_type(wallet_type) do
     %DidType{
-      role_type: to_did_type(wallet_type.role, RoleType, "role_"),
-      key_type: to_did_type(wallet_type.pk, KeyType, ""),
-      hash_type: to_did_type(wallet_type.hash, HashType, "")
+      role_type: to_did_type(wallet_type.role, "role_"),
+      key_type: to_did_type(wallet_type.pk, ""),
+      hash_type: to_did_type(wallet_type.hash, "")
     }
   end
 
   @spec to_wallet_type(AbtDid.Type.t()) :: WalletType.t()
   def to_wallet_type(did_type) do
     %ForgeAbi.WalletType{
-      address: 1,
-      pk: ForgeAbi.KeyType.value(did_type.key_type),
-      hash: ForgeAbi.HashType.value(did_type.hash_type),
+      address: :base58,
+      pk: did_type.key_type,
+      hash: did_type.hash_type,
       role:
         ("role_" <> Atom.to_string(did_type.role_type))
         |> String.to_atom()
-        |> ForgeAbi.RoleType.value()
     }
   end
 
@@ -270,18 +269,12 @@ defmodule ForgeSdk.Wallet.Util do
 
   defp get_keystore, do: :forge_config |> ForgeSdk.get_env() |> Map.get("keystore")
 
-  defp to_did_type(wallet_type, _module, "") when is_atom(wallet_type), do: wallet_type
+  defp to_did_type(wallet_type, "") when is_atom(wallet_type), do: wallet_type
 
-  defp to_did_type(wallet_type, _module, prefix) when is_atom(wallet_type) do
+  defp to_did_type(wallet_type, prefix) when is_atom(wallet_type) do
     wallet_type
     |> to_string()
     |> String.trim_leading(prefix)
     |> String.to_atom()
-  end
-
-  defp to_did_type(wallet_type, module, prefix) do
-    wallet_type
-    |> module.key()
-    |> to_did_type(module, prefix)
   end
 end

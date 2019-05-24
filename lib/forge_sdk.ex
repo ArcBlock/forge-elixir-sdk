@@ -710,5 +710,6 @@ defmodule ForgeSdk do
   defdelegate list_top_accounts(request, chan \\ nil), to: Rpc
   defdelegate list_asset_transactions(request, chan \\ nil), to: Rpc
   defdelegate list_blocks(request, chan \\ nil), to: Rpc
+  defdelegate list_tethers(request, chan \\ nil), to: Rpc
   defdelegate get_health_status(request, chan \\ nil), to: Rpc
 end

@@ -1,3 +1,6 @@
+## 0.27.3 (May 24, 2019)
+  - Support listing tethers
+
 ## 0.27.2 (May 17, 2019)
   - update deps
 

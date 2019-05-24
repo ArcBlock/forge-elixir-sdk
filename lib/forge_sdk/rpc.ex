@@ -88,6 +88,7 @@ defmodule ForgeSdk.Rpc do
     RequestListAssetTransactions,
     RequestListBlocks,
     RequestListTransactions,
+    RequestListTethers,
     ForgeStats
   }
 
@@ -506,6 +507,15 @@ defmodule ForgeSdk.Rpc do
         ) :: {[IndexedBlock.t()], PageInfo.t()} | {:error, term()}
   rpc :list_blocks do
     {res.blocks, res.page}
+  end
+
+  @spec list_tethers(
+          RequestListTethers.t() | Keyword.t(),
+          Channel.t() | nil,
+          Keyword.t()
+        ) :: {[TetherState.t()], PageInfo.t()} | {:error, term()}
+  rpc :list_tethers do
+    {res.tethers, res.page}
   end
 
   @spec get_health_status(

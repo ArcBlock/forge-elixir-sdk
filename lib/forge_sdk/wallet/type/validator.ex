@@ -4,13 +4,11 @@ defmodule ForgeSdk.Wallet.Type.Validator do
   """
   use TypedStruct
 
-  alias ForgeAbi.{EncodingType, HashType, KeyType, RoleType}
-
   typedstruct do
-    field :pk, non_neg_integer(), default: KeyType.value(:ed25519)
-    field :hash, non_neg_integer(), default: HashType.value(:sha2)
-    field :address, non_neg_integer(), default: EncodingType.value(:base58)
-    field :role, non_neg_integer(), default: RoleType.value(:role_validator)
+    field :pk, atom(), default: :ed25519
+    field :hash, atom(), default: :sha2
+    field :address, atom(), default: :base58
+    field :role, atom(), default: :role_validator
   end
 end
 

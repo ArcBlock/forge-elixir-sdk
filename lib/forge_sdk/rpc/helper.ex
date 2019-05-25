@@ -4,7 +4,6 @@ defmodule ForgeSdk.Rpc.Helper do
   require Logger
 
   alias ForgeSdk.Rpc.Stub, as: ForgeRpc
-  alias ForgeAbi.StatusCode
   alias GRPC.Stub, as: Client
 
   @recv_timeout 10_000
@@ -80,8 +79,8 @@ defmodule ForgeSdk.Rpc.Helper do
     end
   end
 
-  defp process_response(%{code: 0} = res, _opts, fun), do: fun.(res)
-  defp process_response(%{code: code}, _opts, _fun), do: {:error, StatusCode.key(code)}
+  defp process_response(%{code: :ok} = res, _opts, fun), do: fun.(res)
+  defp process_response(%{code: code}, _opts, _fun), do: {:error, code}
 
   defp process_response(res_stream, opts, fun) do
     mod = if opts[:stream_mode] == true, do: Stream, else: Enum
@@ -92,7 +91,7 @@ defmodule ForgeSdk.Rpc.Helper do
 
       {:error, %{status: @deadline_expired}} ->
         Logger.warn("Deadline expired for the stream.")
-        process_response(%{code: StatusCode.value(:timeout)}, opts, fun)
+        process_response(%{code: :timeout}, opts, fun)
 
       {:error, msg} ->
         Logger.warn("Failed to process response.  Error: #{inspect(msg)}")

@@ -4,12 +4,10 @@ defmodule ForgeSdk.Wallet.Type.Forge do
   """
   use TypedStruct
 
-  alias ForgeAbi.{EncodingType, HashType, KeyType, WalletType}
-
   typedstruct do
-    field :pk, non_neg_integer(), default: KeyType.value(:ed25519)
-    field :hash, non_neg_integer(), default: HashType.value(:sha3)
-    field :address, non_neg_integer(), default: EncodingType.value(:base58)
+    field :pk, atom(), default: :ed25519
+    field :hash, atom(), default: :sha3
+    field :address, atom(), default: :base58
   end
 end
 

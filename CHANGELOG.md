@@ -1,9 +1,11 @@
+## 0.27.4 (May 27, 2019)
+  - Support force upgrade
+
 ## 0.27.3 (May 24, 2019)
   - Support listing tethers
 
 ## 0.27.2 (May 17, 2019)
   - update deps
-
 
 ## 0.27.1 (May 17, 2019)
   - Correctly handle :chan option.

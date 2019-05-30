@@ -11,21 +11,10 @@ defmodule ForgeSdk.Wallet.Builder do
 
       @type t :: unquote(opts[:mod]).t()
 
-      @spec create(t(), String.t()) :: WalletInfo.t() | {:error, term()}
-      def create(type, passphrase \\ "") do
+      @spec create(t()) :: WalletInfo.t() | {:error, term()}
+      def create(type) do
         type = WalletType.new(Map.from_struct(type))
-        Util.create(type, passphrase)
-      end
-
-      @spec load(t(), String.t(), String.t()) :: WalletInfo.t() | {:error, term()}
-      def load(_type, address, passphrase) do
-        Util.load(address, passphrase)
-      end
-
-      @spec recover(t(), binary(), String.t()) :: WalletInfo.t() | {:error, term()}
-      def recover(type, sk, passphrase) do
-        type = WalletType.new(Map.from_struct(type))
-        Util.recover(type, sk, passphrase)
+        Util.create(type)
       end
 
       @spec sign!(t(), WalletInfo.t(), binary()) :: binary()

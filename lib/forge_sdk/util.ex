@@ -4,135 +4,50 @@ defmodule ForgeSdk.Util do
   """
 
   use ForgeAbi.Unit
-
-  alias ForgeSdk.Configuration
-  alias Configuration.{Cache, Forge, ForgeApp, Ipfs, Tendermint}
+  alias ForgeSdk.ConnSupervisor
+  alias ForgeSdk.Conn
 
   alias Google.Protobuf.Timestamp
 
-  @config_priorities [:env, :home, :priv]
-
   @doc """
-  Initialize the ForgeSdk.
-
-  Setting up basic config and return child spec for:
-
-    - ABI server
-    - RPC client conn
-
-  For a forge app build with Elixir sdk, application shall put these servers
-  into their supervision tree.
-
-      filename = "/path/to/forge.toml"
-      servers = ForgeSdk.init(:app_name, app_hash, filename)
-      children = servers ++ other_children
-      Supervisor.start_link(children, opts)
+  Upon initialization, forge client can call this function to make a gRPC connection to forge node.
   """
-  @spec init(atom(), String.t(), String.t() | nil) :: [module() | {module(), term()}]
-  def init(otp_app, app_hash \\ "", filename \\ nil)
+  @spec connect(String.t(), Keyword.t()) ::
+          :ignore | {:error, any} | {:ok, pid} | {:ok, pid, any}
+  def connect(host, opts) do
+    name = String.to_atom(opts[:name])
 
-  def init(otp_app, app_hash, nil), do: init(otp_app, app_hash, find_config_file!())
+    case opts[:default] do
+      true -> Application.put_env(:forge_sdk, :default_conn, name)
+      _ -> nil
+    end
 
-  def init(otp_app, app_hash, filename) do
-    Application.put_env(:forge_sdk, :otp_app, otp_app)
-    Application.put_env(:forge_sdk, :forge_app_hash, app_hash)
+    result = ConnSupervisor.add(name, host, nil)
 
-    filename
-    |> load_config_file!()
-    |> get_servers()
+    case name do
+      :forge_server_node ->
+        nil
+
+      _ ->
+        forge_state = ForgeSdk.get_forge_state(name)
+        ForgeSdk.update_type_url(forge_state)
+    end
+
+    config = ForgeSdk.get_config([parsed: true], name)
+    ForgeSdk.RpcConn.update_config(name, config)
+
+    result
   end
 
   @doc """
   Get the gRPC connection channel.
   """
-  @spec get_chan() :: GRPC.Channel.t() | {:error, any}
-  def get_chan do
-    case Process.whereis(ForgeSdk.Rpc.Conn) do
-      nil ->
-        config = ForgeSdk.get_env(:forge_config)
+  @spec get_conn(String.t() | atom()) :: Conn.t()
+  def get_conn(name \\ "")
 
-        addr =
-          case config["sock_grpc"] do
-            "unix://" <> v -> v
-            "tcp://" <> v -> v
-            v -> v
-          end
-
-        opts = %{retry: 0, http2_opts: %{keepalive: :infinity}}
-
-        case GRPC.Stub.connect(addr, adapter_opts: opts) do
-          {:ok, chan} -> chan
-          v -> v
-        end
-
-      _pid ->
-        ForgeSdk.Rpc.Conn.get_chan()
-    end
-  end
-
-  @spec parse(atom(), String.t() | map()) :: map()
-  def parse(type, file \\ "")
-
-  def parse(type, ""), do: parse(type, find_config_file!())
-  def parse(type, file) when is_binary(file), do: parse(type, load_config_file!(file))
-
-  def parse(:forge, content), do: Configuration.parse(%Forge{}, content)
-  def parse(:forge_app, content), do: Configuration.parse(%ForgeApp{}, content["app"])
-  def parse(:tendermint, content), do: Configuration.parse(%Tendermint{}, content["tendermint"])
-  def parse(:ipfs, content), do: Configuration.parse(%Ipfs{}, content["ipfs"])
-  def parse(:cache, content), do: Configuration.parse(%Cache{}, content["cache"])
-
-  @doc """
-  Find the first configuration file in the following locations:
-
-    - system env `FORGE_CONFIG`
-    - `~/.forge/forge.toml`
-    - `forge-elixir-sdk/priv/forge[_test].toml`
-  """
-  @spec find_config_file! :: String.t()
-  def find_config_file! do
-    @config_priorities
-    |> Stream.map(&to_file/1)
-    |> Stream.filter(&File.exists?/1)
-    |> Enum.at(0)
-    |> case do
-      nil -> exit("Cannot find configuration files in env `FORGE_CONFIG` or home folder.")
-      v -> v
-    end
-  end
-
-  @doc """
-  Load the configuration file and merge it with default configuration `forge_default.toml`.
-  """
-  @spec load_config_file!(String.t() | nil) :: map()
-  def load_config_file!(nil) do
-    find_config_file!()
-    |> load_config_file!()
-  end
-
-  def load_config_file!(filename) do
-    default_config = "forge_default.toml" |> get_priv_file() |> Toml.decode_file!()
-    content = File.read!(filename)
-    ForgeSdk.put_env(:toml, content)
-    config = Toml.decode!(content)
-    DeepMerge.deep_merge(default_config, config)
-  end
-
-  @spec gen_config(map()) :: String.t()
-  def gen_config(params) do
-    toml = ForgeSdk.get_env(:toml)
-
-    case String.contains?(toml, "### begin validators") do
-      true ->
-        content = "forge_release.toml.eex" |> get_priv_file() |> File.read!()
-        params = Keyword.new(params, fn {k, v} -> {:"#{k}", v} end)
-        validators = EEx.eval_string(content, params)
-        String.replace(toml, ~r/### begin validators.*?### end validators/s, validators)
-
-      false ->
-        toml
-    end
-  end
+  def get_conn(""), do: get_conn(Application.get_env(:forge_sdk, :default_conn))
+  def get_conn(name) when is_binary(name), do: get_conn(String.to_existing_atom(name))
+  def get_conn(name), do: ForgeSdk.RpcConn.get_conn(name)
 
   @doc """
   Convert datetime or iso8601 datetime string to google protobuf timestamp.
@@ -187,90 +102,4 @@ defmodule ForgeSdk.Util do
   def datetime_to_proto(dt), do: Google.Protobuf.Timestamp.new(seconds: DateTime.to_unix(dt))
 
   def proto_to_datetime(%{seconds: seconds}), do: DateTime.from_unix!(seconds)
-
-  @doc """
-    Update few config env from forge state.
-
-      - token
-      - tx_config
-      - stake_config
-      - poke_config
-
-    This function needs to be called after ForgeSdk.init was called.
-  """
-
-  def update_config(nil) do
-    # for the first time forge started, there's no forge state yet
-    # hence we cache the config from forge_config
-    # TODO: we shall parse configuration as atom keys during initialization. Thus this conversion is not needed
-
-    config = ForgeSdk.get_env(:forge_config)
-    token = to_atom_map(config["token"])
-
-    tx_config = to_atom_map(config["transaction"])
-    tx_config = %{tx_config | declare: to_atom_map(tx_config.declare)}
-
-    stake_config =
-      config
-      |> get_in(["stake", "timeout"])
-      |> to_atom_map("timeout")
-
-    poke_config = to_atom_map(config["poke"])
-
-    Application.put_env(:forge_abi, :decimal, token.decimal)
-    ForgeSdk.put_env(:token, token)
-    ForgeSdk.put_env(:tx_config, tx_config)
-    ForgeSdk.put_env(:stake_config, stake_config)
-    ForgeSdk.put_env(:poke_config, poke_config)
-  end
-
-  def update_config(forge_state) do
-    # for the rest time, we cache the configs from forge state
-
-    token = Map.from_struct(forge_state.token)
-    tx_config = Map.from_struct(forge_state.tx_config)
-    stake_config = Map.from_struct(forge_state.stake_config)
-    poke_config = Map.from_struct(forge_state.poke_config)
-
-    Application.put_env(:forge_abi, :decimal, token.decimal)
-    ForgeSdk.put_env(:token, token)
-    ForgeSdk.put_env(:tx_config, tx_config)
-    ForgeSdk.put_env(:stake_config, stake_config)
-    ForgeSdk.put_env(:poke_config, poke_config)
-  end
-
-  # private function
-
-  defp get_servers(config) do
-    forge_config = parse(:forge, config)
-
-    grpc_addr = forge_config["sock_grpc"]
-
-    get_rpc_conn_spec(grpc_addr)
-  end
-
-  defp get_rpc_conn_spec(addr) do
-    case Process.whereis(ForgeSdk.Rpc.Conn) do
-      nil -> [{ForgeSdk.Rpc.Conn, addr}]
-      _ -> []
-    end
-  end
-
-  defp to_file(:env), do: System.get_env("FORGE_CONFIG") || ""
-  defp to_file(:home), do: Path.expand("~/.forge/forge.toml")
-
-  defp to_file(:priv) do
-    case Application.get_env(:forge_sdk, :env) in [:test, :integration] do
-      true -> get_priv_file("forge_test.toml")
-      false -> get_priv_file("forge.toml")
-    end
-  end
-
-  defp get_priv_file(name), do: :forge_sdk |> :code.priv_dir() |> Path.join(name)
-
-  defp to_atom_map(map),
-    do: Enum.into(map, %{}, fn {k, v} -> {String.to_atom(k), v} end)
-
-  defp to_atom_map(map, prefix),
-    do: Enum.into(map, %{}, fn {k, v} -> {String.to_atom("#{prefix}_#{k}"), v} end)
 end

@@ -12,9 +12,9 @@ defmodule ForgeSdk.Rpc.Helper do
   @doc """
   Send a single request to GRPC server.
   """
-  def send(service, chan, req, opts, fun) do
+  def send(service, conn, req, opts, fun) do
     grpc_opts = get_grpc_opts(opts)
-    data = apply(ForgeRpc, service, [chan, req, grpc_opts])
+    data = apply(ForgeRpc, service, [conn.chan, req, grpc_opts])
 
     case data do
       {:ok, res} ->
@@ -34,13 +34,13 @@ defmodule ForgeSdk.Rpc.Helper do
   @doc """
   Send multiple requests to GRPC server one by one.
   """
-  def send_stream(service, chan, reqs, opts, fun) when is_list(reqs) do
-    stream = get_stream(service, chan, opts)
+  def send_stream(service, conn, reqs, opts, fun) when is_list(reqs) do
+    stream = get_stream(service, conn, opts)
     do_send_stream(stream, reqs, opts, fun)
   end
 
-  def send_stream(service, chan, req, opts, fun) do
-    stream = get_stream(service, chan, opts)
+  def send_stream(service, conn, req, opts, fun) do
+    stream = get_stream(service, conn, opts)
 
     stream
     |> do_send_stream([req], opts, fun)
@@ -63,7 +63,7 @@ defmodule ForgeSdk.Rpc.Helper do
   def to_req(reqs, mod), do: Enum.map(reqs, &to_req(&1, mod))
 
   # private function
-  defp get_stream(service, chan, opts), do: apply(ForgeRpc, service, [chan, opts])
+  defp get_stream(service, conn, opts), do: apply(ForgeRpc, service, [conn.chan, opts])
 
   defp recv(stream, opts, fun) do
     case Client.recv(stream, timeout: @recv_timeout) do

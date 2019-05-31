@@ -1,0 +1,35 @@
+[forge]
+path = "/tmp/.forge_test/core"
+sock_grpc = "unix://socks/forge_grpc_test.sock"
+
+  [forge.stake.timeout]
+  general = 1
+  stake_for_node = 1
+
+  [forge.web]
+  enabled = true
+
+[tendermint]
+moniker = "forge_test"
+path = "/tmp/.forge_test/tendermint"
+executable = "bin/tendermint"
+logpath = "logs"
+
+sock_proxy_app = "unix://socks/tm_proxy_app_test.sock"
+sock_rpc = "unix://socks/tm_rpc_test.sock"
+sock_grpc = "unix://socks/tm_grpc_test.sock"
+sock_p2p = "tcp://0.0.0.0:27656"
+sock_prof = ""
+
+timeout_commit = "1s"
+create_empty_blocks = false
+
+[ipfs]
+path = "/tmp/.forge_test/ipfs"
+executable = "bin/ipfs"
+
+[cache]
+dc_dump_limit = 50
+dump_log_write_threshold = 50_000
+cache_mnesia_table_timeout = 15_000
+path = "/tmp/.forge_test/cache/mnesia_data_dir"

@@ -531,10 +531,11 @@ defmodule ForgeSdk.Rpc do
   # other helpers
   @spec get_address(String.t()) :: String.t() | nil
   def get_address(hash) do
-    tx = case get_tx(hash: hash) do
-			{:error, _} -> nil
-			info -> info.tx
-		end
+    tx =
+      case get_tx(hash: hash) do
+        {:error, _} -> nil
+        info -> info.tx
+      end
 
     case ForgeSdk.display(tx) do
       nil -> nil

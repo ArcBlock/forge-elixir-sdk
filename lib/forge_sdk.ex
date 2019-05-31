@@ -49,7 +49,7 @@ defmodule ForgeSdk do
     ResponseSubscribe
   }
 
-  alias ForgeSdk.{Display, File, Loader, Rpc, Util, Wallet}
+  alias ForgeSdk.{Display, Loader, Rpc, Util, Wallet}
 
   @doc """
   Migrate a `wallet` from old address (as well as pk, sk) to a new address.
@@ -523,7 +523,7 @@ defmodule ForgeSdk do
       ForgeSdk.list_wallet()
 
   """
-  @spec list_wallet(String.t()) :: String.t() | {:error, term()}
+  @spec list_wallet(String.t() | atom()) :: String.t() | {:error, term()}
   defdelegate list_wallet(conn_name \\ ""), to: Rpc
 
   @doc """
@@ -554,7 +554,7 @@ defmodule ForgeSdk do
   """
   @spec get_account_state(
           RequestGetAccountState.t() | [RequestGetAccountState.t()] | Keyword.t() | [Keyword.t()],
-          String.t()
+          String.t() | atom()
         ) :: AccountState.t() | nil | [AccountState.t()] | {:error, term()}
   defdelegate get_account_state(request, conn_name \\ ""), to: Rpc
 
@@ -569,7 +569,7 @@ defmodule ForgeSdk do
   """
   @spec get_asset_state(
           RequestGetAssetState.t() | [RequestGetAssetState.t()] | Keyword.t() | [Keyword.t()],
-          String.t()
+          String.t() | atom()
         ) :: AssetState.t() | [AssetState.t()] | {:error, term()}
   defdelegate get_asset_state(request, conn_name \\ ""), to: Rpc
 
@@ -581,7 +581,7 @@ defmodule ForgeSdk do
       ForgeSdk.get_forge_state()
 
   """
-  @spec get_forge_state(String.t()) :: ForgeState.t() | {:error, term()}
+  @spec get_forge_state(String.t() | atom()) :: ForgeState.t() | {:error, term()}
   defdelegate get_forge_state(conn_name \\ ""), to: Rpc
 
   @doc """
@@ -605,9 +605,9 @@ defmodule ForgeSdk do
   defdelegate get_tether_state(request, conn_name \\ ""), to: Rpc
 
   # filesystem related
-  defdelegate store_file(request, conn_name \\ ""), to: File
-  defdelegate load_file(request, conn_name \\ ""), to: File
-  defdelegate pin_file(request, conn_name \\ ""), to: Rpc
+  # defdelegate store_file(request, conn_name \\ ""), to: File
+  # defdelegate load_file(request, conn_name \\ ""), to: File
+  # defdelegate pin_file(request, conn_name \\ ""), to: Rpc
 
   # subscription related
 
@@ -641,7 +641,7 @@ defmodule ForgeSdk do
   defdelegate unsubscribe(request, conn_name \\ "", opts \\ []), to: Rpc
 
   # extended
-  defdelegate get_nonce(address, conn_name \\ "", app_hash \\ ""), to: Rpc
+  # defdelegate get_nonce(address, conn_name \\ "", app_hash \\ ""), to: Rpc
 
   # display a data structure
 

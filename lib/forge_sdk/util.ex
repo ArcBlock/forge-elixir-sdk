@@ -52,7 +52,7 @@ defmodule ForgeSdk.Util do
   @doc """
   Get the configuration for the conn.
   """
-  @spec get_parsed_config(String.t() | atom()) :: Conn.t()
+  @spec get_parsed_config(String.t() | atom()) :: String.t()
   def get_parsed_config(name \\ "")
 
   def get_parsed_config(""), do: get_parsed_config(Application.get_env(:forge_sdk, :default_conn))

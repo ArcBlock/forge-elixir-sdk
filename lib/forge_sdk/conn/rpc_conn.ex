@@ -41,17 +41,17 @@ defmodule ForgeSdk.RpcConn do
     Connection.start_link(__MODULE__, {endpoint, name, opts, callback}, name: name)
   end
 
-  @spec get_conn(atom()) :: GRPC.Channel.t() | {:error, :closed}
+  @spec get_conn(atom()) :: ForgeSdk.Conn.t() | {:error, :closed}
   def get_conn(name) do
     Connection.call(name, :get_conn)
   end
 
-  @spec get_config(atom()) :: GRPC.Channel.t() | {:error, :closed}
+  @spec get_config(atom()) :: String.t() | {:error, :closed}
   def get_config(name) do
     Connection.call(name, :get_config)
   end
 
-  @spec update_config(atom(), String.t()) :: GRPC.Channel.t() | {:error, :closed}
+  @spec update_config(atom(), String.t()) :: any()
   def update_config(name, config) do
     Connection.cast(name, {:update_config, config})
   end

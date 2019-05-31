@@ -177,7 +177,7 @@ defmodule ForgeSdk.Rpc do
 
   @spec get_tx(
           RequestGetTx.t() | [RequestGetTx.t()] | Keyword.t() | [Keyword.t()],
-          String.t(),
+          String.t() | atom(),
           Keyword.t()
         ) :: TransactionInfo.t() | [TransactionInfo.t()] | {:error, term()}
   rpc :get_tx, request_stream: true do
@@ -186,7 +186,7 @@ defmodule ForgeSdk.Rpc do
 
   @spec get_block(
           RequestGetBlock.t() | [RequestGetBlock.t()] | Keyword.t() | [Keyword.t()],
-          String.t(),
+          String.t() | atom(),
           Keyword.t()
         ) :: BlockInfo.t() | [BlockInfo.t()] | {:error, term()}
   rpc :get_block, request_stream: true do
@@ -207,7 +207,7 @@ defmodule ForgeSdk.Rpc do
 
   @spec get_unconfirmed_txs(
           RequestGetUnconfirmedTxs.t() | Keyword.t(),
-          String.t(),
+          String.t() | atom(),
           Keyword.t()
         ) :: {UnconfirmedTxs.t(), PageInfo.t()} | {:error, term()}
   rpc :get_unconfirmed_txs do
@@ -272,7 +272,7 @@ defmodule ForgeSdk.Rpc do
   # account related
   @spec get_account_state(
           RequestGetAccountState.t() | [RequestGetAccountState.t()] | Keyword.t() | [Keyword.t()],
-          String.t(),
+          String.t() | atom(),
           Keyword.t()
         ) :: AccountState.t() | nil | [AccountState.t()] | {:error, term()}
   rpc :get_account_state, request_stream: true do
@@ -281,7 +281,7 @@ defmodule ForgeSdk.Rpc do
 
   @spec get_asset_state(
           RequestGetAssetState.t() | [RequestGetAssetState.t()] | Keyword.t() | [Keyword.t()],
-          String.t(),
+          String.t() | atom(),
           Keyword.t()
         ) :: AssetState.t() | [AssetState.t()] | {:error, term()}
   rpc :get_asset_state, request_stream: true do
@@ -293,7 +293,7 @@ defmodule ForgeSdk.Rpc do
           | [RequestGetProtocolState.t()]
           | Keyword.t()
           | [Keyword.t()],
-          String.t(),
+          String.t() | atom(),
           Keyword.t()
         ) :: ProtocolState.t() | [ProtocolState.t()] | {:error, term()}
   rpc :get_protocol_state, request_stream: true do
@@ -302,7 +302,7 @@ defmodule ForgeSdk.Rpc do
 
   @spec get_stake_state(
           RequestGetStakeState.t() | [RequestGetStakeState.t()] | Keyword.t() | [Keyword.t()],
-          String.t(),
+          String.t() | atom(),
           Keyword.t()
         ) :: StakeState.t() | [StakeState.t()] | {:error, term()}
   rpc :get_stake_state, request_stream: true do
@@ -311,7 +311,7 @@ defmodule ForgeSdk.Rpc do
 
   @spec get_tether_state(
           RequestGetTetherState.t() | [RequestGetTetherState.t()] | Keyword.t() | [Keyword.t()],
-          String.t(),
+          String.t() | atom(),
           Keyword.t()
         ) :: TetherState.t() | [TetherState.t()] | {:error, term()}
   rpc :get_tether_state, request_stream: true do
@@ -330,7 +330,7 @@ defmodule ForgeSdk.Rpc do
           | [RequestStoreFile.t()]
           | Keyword.t()
           | [Keyword.t()],
-          String.t(),
+          String.t() | atom(),
           Keyword.t()
         ) :: String.t() | {:error, term()}
   rpc :store_file, request_stream: true do
@@ -426,10 +426,10 @@ defmodule ForgeSdk.Rpc do
   @doc """
   Retrieve the nonce for an address, usually used for filling the nonce field of a Tx.
   """
-  @spec get_nonce(String.t(), String.t(), String.t()) :: non_neg_integer()
-  def get_nonce(address, chan \\ nil, app_hash \\ "") do
+  @spec get_nonce(String.t(), String.t() | atom(), String.t()) :: non_neg_integer()
+  def get_nonce(address, name \\ "", app_hash \\ "") do
     req = RequestGetAccountState.new(address: address, key: "nonce", app_hash: app_hash)
-    state = get_account_state(req, chan)
+    state = get_account_state(req, name)
     Map.get(state || %{}, :nonce, 1)
   rescue
     e ->
@@ -440,7 +440,7 @@ defmodule ForgeSdk.Rpc do
   # stats related
   @spec get_forge_stats(
           RequestGetForgeStats.t() | Keyword.t(),
-          String.t(),
+          String.t() | atom(),
           Keyword.t()
         ) :: ForgeStats.t() | {:error, term()}
   rpc :get_forge_stats do
@@ -449,7 +449,7 @@ defmodule ForgeSdk.Rpc do
 
   @spec list_transactions(
           RequestListTransactions.t() | Keyword.t(),
-          String.t(),
+          String.t() | atom(),
           Keyword.t()
         ) :: {[IndexedTransaction.t()], PageInfo.t()} | {:error, term()}
   rpc :list_transactions do
@@ -458,7 +458,7 @@ defmodule ForgeSdk.Rpc do
 
   @spec list_assets(
           RequestListAssets.t() | Keyword.t(),
-          String.t(),
+          String.t() | atom(),
           Keyword.t()
         ) :: {[IndexedAssetState.t()], PageInfo.t()} | {:error, term()}
   rpc :list_assets do
@@ -467,7 +467,7 @@ defmodule ForgeSdk.Rpc do
 
   @spec list_stakes(
           RequestListStakes.t() | Keyword.t(),
-          String.t(),
+          String.t() | atom(),
           Keyword.t()
         ) :: {[IndexedStakeState.t()], PageInfo.t()} | {:error, term()}
   rpc :list_stakes do
@@ -476,7 +476,7 @@ defmodule ForgeSdk.Rpc do
 
   @spec list_account(
           RequestListAccount.t() | Keyword.t(),
-          String.t(),
+          String.t() | atom(),
           Keyword.t()
         ) :: IndexedAccountState.t() | nil | {:error, term()}
   rpc :list_account do
@@ -485,7 +485,7 @@ defmodule ForgeSdk.Rpc do
 
   @spec list_top_accounts(
           RequestListTopAccounts.t() | Keyword.t(),
-          String.t(),
+          String.t() | atom(),
           Keyword.t()
         ) :: {[IndexedAccountState.t()], PageInfo.t()} | {:error, term()}
   rpc :list_top_accounts do
@@ -494,7 +494,7 @@ defmodule ForgeSdk.Rpc do
 
   @spec list_asset_transactions(
           RequestListAssetTransactions.t() | Keyword.t(),
-          String.t(),
+          String.t() | atom(),
           Keyword.t()
         ) :: {[IndexedTransaction.t()], PageInfo.t()} | {:error, term()}
   rpc :list_asset_transactions do
@@ -503,7 +503,7 @@ defmodule ForgeSdk.Rpc do
 
   @spec list_blocks(
           RequestListBlocks.t() | Keyword.t(),
-          String.t(),
+          String.t() | atom(),
           Keyword.t()
         ) :: {[IndexedBlock.t()], PageInfo.t()} | {:error, term()}
   rpc :list_blocks do
@@ -512,7 +512,7 @@ defmodule ForgeSdk.Rpc do
 
   @spec list_tethers(
           RequestListTethers.t() | Keyword.t(),
-          String.t(),
+          String.t() | atom(),
           Keyword.t()
         ) :: {[TetherState.t()], PageInfo.t()} | {:error, term()}
   rpc :list_tethers do
@@ -521,7 +521,7 @@ defmodule ForgeSdk.Rpc do
 
   @spec get_health_status(
           map() | Keyword.t(),
-          String.t(),
+          String.t() | atom(),
           Keyword.t()
         ) :: HealthStatus.t() | {:error, term()}
   rpc :get_health_status do
@@ -529,8 +529,12 @@ defmodule ForgeSdk.Rpc do
   end
 
   # other helpers
+  @spec get_address(String.t()) :: String.t() | nil
   def get_address(hash) do
-    tx = (get_tx(hash: hash) || %{tx: nil}).tx
+    tx = case get_tx(hash: hash) do
+			{:error, _} -> nil
+			info -> info.tx
+		end
 
     case ForgeSdk.display(tx) do
       nil -> nil

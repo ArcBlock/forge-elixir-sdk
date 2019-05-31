@@ -670,8 +670,9 @@ defmodule ForgeSdk do
   defdelegate encode_any!(data, type_url \\ nil), to: ForgeAbi
   defdelegate decode_any(data), to: ForgeAbi
   defdelegate decode_any!(data), to: ForgeAbi
-  defdelegate token_to_unit(tokens), to: ForgeAbi
-  defdelegate unit_to_token(units), to: ForgeAbi
+  defdelegate token_to_unit(tokens, name \\ ""), to: Util
+  defdelegate unit_to_token(units, name \\ ""), to: Util
+  defdelegate one_token(name \\ ""), to: Util
 
   # stats
   defdelegate get_forge_stats(requests, conn_name \\ ""), to: Rpc

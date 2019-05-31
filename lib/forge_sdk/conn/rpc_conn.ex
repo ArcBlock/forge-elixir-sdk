@@ -9,6 +9,7 @@ defmodule ForgeSdk.Conn do
     field :endpoint, String.t()
     field :chan, GRPC.Channel.t() | nil, default: nil
     field :chain_id, String.t(), default: ""
+    field :decimal, non_neg_integer()
   end
 end
 
@@ -125,7 +126,8 @@ defmodule ForgeSdk.RpcConn do
   def handle_cast({:update_config, config}, %{conn: conn} = state) do
     config = Jason.decode!(config)
     chain_id = Map.get(config, "chain_id")
-    {:noreply, %{state | conn: %{conn | chain_id: chain_id}, config: config}}
+    decimal = Map.get(config, "decimal")
+    {:noreply, %{state | conn: %{conn | chain_id: chain_id, decimal: decimal}, config: config}}
   end
 
   # info

@@ -6,8 +6,6 @@ defmodule ForgeSdkTest.EthWallet do
   alias ForgeSdk.Wallet
   alias ForgeSdk.Wallet.Type.Eth
 
-  @pass "abcd1234"
-
   test "create a new eth wallet shall return correct data" do
     wallet = Wallet.create(%Eth{})
     did_type = AbtDid.get_did_type(wallet.address)

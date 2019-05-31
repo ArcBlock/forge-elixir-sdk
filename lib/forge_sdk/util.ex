@@ -115,4 +115,19 @@ defmodule ForgeSdk.Util do
   def datetime_to_proto(dt), do: Google.Protobuf.Timestamp.new(seconds: DateTime.to_unix(dt))
 
   def proto_to_datetime(%{seconds: seconds}), do: DateTime.from_unix!(seconds)
+
+  def token_to_unit(n, name \\ "") do
+    conn = ForgeSdk.get_conn(name)
+    ForgeAbi.token_to_unit(n, conn.decimal)
+  end
+
+  def unit_to_token(v, name \\ "") do
+    conn = ForgeSdk.get_conn(name)
+    ForgeAbi.unit_to_token(v, conn.decimal)
+  end
+
+  def one_token(name \\ "") do
+    conn = ForgeSdk.get_conn(name)
+    ForgeAbi.one_token(conn.decimal)
+  end
 end

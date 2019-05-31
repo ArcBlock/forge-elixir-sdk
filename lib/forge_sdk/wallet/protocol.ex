@@ -11,20 +11,8 @@ defprotocol ForgeSdk.Wallet do
   @doc """
   Create a wallet
   """
-  @spec create(t(), String.t()) :: WalletInfo.t() | {:error, term()}
-  def create(type, passphrase \\ "")
-
-  @doc """
-  Load a saved account into memory
-  """
-  @spec load(t(), String.t(), String.t()) :: WalletInfo.t() | {:error, term()}
-  def load(type, address, passphrase)
-
-  @doc """
-  Recover an account from a secret key or a set of seed words
-  """
-  @spec recover(t(), binary(), String.t()) :: WalletInfo.t() | {:error, term()}
-  def recover(type, sk, passphrase)
+  @spec create(t()) :: WalletInfo.t() | {:error, term()}
+  def create(type)
 
   @doc """
   Sign the data with wallet

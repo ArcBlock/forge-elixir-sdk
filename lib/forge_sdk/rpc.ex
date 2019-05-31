@@ -47,6 +47,7 @@ defmodule ForgeSdk.Rpc do
     RequestDeclareNode,
     RequestGetBlock,
     RequestGetBlocks,
+    RequestGetConfig,
     RequestGetTx,
     RequestGetUnconfirmedTxs,
     RequestMultisig,
@@ -94,7 +95,6 @@ defmodule ForgeSdk.Rpc do
 
   alias ForgeSdk.Rpc.Helper
   alias ForgeSdk.Wallet.Util, as: WalletUtil
-  alias GRPC.Channel
 
   # chain related
   @doc """
@@ -115,12 +115,12 @@ defmodule ForgeSdk.Rpc do
       voting_power: 10
     }
   """
-  @spec get_chain_info(Channel.t() | nil, Keyword.t()) :: ChainInfo.t() | {:error, term()}
+  @spec get_chain_info(String.t() | atom(), Keyword.t()) :: ChainInfo.t() | {:error, term()}
   rpc :get_chain_info, no_params: true do
     res.info
   end
 
-  @spec get_node_info(Channel.t() | nil, Keyword.t()) :: NodeInfo.t() | {:error, term()}
+  @spec get_node_info(String.t() | atom(), Keyword.t()) :: NodeInfo.t() | {:error, term()}
   rpc :get_node_info, no_params: true do
     res.info
   end
@@ -143,33 +143,33 @@ defmodule ForgeSdk.Rpc do
     iex>
   """
 
-  @spec create_tx(RequestCreateTx.t() | Keyword.t(), Channel.t() | nil, Keyword.t()) ::
+  @spec create_tx(RequestCreateTx.t() | Keyword.t(), String.t() | atom(), Keyword.t()) ::
           Transaction.t() | {:error, term()}
   rpc :create_tx do
     res.tx
   end
 
-  @spec multisig(RequestMultisig.t() | Keyword.t(), Channel.t() | nil) ::
+  @spec multisig(RequestMultisig.t() | Keyword.t(), String.t()) ::
           Transaction.t() | {:error, term()}
-  def multisig(req, chan \\ nil) do
+  def multisig(req, conn_name \\ "") do
     req = Helper.to_req(req, RequestMultisig)
     wallet = req.wallet
 
     case wallet.sk === "" do
-      true -> multisig_rpc(req, chan)
+      true -> multisig_rpc(req, conn_name)
       _ -> WalletUtil.multisig!(wallet, req.tx, req.data)
     end
   rescue
     _ -> {:error, :internal}
   end
 
-  @spec multisig_rpc(RequestMultisig.t() | Keyword.t(), Channel.t() | nil, Keyword.t()) ::
+  @spec multisig_rpc(RequestMultisig.t() | Keyword.t(), String.t() | atom(), Keyword.t()) ::
           Transaction.t() | {:error, term()}
   rpc :multisig_rpc do
     res.tx
   end
 
-  @spec send_tx(RequestSendTx.t() | Keyword.t(), Channel.t() | nil, Keyword.t()) ::
+  @spec send_tx(RequestSendTx.t() | Keyword.t(), String.t() | atom(), Keyword.t()) ::
           String.t() | {:error, term()}
   rpc :send_tx do
     res.hash
@@ -177,7 +177,7 @@ defmodule ForgeSdk.Rpc do
 
   @spec get_tx(
           RequestGetTx.t() | [RequestGetTx.t()] | Keyword.t() | [Keyword.t()],
-          Channel.t() | nil,
+          String.t() | atom(),
           Keyword.t()
         ) :: TransactionInfo.t() | [TransactionInfo.t()] | {:error, term()}
   rpc :get_tx, request_stream: true do
@@ -186,20 +186,20 @@ defmodule ForgeSdk.Rpc do
 
   @spec get_block(
           RequestGetBlock.t() | [RequestGetBlock.t()] | Keyword.t() | [Keyword.t()],
-          Channel.t() | nil,
+          String.t() | atom(),
           Keyword.t()
         ) :: BlockInfo.t() | [BlockInfo.t()] | {:error, term()}
   rpc :get_block, request_stream: true do
     res.block
   end
 
-  @spec get_blocks(RequestGetBlocks.t() | Keyword.t(), Channel.t() | nil, Keyword.t()) ::
+  @spec get_blocks(RequestGetBlocks.t() | Keyword.t(), String.t() | atom(), Keyword.t()) ::
           {[BlockInfoSimple.t()], PageInfo.t()} | {:error, term()}
   rpc :get_blocks do
     {res.blocks, res.page}
   end
 
-  @spec search(RequestSearch.t() | Keyword.t(), Channel.t() | nil, Keyword.t()) ::
+  @spec search(RequestSearch.t() | Keyword.t(), String.t() | atom(), Keyword.t()) ::
           [Transaction.t()] | {:error, term()}
   rpc :search do
     res.txs
@@ -207,54 +207,55 @@ defmodule ForgeSdk.Rpc do
 
   @spec get_unconfirmed_txs(
           RequestGetUnconfirmedTxs.t() | Keyword.t(),
-          Channel.t() | nil,
+          String.t() | atom(),
           Keyword.t()
         ) :: {UnconfirmedTxs.t(), PageInfo.t()} | {:error, term()}
   rpc :get_unconfirmed_txs do
     {res.unconfirmed_txs, res.page}
   end
 
-  @spec get_net_info(Channel.t() | nil, Keyword.t()) :: NetInfo.t() | {:error, term()}
+  @spec get_net_info(String.t() | atom(), Keyword.t()) :: NetInfo.t() | {:error, term()}
   rpc :get_net_info, no_params: true do
     res.net_info
   end
 
-  @spec get_validators_info(Channel.t() | nil, Keyword.t()) ::
+  @spec get_validators_info(String.t() | atom(), Keyword.t()) ::
           ValidatorsInfo.t() | {:error, term()}
   rpc :get_validators_info, no_params: true do
     res.validators_info
   end
 
-  @spec get_config(Channel.t() | nil, Keyword.t()) :: String.t() | {:error, term()}
-  rpc :get_config, no_params: true do
+  @spec get_config(RequestGetConfig.t() | Keyword.t(), String.t() | atom(), Keyword.t()) ::
+          String.t() | {:error, term()}
+  rpc :get_config do
     res.config
   end
 
   # wallet related
-  @spec create_wallet(RequestCreateWallet.t() | Keyword.t(), Channel.t() | nil, Keyword.t()) ::
+  @spec create_wallet(RequestCreateWallet.t() | Keyword.t(), String.t() | atom(), Keyword.t()) ::
           {WalletInfo.t(), String.t()} | {:error, term()}
   rpc :create_wallet do
     {res.wallet, res.token}
   end
 
-  @spec load_wallet(RequestLoadWallet.t() | Keyword.t(), Channel.t() | nil, Keyword.t()) ::
+  @spec load_wallet(RequestLoadWallet.t() | Keyword.t(), String.t() | atom(), Keyword.t()) ::
           String.t() | {:error, term()}
   rpc :load_wallet do
     {res.wallet, res.token}
   end
 
-  @spec recover_wallet(RequestRecoverWallet.t(), Channel.t() | nil, Keyword.t()) ::
+  @spec recover_wallet(RequestRecoverWallet.t(), String.t() | atom(), Keyword.t()) ::
           {WalletInfo.t(), String.t()} | {:error, term()}
   rpc :recover_wallet do
     {res.wallet, res.token}
   end
 
-  @spec list_wallet(Channel.t() | nil, Keyword.t()) :: String.t() | {:error, term()}
+  @spec list_wallet(String.t() | atom(), Keyword.t()) :: String.t() | {:error, term()}
   rpc :list_wallet, response_stream: true, no_params: true do
     res.address
   end
 
-  @spec remove_wallet(RequestRemoveWallet.t() | Keyword.t(), Channel.t() | nil, Keyword.t()) ::
+  @spec remove_wallet(RequestRemoveWallet.t() | Keyword.t(), String.t() | atom(), Keyword.t()) ::
           :ok | {:error, term()}
   rpc :remove_wallet do
     # just to disable compiler warning
@@ -262,7 +263,7 @@ defmodule ForgeSdk.Rpc do
     :ok
   end
 
-  @spec declare_node(RequestDeclareNode.t(), Channel.t() | nil, Keyword.t()) ::
+  @spec declare_node(RequestDeclareNode.t(), String.t() | atom(), Keyword.t()) ::
           WalletInfo.t() | {:error, term()}
   rpc :declare_node do
     res.wallet
@@ -271,7 +272,7 @@ defmodule ForgeSdk.Rpc do
   # account related
   @spec get_account_state(
           RequestGetAccountState.t() | [RequestGetAccountState.t()] | Keyword.t() | [Keyword.t()],
-          Channel.t() | nil,
+          String.t() | atom(),
           Keyword.t()
         ) :: AccountState.t() | nil | [AccountState.t()] | {:error, term()}
   rpc :get_account_state, request_stream: true do
@@ -280,7 +281,7 @@ defmodule ForgeSdk.Rpc do
 
   @spec get_asset_state(
           RequestGetAssetState.t() | [RequestGetAssetState.t()] | Keyword.t() | [Keyword.t()],
-          Channel.t() | nil,
+          String.t() | atom(),
           Keyword.t()
         ) :: AssetState.t() | [AssetState.t()] | {:error, term()}
   rpc :get_asset_state, request_stream: true do
@@ -292,7 +293,7 @@ defmodule ForgeSdk.Rpc do
           | [RequestGetProtocolState.t()]
           | Keyword.t()
           | [Keyword.t()],
-          Channel.t() | nil,
+          String.t() | atom(),
           Keyword.t()
         ) :: ProtocolState.t() | [ProtocolState.t()] | {:error, term()}
   rpc :get_protocol_state, request_stream: true do
@@ -301,7 +302,7 @@ defmodule ForgeSdk.Rpc do
 
   @spec get_stake_state(
           RequestGetStakeState.t() | [RequestGetStakeState.t()] | Keyword.t() | [Keyword.t()],
-          Channel.t() | nil,
+          String.t() | atom(),
           Keyword.t()
         ) :: StakeState.t() | [StakeState.t()] | {:error, term()}
   rpc :get_stake_state, request_stream: true do
@@ -310,14 +311,14 @@ defmodule ForgeSdk.Rpc do
 
   @spec get_tether_state(
           RequestGetTetherState.t() | [RequestGetTetherState.t()] | Keyword.t() | [Keyword.t()],
-          Channel.t() | nil,
+          String.t() | atom(),
           Keyword.t()
         ) :: TetherState.t() | [TetherState.t()] | {:error, term()}
   rpc :get_tether_state, request_stream: true do
     res.state
   end
 
-  @spec get_forge_state(Channel.t() | nil, Keyword.t()) :: ForgeState.t() | {:error, term()}
+  @spec get_forge_state(String.t() | atom(), Keyword.t()) :: ForgeState.t() | {:error, term()}
   rpc :get_forge_state, no_params: true do
     res.state
   end
@@ -329,20 +330,20 @@ defmodule ForgeSdk.Rpc do
           | [RequestStoreFile.t()]
           | Keyword.t()
           | [Keyword.t()],
-          Channel.t() | nil,
+          String.t() | atom(),
           Keyword.t()
         ) :: String.t() | {:error, term()}
   rpc :store_file, request_stream: true do
     res.hash
   end
 
-  @spec load_file(RequestLoadFile.t() | Keyword.t(), Channel.t() | nil, Keyword.t()) ::
+  @spec load_file(RequestLoadFile.t() | Keyword.t(), String.t() | atom(), Keyword.t()) ::
           [binary()] | [error: term()] | {:error, term()}
   rpc :load_file, response_stream: true do
     res.chunk
   end
 
-  @spec pin_file(RequestPinFile.t() | Keyword.t(), Channel.t() | nil, Keyword.t()) ::
+  @spec pin_file(RequestPinFile.t() | Keyword.t(), String.t() | atom(), Keyword.t()) ::
           :ok | {:error, term()}
   rpc :pin_file do
     res.code
@@ -352,18 +353,18 @@ defmodule ForgeSdk.Rpc do
   @doc """
   Subscribe to a specific topic. User must first create their own channel for this.
 
-    iex> chan = ForgeSdk.get_chan()
+    iex> conn = ForgeSdk.get_conn()
     iex> req = RequestSubscribe.new()
-    iex> stream = ForgeSdk.subscribe(req, chan)
+    iex> stream = ForgeSdk.subscribe(req, conn)
     iex> Enum.take(stream, 1) # this will return the topic id of the subscription
   """
-  @spec subscribe(RequestSubscribe.t() | Keyword.t(), Channel.t() | nil, Keyword.t()) ::
+  @spec subscribe(RequestSubscribe.t() | Keyword.t(), String.t() | atom(), Keyword.t()) ::
           [ResponseSubscribe.t()] | {:error, term()}
   rpc :subscribe, opts: [timeout: @subscription_timeout, stream_mode: true] do
     res.value
   end
 
-  @spec unsubscribe(RequestUnsubscribe.t(), Channel.t() | nil, Keyword.t()) ::
+  @spec unsubscribe(RequestUnsubscribe.t(), String.t() | atom(), Keyword.t()) ::
           ResponseUnsubscribe.t() | {:error, term()}
   rpc :unsubscribe do
     res.code
@@ -425,10 +426,10 @@ defmodule ForgeSdk.Rpc do
   @doc """
   Retrieve the nonce for an address, usually used for filling the nonce field of a Tx.
   """
-  @spec get_nonce(String.t(), Channel.t() | nil, String.t()) :: non_neg_integer()
-  def get_nonce(address, chan \\ nil, app_hash \\ "") do
+  @spec get_nonce(String.t(), String.t() | atom(), String.t()) :: non_neg_integer()
+  def get_nonce(address, name \\ "", app_hash \\ "") do
     req = RequestGetAccountState.new(address: address, key: "nonce", app_hash: app_hash)
-    state = get_account_state(req, chan)
+    state = get_account_state(req, name)
     Map.get(state || %{}, :nonce, 1)
   rescue
     e ->
@@ -439,7 +440,7 @@ defmodule ForgeSdk.Rpc do
   # stats related
   @spec get_forge_stats(
           RequestGetForgeStats.t() | Keyword.t(),
-          Channel.t() | nil,
+          String.t() | atom(),
           Keyword.t()
         ) :: ForgeStats.t() | {:error, term()}
   rpc :get_forge_stats do
@@ -448,7 +449,7 @@ defmodule ForgeSdk.Rpc do
 
   @spec list_transactions(
           RequestListTransactions.t() | Keyword.t(),
-          Channel.t() | nil,
+          String.t() | atom(),
           Keyword.t()
         ) :: {[IndexedTransaction.t()], PageInfo.t()} | {:error, term()}
   rpc :list_transactions do
@@ -457,7 +458,7 @@ defmodule ForgeSdk.Rpc do
 
   @spec list_assets(
           RequestListAssets.t() | Keyword.t(),
-          Channel.t() | nil,
+          String.t() | atom(),
           Keyword.t()
         ) :: {[IndexedAssetState.t()], PageInfo.t()} | {:error, term()}
   rpc :list_assets do
@@ -466,7 +467,7 @@ defmodule ForgeSdk.Rpc do
 
   @spec list_stakes(
           RequestListStakes.t() | Keyword.t(),
-          Channel.t() | nil,
+          String.t() | atom(),
           Keyword.t()
         ) :: {[IndexedStakeState.t()], PageInfo.t()} | {:error, term()}
   rpc :list_stakes do
@@ -475,7 +476,7 @@ defmodule ForgeSdk.Rpc do
 
   @spec list_account(
           RequestListAccount.t() | Keyword.t(),
-          Channel.t() | nil,
+          String.t() | atom(),
           Keyword.t()
         ) :: IndexedAccountState.t() | nil | {:error, term()}
   rpc :list_account do
@@ -484,7 +485,7 @@ defmodule ForgeSdk.Rpc do
 
   @spec list_top_accounts(
           RequestListTopAccounts.t() | Keyword.t(),
-          Channel.t() | nil,
+          String.t() | atom(),
           Keyword.t()
         ) :: {[IndexedAccountState.t()], PageInfo.t()} | {:error, term()}
   rpc :list_top_accounts do
@@ -493,7 +494,7 @@ defmodule ForgeSdk.Rpc do
 
   @spec list_asset_transactions(
           RequestListAssetTransactions.t() | Keyword.t(),
-          Channel.t() | nil,
+          String.t() | atom(),
           Keyword.t()
         ) :: {[IndexedTransaction.t()], PageInfo.t()} | {:error, term()}
   rpc :list_asset_transactions do
@@ -502,7 +503,7 @@ defmodule ForgeSdk.Rpc do
 
   @spec list_blocks(
           RequestListBlocks.t() | Keyword.t(),
-          Channel.t() | nil,
+          String.t() | atom(),
           Keyword.t()
         ) :: {[IndexedBlock.t()], PageInfo.t()} | {:error, term()}
   rpc :list_blocks do
@@ -511,7 +512,7 @@ defmodule ForgeSdk.Rpc do
 
   @spec list_tethers(
           RequestListTethers.t() | Keyword.t(),
-          Channel.t() | nil,
+          String.t() | atom(),
           Keyword.t()
         ) :: {[TetherState.t()], PageInfo.t()} | {:error, term()}
   rpc :list_tethers do
@@ -520,7 +521,7 @@ defmodule ForgeSdk.Rpc do
 
   @spec get_health_status(
           map() | Keyword.t(),
-          Channel.t() | nil,
+          String.t() | atom(),
           Keyword.t()
         ) :: HealthStatus.t() | {:error, term()}
   rpc :get_health_status do
@@ -528,8 +529,13 @@ defmodule ForgeSdk.Rpc do
   end
 
   # other helpers
+  @spec get_address(String.t()) :: String.t() | nil
   def get_address(hash) do
-    tx = (get_tx(hash: hash) || %{tx: nil}).tx
+    tx =
+      case get_tx(hash: hash) do
+        {:error, _} -> nil
+        info -> info.tx
+      end
 
     case ForgeSdk.display(tx) do
       nil -> nil

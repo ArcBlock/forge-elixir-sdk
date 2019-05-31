@@ -49,8 +49,7 @@ defmodule ForgeSdk do
     ResponseSubscribe
   }
 
-  alias ForgeSdk.{Configuration.Helper, Display, File, Loader, Rpc, Util, Wallet}
-  alias GRPC.Channel
+  alias ForgeSdk.{Display, Loader, Rpc, Util, Wallet}
 
   @doc """
   Migrate a `wallet` from old address (as well as pk, sk) to a new address.
@@ -310,8 +309,8 @@ defmodule ForgeSdk do
       ForgeSdk.get_chain_info()
 
   """
-  @spec get_chain_info(Channel.t() | nil) :: ChainInfo.t() | {:error, term()}
-  defdelegate get_chain_info(chan \\ nil), to: Rpc
+  @spec get_chain_info(String.t()) :: ChainInfo.t() | {:error, term()}
+  defdelegate get_chain_info(conn_name \\ ""), to: Rpc
 
   @doc """
   Retrive the current status of the node.
@@ -321,8 +320,8 @@ defmodule ForgeSdk do
       ForgeSdk.get_node_info()
 
   """
-  @spec get_node_info(Channel.t() | nil) :: NodeInfo.t() | {:error, term()}
-  defdelegate get_node_info(chan \\ nil), to: Rpc
+  @spec get_node_info(String.t()) :: NodeInfo.t() | {:error, term()}
+  defdelegate get_node_info(conn_name \\ ""), to: Rpc
 
   @doc """
   Retrieve the `network info`.
@@ -332,8 +331,8 @@ defmodule ForgeSdk do
       ForgeSdk.get_net_info()
 
   """
-  @spec get_net_info(Channel.t() | nil) :: NetInfo.t() | {:error, term()}
-  defdelegate get_net_info(chan \\ nil), to: Rpc
+  @spec get_net_info(String.t()) :: NetInfo.t() | {:error, term()}
+  defdelegate get_net_info(conn_name \\ ""), to: Rpc
 
   @doc """
   Retrieve the current validator info.
@@ -343,8 +342,8 @@ defmodule ForgeSdk do
       ForgeSdk.get_validators_info()
 
   """
-  @spec get_validators_info(Channel.t() | nil) :: ValidatorsInfo.t() | {:error, term()}
-  defdelegate get_validators_info(chan \\ nil), to: Rpc
+  @spec get_validators_info(String.t()) :: ValidatorsInfo.t() | {:error, term()}
+  defdelegate get_validators_info(conn_name \\ ""), to: Rpc
 
   @doc """
   Create tx.
@@ -361,9 +360,9 @@ defmodule ForgeSdk do
       tx = ForgeSdk.create_tx(req)
 
   """
-  @spec create_tx(RequestCreateTx.t() | Keyword.t(), Channel.t() | nil) ::
+  @spec create_tx(RequestCreateTx.t() | Keyword.t(), String.t() | atom()) ::
           Transaction.t() | {:error, term()}
-  defdelegate create_tx(request, chan \\ nil), to: Rpc
+  defdelegate create_tx(request, conn_name \\ ""), to: Rpc
 
   @doc """
   Forge we support `multisig` for a tx, you can use this to endorse an already signed tx.
@@ -386,9 +385,9 @@ defmodule ForgeSdk do
       ForgeSdk.send_tx(tx: tx1)
 
   """
-  @spec multisig(RequestMultisig.t() | Keyword.t(), Channel.t() | nil) ::
+  @spec multisig(RequestMultisig.t() | Keyword.t(), String.t() | atom()) ::
           Transaction.t() | {:error, term()}
-  defdelegate multisig(request, chan \\ nil), to: Rpc
+  defdelegate multisig(request, conn_name \\ ""), to: Rpc
 
   @doc """
   Send tx.
@@ -406,9 +405,9 @@ defmodule ForgeSdk do
       hash = ForgeSdk.send_tx(tx: tx)
 
   """
-  @spec send_tx(RequestSendTx.t() | Keyword.t(), Channel.t() | nil) ::
+  @spec send_tx(RequestSendTx.t() | Keyword.t(), String.t() | atom()) ::
           String.t() | {:error, term()}
-  defdelegate send_tx(request, chan \\ nil), to: Rpc
+  defdelegate send_tx(request, conn_name \\ ""), to: Rpc
 
   @doc """
   Return an already processed `transaction` by its `hash`. If this API returns `nil`, mostly your tx hasn't been.
@@ -421,11 +420,11 @@ defmodule ForgeSdk do
   """
   @spec get_tx(
           RequestGetTx.t() | [RequestGetTx.t()] | Keyword.t() | [Keyword.t()],
-          Channel.t() | nil
+          String.t()
         ) :: TransactionInfo.t() | [TransactionInfo.t()] | {:error, term()}
-  defdelegate get_tx(requests, chan \\ nil), to: Rpc
+  defdelegate get_tx(requests, conn_name \\ ""), to: Rpc
 
-  defdelegate get_unconfirmed_txs(request, chan \\ nil), to: Rpc
+  defdelegate get_unconfirmed_txs(request, conn_name \\ ""), to: Rpc
 
   @doc """
   Get a block by its `height`. All txs included in this block will be returned.
@@ -438,9 +437,9 @@ defmodule ForgeSdk do
   """
   @spec get_block(
           RequestGetBlock.t() | [RequestGetBlock.t()] | Keyword.t() | [Keyword.t()],
-          Channel.t() | nil
+          String.t()
         ) :: BlockInfo.t() | [BlockInfo.t()] | {:error, term()}
-  defdelegate get_block(requests, chan \\ nil), to: Rpc
+  defdelegate get_block(requests, conn_name \\ ""), to: Rpc
 
   @doc """
   Get a `list` of blocks between a range.
@@ -454,11 +453,11 @@ defmodule ForgeSdk do
       ForgeSdk.get_blocks(req)
 
   """
-  @spec get_blocks(RequestGetBlocks.t() | Keyword.t(), Channel.t() | nil) ::
+  @spec get_blocks(RequestGetBlocks.t() | Keyword.t(), String.t() | atom()) ::
           {[BlockInfoSimple.t()], PageInfo.t()} | {:error, term()}
-  defdelegate get_blocks(request, chan \\ nil), to: Rpc
-  defdelegate search(request, chan \\ nil), to: Rpc
-  defdelegate get_config(chan \\ nil), to: Rpc
+  defdelegate get_blocks(request, conn_name \\ ""), to: Rpc
+  defdelegate search(request, conn_name \\ ""), to: Rpc
+  defdelegate get_config(request, conn_name \\ ""), to: Rpc
 
   # wallet related
 
@@ -482,9 +481,9 @@ defmodule ForgeSdk do
       ForgeSdk.create_wallet(moniker: "alice", passphrase: "abcd1234")
 
   """
-  @spec create_wallet(RequestCreateWallet.t() | Keyword.t(), Channel.t() | nil) ::
+  @spec create_wallet(RequestCreateWallet.t() | Keyword.t(), String.t() | atom()) ::
           {WalletInfo.t(), String.t()} | {:error, term()}
-  defdelegate create_wallet(request, chan \\ nil), to: Rpc
+  defdelegate create_wallet(request, conn_name \\ ""), to: Rpc
 
   @doc """
   Load a node managed wallet by its `address` and `passphrase` from the keystore.
@@ -496,9 +495,9 @@ defmodule ForgeSdk do
       ForgeSdk.load_wallet(req)
 
   """
-  @spec load_wallet(RequestLoadWallet.t() | Keyword.t(), Channel.t() | nil) ::
+  @spec load_wallet(RequestLoadWallet.t() | Keyword.t(), String.t() | atom()) ::
           String.t() | {:error, term()}
-  defdelegate load_wallet(request, chan \\ nil), to: Rpc
+  defdelegate load_wallet(request, conn_name \\ ""), to: Rpc
 
   @doc """
   If you know the `type` and the `secret key` of the wallet, you can recover it into the current forge node.
@@ -512,9 +511,9 @@ defmodule ForgeSdk do
       ForgeSdk.recover_wallet(req)
 
   """
-  @spec recover_wallet(RequestRecoverWallet.t(), Channel.t() | nil) ::
+  @spec recover_wallet(RequestRecoverWallet.t(), String.t()) ::
           {WalletInfo.t(), String.t()} | {:error, term()}
-  defdelegate recover_wallet(request, chan \\ nil), to: Rpc
+  defdelegate recover_wallet(request, conn_name \\ ""), to: Rpc
 
   @doc """
   Display the `wallet addresses` that current forge node hosts.
@@ -524,8 +523,8 @@ defmodule ForgeSdk do
       ForgeSdk.list_wallet()
 
   """
-  @spec list_wallet(Channel.t() | nil) :: String.t() | {:error, term()}
-  defdelegate list_wallet(chan \\ nil), to: Rpc
+  @spec list_wallet(String.t() | atom()) :: String.t() | {:error, term()}
+  defdelegate list_wallet(conn_name \\ ""), to: Rpc
 
   @doc """
   Delete the `keystore` for a given `wallet address`. This is useful when you finished your work on the forge node and you'd remove the footprint for your wallet.
@@ -537,10 +536,10 @@ defmodule ForgeSdk do
       ForgeSdk.remove_wallet(request)
 
   """
-  @spec remove_wallet(RequestRemoveWallet.t() | Keyword.t(), Channel.t() | nil) ::
+  @spec remove_wallet(RequestRemoveWallet.t() | Keyword.t(), String.t() | atom()) ::
           :ok | {:error, term()}
-  defdelegate remove_wallet(request, chan \\ nil), to: Rpc
-  defdelegate declare_node(request, chan \\ nil), to: Rpc
+  defdelegate remove_wallet(request, conn_name \\ ""), to: Rpc
+  defdelegate declare_node(request, conn_name \\ ""), to: Rpc
 
   # state related
 
@@ -555,9 +554,9 @@ defmodule ForgeSdk do
   """
   @spec get_account_state(
           RequestGetAccountState.t() | [RequestGetAccountState.t()] | Keyword.t() | [Keyword.t()],
-          Channel.t() | nil
+          String.t() | atom()
         ) :: AccountState.t() | nil | [AccountState.t()] | {:error, term()}
-  defdelegate get_account_state(request, chan \\ nil), to: Rpc
+  defdelegate get_account_state(request, conn_name \\ ""), to: Rpc
 
   @doc """
   Return the `state` for an asset.
@@ -570,9 +569,9 @@ defmodule ForgeSdk do
   """
   @spec get_asset_state(
           RequestGetAssetState.t() | [RequestGetAssetState.t()] | Keyword.t() | [Keyword.t()],
-          Channel.t() | nil
+          String.t() | atom()
         ) :: AssetState.t() | [AssetState.t()] | {:error, term()}
-  defdelegate get_asset_state(request, chan \\ nil), to: Rpc
+  defdelegate get_asset_state(request, conn_name \\ ""), to: Rpc
 
   @doc """
   Return global state for forge.
@@ -582,8 +581,8 @@ defmodule ForgeSdk do
       ForgeSdk.get_forge_state()
 
   """
-  @spec get_forge_state(Channel.t() | nil) :: ForgeState.t() | {:error, term()}
-  defdelegate get_forge_state(chan \\ nil), to: Rpc
+  @spec get_forge_state(String.t() | atom()) :: ForgeState.t() | {:error, term()}
+  defdelegate get_forge_state(conn_name \\ ""), to: Rpc
 
   @doc """
   Return installed protocol state.
@@ -599,16 +598,16 @@ defmodule ForgeSdk do
           | [RequestGetProtocolState.t()]
           | Keyword.t()
           | [Keyword.t()],
-          Channel.t() | nil
+          String.t()
         ) :: ProtocolState.t() | [ProtocolState.t()] | {:error, term()}
-  defdelegate get_protocol_state(request, chan \\ nil), to: Rpc
-  defdelegate get_stake_state(request, chan \\ nil), to: Rpc
-  defdelegate get_tether_state(request, chan \\ nil), to: Rpc
+  defdelegate get_protocol_state(request, conn_name \\ ""), to: Rpc
+  defdelegate get_stake_state(request, conn_name \\ ""), to: Rpc
+  defdelegate get_tether_state(request, conn_name \\ ""), to: Rpc
 
   # filesystem related
-  defdelegate store_file(request, chan \\ nil), to: File
-  defdelegate load_file(request, chan \\ nil), to: File
-  defdelegate pin_file(request, chan \\ nil), to: Rpc
+  # defdelegate store_file(request, conn_name \\ ""), to: File
+  # defdelegate load_file(request, conn_name \\ ""), to: File
+  # defdelegate pin_file(request, conn_name \\ ""), to: Rpc
 
   # subscription related
 
@@ -621,9 +620,9 @@ defmodule ForgeSdk do
       ForgeSdk.Rpc.subscribe(req)
 
   """
-  @spec subscribe(RequestSubscribe.t() | Keyword.t(), Channel.t() | nil, Keyword.t()) ::
+  @spec subscribe(RequestSubscribe.t() | Keyword.t(), String.t() | atom(), Keyword.t()) ::
           [ResponseSubscribe.t()] | {:error, term()}
-  defdelegate subscribe(request, chan \\ nil, opts \\ []), to: Rpc
+  defdelegate subscribe(request, conn_name \\ "", opts \\ []), to: Rpc
 
   @doc """
   Terminate the subscription by the topic `id`.
@@ -637,12 +636,12 @@ defmodule ForgeSdk do
       ForgeSdk.Rpc.unsubscribe(req)
 
   """
-  @spec unsubscribe(RequestUnsubscribe.t(), Channel.t() | nil, Keyword.t()) ::
+  @spec unsubscribe(RequestUnsubscribe.t(), String.t() | atom(), Keyword.t()) ::
           :ok | {:error, term()}
-  defdelegate unsubscribe(request, chan \\ nil, opts \\ []), to: Rpc
+  defdelegate unsubscribe(request, conn_name \\ "", opts \\ []), to: Rpc
 
   # extended
-  defdelegate get_nonce(address, chan \\ nil, app_hash \\ ""), to: Rpc
+  # defdelegate get_nonce(address, conn_name \\ "", app_hash \\ ""), to: Rpc
 
   # display a data structure
 
@@ -659,25 +658,11 @@ defmodule ForgeSdk do
   @spec display(any(), boolean()) :: any()
   defdelegate display(data, expand? \\ false), to: Display
 
-  @doc """
-  Parse the forge configuration.
-
-  ## Example
-
-      ForgeSdk.parse_config(:forge, "~/.forge_cli/forge_release.toml")
-
-  """
-  @spec parse_config(atom(), String.t()) :: map()
-  defdelegate parse_config(name, file \\ ""), to: Util, as: :parse
-  defdelegate find_config_file!, to: Util
-  defdelegate load_config_file!(filename \\ nil), to: Util
-  defdelegate gen_config(params), to: Util
-  defdelegate get_env(key), to: Helper
-  defdelegate put_env(key, value), to: Helper
-  defdelegate get_chan, to: Util
+  defdelegate connect(hostname, opts), to: Util
+  defdelegate get_conn(name \\ ""), to: Util
+  defdelegate get_parsed_config(name \\ ""), to: Util
   defdelegate datetime_to_proto(dt), to: Util
   defdelegate proto_to_datetime(ts), to: Util
-  defdelegate update_config(forge_state), to: Util
   defdelegate update_type_url(forge_state), to: Loader
   defdelegate get_tx_protocols(forge_state, address), to: Loader
   defdelegate get_address(hash), to: Rpc
@@ -685,31 +670,19 @@ defmodule ForgeSdk do
   defdelegate encode_any!(data, type_url \\ nil), to: ForgeAbi
   defdelegate decode_any(data), to: ForgeAbi
   defdelegate decode_any!(data), to: ForgeAbi
-  defdelegate token_to_unit(tokens), to: ForgeAbi
-  defdelegate unit_to_token(units), to: ForgeAbi
-
-  # init sdk and handler registration
-
-  @doc """
-  Init forge SDK (it will setup client RPC socket for you).
-
-  ## Examples
-
-      ForgeSdk.init(:forge)
-
-  """
-  @spec init(atom(), String.t(), String.t() | nil) :: [module() | {module(), term()}]
-  defdelegate init(otp_app, app_hash \\ "", filename \\ nil), to: Util
+  defdelegate token_to_unit(tokens, name \\ ""), to: Util
+  defdelegate unit_to_token(units, name \\ ""), to: Util
+  defdelegate one_token(name \\ ""), to: Util
 
   # stats
-  defdelegate get_forge_stats(requests, chan \\ nil), to: Rpc
-  defdelegate list_transactions(request, chan \\ nil), to: Rpc
-  defdelegate list_assets(request, chan \\ nil), to: Rpc
-  defdelegate list_stakes(request, chan \\ nil), to: Rpc
-  defdelegate list_account(request, chan \\ nil), to: Rpc
-  defdelegate list_top_accounts(request, chan \\ nil), to: Rpc
-  defdelegate list_asset_transactions(request, chan \\ nil), to: Rpc
-  defdelegate list_blocks(request, chan \\ nil), to: Rpc
-  defdelegate list_tethers(request, chan \\ nil), to: Rpc
-  defdelegate get_health_status(request, chan \\ nil), to: Rpc
+  defdelegate get_forge_stats(requests, conn_name \\ ""), to: Rpc
+  defdelegate list_transactions(request, conn_name \\ ""), to: Rpc
+  defdelegate list_assets(request, conn_name \\ ""), to: Rpc
+  defdelegate list_stakes(request, conn_name \\ ""), to: Rpc
+  defdelegate list_account(request, conn_name \\ ""), to: Rpc
+  defdelegate list_top_accounts(request, conn_name \\ ""), to: Rpc
+  defdelegate list_asset_transactions(request, conn_name \\ ""), to: Rpc
+  defdelegate list_blocks(request, conn_name \\ ""), to: Rpc
+  defdelegate list_tethers(request, conn_name \\ ""), to: Rpc
+  defdelegate get_health_status(request, conn_name \\ ""), to: Rpc
 end

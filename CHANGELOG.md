@@ -1,3 +1,11 @@
+## 0.28.2 (May 30, 2019)
+  - fix dialyzer
+  - support one_token, token_to_unit, unit_to_token for multiple chains
+  - add wallet test back
+  - move tests back to forge
+  - add get_parsed_config
+  - support multiple grpc
+
 ## 0.27.3 (May 24, 2019)
   - Support listing tethers
 

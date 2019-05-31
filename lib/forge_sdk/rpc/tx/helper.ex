@@ -14,7 +14,7 @@ defmodule ForgeSdk.Tx.Builder.Helper do
     token = Keyword.get(opts, :token, "")
 
     sign? = Keyword.get(opts, :sign, true)
-    chan = opts[:chan]
+    conn = ForgeSdk.Util.get_conn(opts[:conn] || "")
 
     if wallet === nil do
       raise "wallet shall be provided in opts"
@@ -33,35 +33,35 @@ defmodule ForgeSdk.Tx.Builder.Helper do
 
     case sign? do
       true ->
-        case create_tx(any, nonce, wallet, token, chan) do
+        case create_tx(any, nonce, wallet, token, conn) do
           {:error, _} = error ->
             error
 
           tx ->
             case Keyword.get(opts, :send, :broadcast) do
-              :broadcast -> send_tx(RequestSendTx.new(tx: tx), chan)
-              :commit -> send_tx(RequestSendTx.new(tx: tx, commit: true), chan)
+              :broadcast -> send_tx(RequestSendTx.new(tx: tx), conn)
+              :commit -> send_tx(RequestSendTx.new(tx: tx, commit: true), conn)
               :nosend -> tx
             end
         end
 
       false ->
-        create_unsigned_tx(any, nonce, wallet)
+        create_unsigned_tx(any, nonce, wallet, conn)
     end
   end
 
   # private functions
-  defp create_unsigned_tx(any, nonce, wallet),
+  defp create_unsigned_tx(any, nonce, wallet, conn),
     do:
       Transaction.new(
         itx: any,
         from: wallet.address,
         nonce: nonce,
-        chain_id: ForgeSdk.get_env(:chain_id),
+        chain_id: conn.chain_id,
         pk: wallet.pk
       )
 
-  defp create_tx(any, nonce, %{sk: ""} = wallet, token, chan) do
+  defp create_tx(any, nonce, %{sk: ""} = wallet, token, conn) do
     req =
       RequestCreateTx.new(
         itx: any,
@@ -71,17 +71,11 @@ defmodule ForgeSdk.Tx.Builder.Helper do
         token: token
       )
 
-    ForgeSdk.create_tx(req, chan)
+    ForgeSdk.create_tx(req, conn.chan)
   end
 
-  defp create_tx(any, nonce, wallet, _token, nil) do
-    chain_id = ForgeSdk.get_env(:chain_id)
-    do_create_tx(any, nonce, wallet, chain_id)
-  end
-
-  defp create_tx(any, nonce, wallet, _token, chan) do
-    chain_id = ForgeSdk.get_chain_info(chan).network
-    do_create_tx(any, nonce, wallet, chain_id)
+  defp create_tx(any, nonce, wallet, _token, conn) do
+    do_create_tx(any, nonce, wallet, conn.chain_id)
   end
 
   defp do_create_tx(any, nonce, wallet, chain_id) do
@@ -99,8 +93,8 @@ defmodule ForgeSdk.Tx.Builder.Helper do
     %Transaction{tx | signature: signature}
   end
 
-  defp send_tx(req, chan) do
-    case ForgeSdk.send_tx(req, chan) do
+  defp send_tx(req, conn) do
+    case ForgeSdk.send_tx(req, conn.name) do
       {:error, _} = error -> error
       res -> res
     end

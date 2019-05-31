@@ -1,6 +1,6 @@
 defmodule ForgeSdk.ConnSupervisor do
   @moduledoc """
-  Supervise the expiration worker for different cache table.
+  Supervise the connections.
   """
   use DynamicSupervisor
   alias ForgeSdk.RpcConn

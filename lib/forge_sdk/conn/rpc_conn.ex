@@ -45,6 +45,11 @@ defmodule ForgeSdk.RpcConn do
     Connection.call(name, :get_conn)
   end
 
+  @spec get_config(atom()) :: GRPC.Channel.t() | {:error, :closed}
+  def get_config(name) do
+    Connection.call(name, :get_config)
+  end
+
   @spec update_config(atom(), String.t()) :: GRPC.Channel.t() | {:error, :closed}
   def update_config(name, config) do
     Connection.cast(name, {:update_config, config})
@@ -105,6 +110,10 @@ defmodule ForgeSdk.RpcConn do
 
   def handle_call(:get_conn, _from, %{conn: conn} = state) do
     {:reply, conn, state}
+  end
+
+  def handle_call(:get_config, _from, %{config: config} = state) do
+    {:reply, config, state}
   end
 
   def handle_call(:close, from, state) do

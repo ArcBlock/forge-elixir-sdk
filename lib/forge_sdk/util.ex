@@ -50,6 +50,19 @@ defmodule ForgeSdk.Util do
   def get_conn(name), do: ForgeSdk.RpcConn.get_conn(name)
 
   @doc """
+  Get the configuration for the conn.
+  """
+  @spec get_parsed_config(String.t() | atom()) :: Conn.t()
+  def get_parsed_config(name \\ "")
+
+  def get_parsed_config(""), do: get_parsed_config(Application.get_env(:forge_sdk, :default_conn))
+
+  def get_parsed_config(name) when is_binary(name),
+    do: get_parsed_config(String.to_existing_atom(name))
+
+  def get_parsed_config(name), do: ForgeSdk.RpcConn.get_config(name)
+
+  @doc """
   Convert datetime or iso8601 datetime string to google protobuf timestamp.
   """
   @spec to_proto_ts(String.t() | DateTime.t()) :: Timestamp.t()

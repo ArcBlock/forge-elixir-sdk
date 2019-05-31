@@ -17,7 +17,7 @@ defmodule ForgeSdk.Wallet.Util do
   @spec create(WalletType.t()) :: WalletInfo.t() | {:error, term()}
   def create(type) do
     {pk, sk} = do_keypair(type.pk)
-		did_type = to_did_type(type)
+    did_type = to_did_type(type)
 
     WalletInfo.new(%{
       sk: sk,

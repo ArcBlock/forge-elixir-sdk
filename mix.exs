@@ -78,7 +78,6 @@ defmodule ForgeSdk.MixProject do
       files: [
         "config",
         "lib",
-        "priv",
         "mix.exs",
         "README*",
         "LICENSE",

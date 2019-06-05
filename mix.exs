@@ -78,7 +78,7 @@ defmodule ForgeSdk.MixProject do
       files: [
         "config",
         "lib",
-				"priv",
+        "priv",
         "mix.exs",
         "README*",
         "LICENSE",
@@ -87,8 +87,6 @@ defmodule ForgeSdk.MixProject do
       ],
       licenses: ["Apache 2.0"],
       maintainers: [
-        "christinaleizhou@gmail.com",
-        "cnredink@gmail.com",
         "dingpl716@gmail.com",
         "sunboshan@gmail.com",
         "tyr.chen@gmail.com"

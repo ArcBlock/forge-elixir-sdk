@@ -35,7 +35,7 @@ defmodule ForgeSdk.ConnSupervisor do
   end
 
   def get_names do
-    Enum.map(children(), fn {_, p, _, _} -> Process.info(p, :registered_name) end)
+    Enum.map(children(), fn {_, p, _, _} -> p |> Process.info(:registered_name) |> elem(1) end)
   end
 
   def count_children do

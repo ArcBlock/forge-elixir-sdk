@@ -34,6 +34,10 @@ defmodule ForgeSdk.ConnSupervisor do
     DynamicSupervisor.which_children(__MODULE__)
   end
 
+  def get_names do
+    Enum.map(children(), fn {_, p, _, _} -> Process.info(p)[:registered_name] end)
+  end
+
   def count_children do
     DynamicSupervisor.count_children(__MODULE__)
   end

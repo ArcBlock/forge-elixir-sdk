@@ -1,3 +1,6 @@
+## 0.29.1 (June 08, 2019)
+  - add bbmustache as dependency.
+
 ## 0.29.0 (June 05, 2019)
   - bump version to 0.29.0 to match with forge
 

@@ -41,6 +41,7 @@ defmodule ForgeSdk.MixProject do
 
   defp deps do
     [
+      {:bbmustache, "~> 1.8"},
       {:connection, "~> 1.0"},
       {:deep_merge, "~> 0.1.1"},
       {:jason, "~> 1.1"},

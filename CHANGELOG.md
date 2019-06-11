@@ -1,3 +1,6 @@
+## 0.30.0 (June 11, 2019)
+  - release version 0.30.0
+  
 ## 0.29.1 (June 08, 2019)
   - add bbmustache as dependency.
 

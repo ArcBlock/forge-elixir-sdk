@@ -31,9 +31,12 @@ defmodule ForgeSdk.Tx.Builder.Helper do
         false -> Enum.random(1..10_000_000_000)
       end
 
+    "fg:t:" <> type = type_url
+    gas = Map.get(conn.gas, type, 0)
+
     case sign? do
       true ->
-        case create_tx(any, nonce, wallet, token, conn) do
+        case create_tx(any, nonce, gas, wallet, token, conn) do
           {:error, _} = error ->
             error
 
@@ -46,22 +49,23 @@ defmodule ForgeSdk.Tx.Builder.Helper do
         end
 
       false ->
-        create_unsigned_tx(any, nonce, wallet, conn)
+        create_unsigned_tx(any, nonce, gas, wallet, conn)
     end
   end
 
   # private functions
-  defp create_unsigned_tx(any, nonce, wallet, conn),
-    do:
-      Transaction.new(
-        itx: any,
-        from: wallet.address,
-        nonce: nonce,
-        chain_id: conn.chain_id,
-        pk: wallet.pk
-      )
+  defp create_unsigned_tx(any, nonce, gas, wallet, conn) do
+    Transaction.new(
+      itx: any,
+      from: wallet.address,
+      nonce: nonce,
+      gas: gas,
+      chain_id: conn.chain_id,
+      pk: wallet.pk
+    )
+  end
 
-  defp create_tx(any, nonce, %{sk: ""} = wallet, token, conn) do
+  defp create_tx(any, nonce, _gas, %{sk: ""} = wallet, token, conn) do
     req =
       RequestCreateTx.new(
         itx: any,
@@ -74,16 +78,17 @@ defmodule ForgeSdk.Tx.Builder.Helper do
     ForgeSdk.create_tx(req, conn.chan)
   end
 
-  defp create_tx(any, nonce, wallet, _token, conn) do
-    do_create_tx(any, nonce, wallet, conn.chain_id)
+  defp create_tx(any, nonce, gas, wallet, _token, conn) do
+    do_create_tx(any, nonce, gas, wallet, conn.chain_id)
   end
 
-  defp do_create_tx(any, nonce, wallet, chain_id) do
+  defp do_create_tx(any, nonce, gas, wallet, chain_id) do
     tx =
       Transaction.new(
         itx: any,
         from: wallet.address,
         nonce: nonce,
+        gas: gas,
         chain_id: chain_id,
         pk: wallet.pk
       )

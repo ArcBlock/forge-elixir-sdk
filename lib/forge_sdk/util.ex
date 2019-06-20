@@ -22,7 +22,7 @@ defmodule ForgeSdk.Util do
       _ -> nil
     end
 
-    result = ConnSupervisor.add(name, host, nil)
+    result = ConnSupervisor.add(name, host)
     forge_state = ForgeSdk.get_forge_state(name)
 
     case name do
@@ -32,7 +32,7 @@ defmodule ForgeSdk.Util do
 
     config = ForgeSdk.get_config([parsed: true], name)
     ForgeSdk.RpcConn.update_config(name, config)
-    ForgeSdk.RpcConn.update_gas(name, forge_state.gas)
+    ForgeSdk.RpcConn.update_gas(name)
 
     result
   end

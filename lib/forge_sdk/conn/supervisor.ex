@@ -6,10 +6,10 @@ defmodule ForgeSdk.ConnSupervisor do
   alias ForgeSdk.RpcConn
 
   def start_link(_arg) do
-    DynamicSupervisor.start_link(__MODULE__, :ok, name: __MODULE__)
+    DynamicSupervisor.start_link(__MODULE__, [], name: __MODULE__)
   end
 
-  def init(:ok) do
+  def init([]) do
     DynamicSupervisor.init(strategy: :one_for_one)
   end
 

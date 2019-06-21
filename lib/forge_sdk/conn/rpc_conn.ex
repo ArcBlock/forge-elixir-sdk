@@ -10,6 +10,7 @@ defmodule ForgeSdk.Conn do
     field :chan, GRPC.Channel.t() | nil, default: nil
     field :chain_id, String.t(), default: ""
     field :decimal, non_neg_integer()
+    field :gas, map(), default: %{}
   end
 end
 
@@ -54,6 +55,11 @@ defmodule ForgeSdk.RpcConn do
   @spec update_config(atom(), String.t()) :: any()
   def update_config(name, config) do
     Connection.cast(name, {:update_config, config})
+  end
+
+  @spec update_gas(atom()) :: any()
+  def update_gas(name) do
+    Connection.cast(name, :update_gas)
   end
 
   @spec close(atom()) :: any()
@@ -128,6 +134,23 @@ defmodule ForgeSdk.RpcConn do
     chain_id = Map.get(config, "chain_id")
     decimal = Map.get(config, "decimal")
     {:noreply, %{state | conn: %{conn | chain_id: chain_id, decimal: decimal}, config: config}}
+  end
+
+  def handle_cast(:update_gas, %{conn: conn} = state) do
+    me = self()
+
+    spawn(fn ->
+      case ForgeSdk.get_forge_state(conn.name) do
+        nil -> Process.send_after(me, {:"$gen_cast", :update_gas}, 1000)
+        %{gas: gas} -> Connection.cast(me, {:update_gas, gas})
+      end
+    end)
+
+    {:noreply, state}
+  end
+
+  def handle_cast({:update_gas, gas}, %{conn: conn} = state) do
+    {:noreply, %{state | conn: %{conn | gas: gas}}}
   end
 
   # info

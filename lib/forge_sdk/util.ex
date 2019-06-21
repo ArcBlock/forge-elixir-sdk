@@ -22,19 +22,17 @@ defmodule ForgeSdk.Util do
       _ -> nil
     end
 
-    result = ConnSupervisor.add(name, host, nil)
+    result = ConnSupervisor.add(name, host)
+    forge_state = ForgeSdk.get_forge_state(name)
 
     case name do
-      :forge_server_node ->
-        nil
-
-      _ ->
-        forge_state = ForgeSdk.get_forge_state(name)
-        ForgeSdk.update_type_url(forge_state)
+      :forge_server_node -> nil
+      _ -> ForgeSdk.update_type_url(forge_state)
     end
 
     config = ForgeSdk.get_config([parsed: true], name)
     ForgeSdk.RpcConn.update_config(name, config)
+    ForgeSdk.RpcConn.update_gas(name)
 
     result
   end

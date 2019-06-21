@@ -1,3 +1,11 @@
+## 0.31.0 (June 21, 2019)
+  - Update deps
+  - Update gas when connect to forge
+  - Assemble tx with gas
+  - Update gas every 1s in RpcConn
+  - Tweak on conn supervisor
+  - Add gas when ForgeSdk.connect
+
 ## 0.30.0 (June 11, 2019)
   - release version 0.30.0
   

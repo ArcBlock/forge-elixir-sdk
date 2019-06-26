@@ -67,6 +67,7 @@ defmodule ForgeSdk.Rpc do
     RequestGetProtocolState,
     RequestGetStakeState,
     RequestGetTetherState,
+    RequestGetSwapState,
 
     # filesystem related
     RequestStoreFile,
@@ -315,6 +316,15 @@ defmodule ForgeSdk.Rpc do
           Keyword.t()
         ) :: TetherState.t() | [TetherState.t()] | {:error, term()}
   rpc :get_tether_state, request_stream: true do
+    res.state
+  end
+
+  @spec get_swap_state(
+          RequestGetSwapState.t() | [RequestGetSwapState.t()] | Keyword.t() | [Keyword.t()],
+          String.t() | atom(),
+          Keyword.t()
+        ) :: SwapState.t() | [SwapState.t()] | {:error, term()}
+  rpc :get_swap_state, request_stream: true do
     res.state
   end
 

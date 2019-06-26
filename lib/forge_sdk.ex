@@ -605,6 +605,7 @@ defmodule ForgeSdk do
   defdelegate get_protocol_state(request, conn_name \\ ""), to: Rpc
   defdelegate get_stake_state(request, conn_name \\ ""), to: Rpc
   defdelegate get_tether_state(request, conn_name \\ ""), to: Rpc
+  defdelegate get_swap_state(request, conn_name \\ ""), to: Rpc
 
   # filesystem related
   # defdelegate store_file(request, conn_name \\ ""), to: File

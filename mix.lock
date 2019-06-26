@@ -1,5 +1,5 @@
 %{
-  "abt_did_elixir": {:hex, :abt_did_elixir, "0.3.4", "c3a2703090a8010db99b1b64b43539fa01b90ecf86acee69c8682ae24c5d4267", [:mix], [{:jason, "~> 1.1", [hex: :jason, repo: "hexpm", optional: false]}, {:mcrypto, "~> 0.2", [hex: :mcrypto, repo: "hexpm", optional: false]}, {:multibase, "~> 0.0.1", [hex: :multibase, repo: "hexpm", optional: false]}, {:typed_struct, "~> 0.1.4", [hex: :typed_struct, repo: "hexpm", optional: false]}], "hexpm"},
+  "abt_did_elixir": {:hex, :abt_did_elixir, "0.3.5", "edb1c19a1c4832647eea9cae312cd511c7a58dd43475790ac71350feb69b63e0", [:mix], [{:jason, "~> 1.1", [hex: :jason, repo: "hexpm", optional: false]}, {:mcrypto, "~> 0.2", [hex: :mcrypto, repo: "hexpm", optional: false]}, {:multibase, "~> 0.0.1", [hex: :multibase, repo: "hexpm", optional: false]}, {:typed_struct, "~> 0.1.4", [hex: :typed_struct, repo: "hexpm", optional: false]}], "hexpm"},
   "base1": {:hex, :base1, "0.1.0", "493a46bb5b34bf38d3b69ea6eaff33416d222f1621231cb1a04af42a351117ea", [:mix], [], "hexpm"},
   "base2": {:hex, :base2, "0.1.0", "bc9e19f1578e1439010d26b1bee456f3ac980481a46c3643b24e15c40e1db0ed", [:mix], [], "hexpm"},
   "basefiftyeight": {:hex, :basefiftyeight, "0.1.0", "3d48544743bf9aab7ab02aed803ac42af77acf268c7d8c71d4f39e7fa85ee8d3", [:mix], [], "hexpm"},

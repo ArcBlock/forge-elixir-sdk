@@ -421,6 +421,7 @@ defmodule ForgeSdk.Rpc do
 
   def revoke_tether(itx, opts), do: apply(CoreTx.RevokeTether.Rpc, :revoke_tether, [itx, opts])
 
+  def setup_swap(itx, opts), do: apply(CoreTx.SetupSwap.Rpc, :setup_swap, [itx, opts])
   # account related
 
   @doc """

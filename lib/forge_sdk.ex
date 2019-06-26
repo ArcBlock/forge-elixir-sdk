@@ -282,6 +282,8 @@ defmodule ForgeSdk do
 
   defdelegate revoke_tether(itx, opts), to: Rpc
 
+  defdelegate setup_swap(itx, opts), to: Rpc
+
   # extended tx helper
   defdelegate stake_for_node(address, amount, opts), to: Rpc
 

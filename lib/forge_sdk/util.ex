@@ -80,6 +80,11 @@ defmodule ForgeSdk.Util do
     AbtDid.hash_to_did(:tether, hash, form: :short)
   end
 
+  @spec to_swap_address(String.t()) :: String.t()
+  def to_swap_address(hash) do
+    AbtDid.hash_to_did(:swap, hash, form: :short)
+  end
+
   @doc """
   Generate address for asset. We only use itx.data to generate asset address. Thus same itx.data would be treated as duplicate asset.
   """

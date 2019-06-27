@@ -284,6 +284,8 @@ defmodule ForgeSdk do
 
   defdelegate setup_swap(itx, opts), to: Rpc
 
+  defdelegate retrieve_swap(itx, opts), to: Rpc
+
   # extended tx helper
   defdelegate stake_for_node(address, amount, opts), to: Rpc
 

@@ -691,5 +691,6 @@ defmodule ForgeSdk do
   defdelegate list_asset_transactions(request, conn_name \\ ""), to: Rpc
   defdelegate list_blocks(request, conn_name \\ ""), to: Rpc
   defdelegate list_tethers(request, conn_name \\ ""), to: Rpc
+  defdelegate list_swap(request, conn_name \\ ""), to: Rpc
   defdelegate get_health_status(request, conn_name \\ ""), to: Rpc
 end

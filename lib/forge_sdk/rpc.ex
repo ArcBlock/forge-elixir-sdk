@@ -17,6 +17,7 @@ defmodule ForgeSdk.Rpc do
     ProtocolState,
     StakeState,
     TetherState,
+    SwapState,
 
     # block
     IndexedBlock,
@@ -91,6 +92,7 @@ defmodule ForgeSdk.Rpc do
     RequestListBlocks,
     RequestListTransactions,
     RequestListTethers,
+    RequestListSwap,
     ForgeStats
   }
 
@@ -532,6 +534,15 @@ defmodule ForgeSdk.Rpc do
         ) :: {[TetherState.t()], PageInfo.t()} | {:error, term()}
   rpc :list_tethers do
     {res.tethers, res.page}
+  end
+
+  @spec list_swap(
+          RequestListSwap.t() | Keyword.t(),
+          String.t() | atom(),
+          Keyword.t()
+        ) :: {[SwapState.t()], PageInfo.t()} | {:error, term()}
+  rpc :list_swap do
+    {res.swap, res.page}
   end
 
   @spec get_health_status(

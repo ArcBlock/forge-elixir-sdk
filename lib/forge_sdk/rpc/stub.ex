@@ -53,5 +53,6 @@ defmodule ForgeSdk.Rpc.Stub do
   defdelegate list_asset_transactions(chan, req, opts \\ []), to: ForgeAbi.StatsRpc.Stub
   defdelegate list_blocks(chan, req, opts \\ []), to: ForgeAbi.StatsRpc.Stub
   defdelegate list_tethers(chan, req, opts \\ []), to: ForgeAbi.StatsRpc.Stub
+  defdelegate list_swap(chan, req, opts \\ []), to: ForgeAbi.StatsRpc.Stub
   defdelegate get_health_status(chan, req, opts \\ []), to: ForgeAbi.StatsRpc.Stub
 end

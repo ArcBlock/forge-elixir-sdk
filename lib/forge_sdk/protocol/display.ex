@@ -53,8 +53,8 @@ defimpl ForgeSdk.Display, for: List do
 
   alias ForgeSdk.Display
 
-  def display(data, _expand? \\ false) do
-    Enum.map(data, &Display.display(&1))
+  def display(data, expand? \\ false) do
+    Enum.map(data, &Display.display(&1, expand?))
   end
 end
 

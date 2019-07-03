@@ -1,3 +1,6 @@
+## 0.31.1 (July 3, 2019)
+  - Support atomic swap.
+
 ## 0.31.0 (June 21, 2019)
   - Update deps
   - Update gas when connect to forge

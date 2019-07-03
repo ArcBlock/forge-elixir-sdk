@@ -9,9 +9,11 @@ defmodule ForgeSdkTest.WalletUtils do
   alias ForgeAbi.{KeyType, HashType, EncodingType, WalletType}
 
   property "create a new wallet shall return correct data" do
-    check all pk_type <- integer(0..1),
-              hash_type <- integer(0..1),
-              encoding_type <- integer(0..1) do
+    check all(
+            pk_type <- integer(0..1),
+            hash_type <- integer(0..1),
+            encoding_type <- integer(0..1)
+          ) do
       type =
         WalletType.new(
           address: EncodingType.key(encoding_type),

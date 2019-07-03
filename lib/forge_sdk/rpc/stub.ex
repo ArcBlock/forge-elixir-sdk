@@ -32,6 +32,7 @@ defmodule ForgeSdk.Rpc.Stub do
   defdelegate get_protocol_state(chan, opts \\ []), to: ForgeAbi.StateRpc.Stub
   defdelegate get_stake_state(chan, opts \\ []), to: ForgeAbi.StateRpc.Stub
   defdelegate get_tether_state(chan, opts \\ []), to: ForgeAbi.StateRpc.Stub
+  defdelegate get_swap_state(chan, opts \\ []), to: ForgeAbi.StateRpc.Stub
 
   # file rpc
   defdelegate store_file(chan, opts \\ []), to: ForgeAbi.FileRpc.Stub
@@ -52,5 +53,6 @@ defmodule ForgeSdk.Rpc.Stub do
   defdelegate list_asset_transactions(chan, req, opts \\ []), to: ForgeAbi.StatsRpc.Stub
   defdelegate list_blocks(chan, req, opts \\ []), to: ForgeAbi.StatsRpc.Stub
   defdelegate list_tethers(chan, req, opts \\ []), to: ForgeAbi.StatsRpc.Stub
+  defdelegate list_swap(chan, req, opts \\ []), to: ForgeAbi.StatsRpc.Stub
   defdelegate get_health_status(chan, req, opts \\ []), to: ForgeAbi.StatsRpc.Stub
 end

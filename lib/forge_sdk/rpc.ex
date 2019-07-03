@@ -17,6 +17,7 @@ defmodule ForgeSdk.Rpc do
     ProtocolState,
     StakeState,
     TetherState,
+    SwapState,
 
     # block
     IndexedBlock,
@@ -67,6 +68,7 @@ defmodule ForgeSdk.Rpc do
     RequestGetProtocolState,
     RequestGetStakeState,
     RequestGetTetherState,
+    RequestGetSwapState,
 
     # filesystem related
     RequestStoreFile,
@@ -90,6 +92,7 @@ defmodule ForgeSdk.Rpc do
     RequestListBlocks,
     RequestListTransactions,
     RequestListTethers,
+    RequestListSwap,
     ForgeStats
   }
 
@@ -318,6 +321,15 @@ defmodule ForgeSdk.Rpc do
     res.state
   end
 
+  @spec get_swap_state(
+          RequestGetSwapState.t() | [RequestGetSwapState.t()] | Keyword.t() | [Keyword.t()],
+          String.t() | atom(),
+          Keyword.t()
+        ) :: SwapState.t() | [SwapState.t()] | {:error, term()}
+  rpc :get_swap_state, request_stream: true do
+    res.state
+  end
+
   @spec get_forge_state(String.t() | atom(), Keyword.t()) :: ForgeState.t() | {:error, term()}
   rpc :get_forge_state, no_params: true do
     res.state
@@ -421,6 +433,11 @@ defmodule ForgeSdk.Rpc do
 
   def revoke_tether(itx, opts), do: apply(CoreTx.RevokeTether.Rpc, :revoke_tether, [itx, opts])
 
+  def setup_swap(itx, opts), do: apply(CoreTx.SetupSwap.Rpc, :setup_swap, [itx, opts])
+
+  def retrieve_swap(itx, opts), do: apply(CoreTx.RetrieveSwap.Rpc, :retrieve_swap, [itx, opts])
+
+  def revoke_swap(itx, opts), do: apply(CoreTx.RevokeSwap.Rpc, :revoke_swap, [itx, opts])
   # account related
 
   @doc """
@@ -517,6 +534,15 @@ defmodule ForgeSdk.Rpc do
         ) :: {[TetherState.t()], PageInfo.t()} | {:error, term()}
   rpc :list_tethers do
     {res.tethers, res.page}
+  end
+
+  @spec list_swap(
+          RequestListSwap.t() | Keyword.t(),
+          String.t() | atom(),
+          Keyword.t()
+        ) :: {[SwapState.t()], PageInfo.t()} | {:error, term()}
+  rpc :list_swap do
+    {res.swap, res.page}
   end
 
   @spec get_health_status(

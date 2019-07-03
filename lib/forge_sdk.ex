@@ -282,6 +282,12 @@ defmodule ForgeSdk do
 
   defdelegate revoke_tether(itx, opts), to: Rpc
 
+  defdelegate setup_swap(itx, opts), to: Rpc
+
+  defdelegate retrieve_swap(itx, opts), to: Rpc
+
+  defdelegate revoke_swap(itx, opts), to: Rpc
+
   # extended tx helper
   defdelegate stake_for_node(address, amount, opts), to: Rpc
 
@@ -603,6 +609,7 @@ defmodule ForgeSdk do
   defdelegate get_protocol_state(request, conn_name \\ ""), to: Rpc
   defdelegate get_stake_state(request, conn_name \\ ""), to: Rpc
   defdelegate get_tether_state(request, conn_name \\ ""), to: Rpc
+  defdelegate get_swap_state(request, conn_name \\ ""), to: Rpc
 
   # filesystem related
   # defdelegate store_file(request, conn_name \\ ""), to: File
@@ -684,5 +691,6 @@ defmodule ForgeSdk do
   defdelegate list_asset_transactions(request, conn_name \\ ""), to: Rpc
   defdelegate list_blocks(request, conn_name \\ ""), to: Rpc
   defdelegate list_tethers(request, conn_name \\ ""), to: Rpc
+  defdelegate list_swap(request, conn_name \\ ""), to: Rpc
   defdelegate get_health_status(request, conn_name \\ ""), to: Rpc
 end

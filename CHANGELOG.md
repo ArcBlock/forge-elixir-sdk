@@ -1,3 +1,6 @@
+## 0.32.0 (July 04, 2019)
+  - support group
+
 ## 0.31.1 (July 3, 2019)
   - Support atomic swap.
 

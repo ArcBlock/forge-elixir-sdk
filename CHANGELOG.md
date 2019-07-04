@@ -1,3 +1,6 @@
+## 0.32.1 (July 04, 2019)
+  - fix display issue
+
 ## 0.32.0 (July 04, 2019)
   - support group
 

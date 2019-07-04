@@ -3,12 +3,16 @@ defimpl ForgeSdk.Display, for: ForgeAbi.DeployProtocolTx do
   Implementation of `Display` protocol for `DeployProtocolTx`
   """
 
-  def display(data, _expand? \\ false) do
+  alias ForgeSdk.Display
+
+  def display(data, expand? \\ false) do
     basic = Map.from_struct(data)
     group = basic |> Map.get(:tags) |> List.first()
 
     Map.merge(basic, %{
-      group: group || ""
+      group: group || "",
+      code: Display.display(basic.code, expand?),
+      data: Display.display(basic.data, expand?)
     })
   end
 end

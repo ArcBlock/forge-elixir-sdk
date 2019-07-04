@@ -1,3 +1,6 @@
+## 0.32.2 (July 04, 2019)
+  - fix display issue for tx protocol
+
 ## 0.32.1 (July 04, 2019)
   - fix display issue
 

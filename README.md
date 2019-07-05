@@ -1,4 +1,4 @@
-# Forge Elixir SDK
+![Forge Elixir SDK](https://www.arcblock.io/.netlify/functions/badge/?text=Forge%20Elixir%20SDK)
 
 This is the Elixir / Erlang version of the SDK for Forge framework.
 

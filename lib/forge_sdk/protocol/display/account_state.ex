@@ -10,6 +10,7 @@ defimpl ForgeSdk.Display, for: ForgeAbi.AccountState do
     Map.merge(basic, %{
       pk: Display.display(basic.pk),
       balance: Display.display(basic.balance),
+      gas_balance: Display.display(basic.gas_balance),
       data: Display.display(basic.data),
       stake: Display.display(basic.stake),
       type: Display.display(basic.type),

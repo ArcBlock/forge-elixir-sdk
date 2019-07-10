@@ -1,3 +1,7 @@
+## 0.33.0 (July 10, 2019)
+  - fix gas balance display (#122)
+  - Update README.md
+
 ## 0.32.2 (July 04, 2019)
   - fix display issue for tx protocol
 

@@ -1,3 +1,6 @@
+## 0.33.2 (July 19, 2019)
+  - Fix cases where data don't have installed_at field
+
 ## 0.33.1 (July 19, 2019)
   - Fix display issue for deploy protocol tx
 

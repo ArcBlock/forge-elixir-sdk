@@ -1,3 +1,6 @@
+## 0.33.1 (July 19, 2019)
+  - Fix display issue for deploy protocol tx
+
 ## 0.33.0 (July 10, 2019)
   - fix gas balance display (#122)
   - Update README.md

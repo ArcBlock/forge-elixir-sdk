@@ -288,6 +288,8 @@ defmodule ForgeSdk do
 
   defdelegate revoke_swap(itx, opts), to: Rpc
 
+  defdelegate delegate(itx, opts), to: Rpc
+
   # extended tx helper
   defdelegate stake_for_node(address, amount, opts), to: Rpc
 
@@ -610,6 +612,7 @@ defmodule ForgeSdk do
   defdelegate get_stake_state(request, conn_name \\ ""), to: Rpc
   defdelegate get_tether_state(request, conn_name \\ ""), to: Rpc
   defdelegate get_swap_state(request, conn_name \\ ""), to: Rpc
+  defdelegate get_delegate_state(request, conn_name \\ ""), to: Rpc
 
   # filesystem related
   # defdelegate store_file(request, conn_name \\ ""), to: File

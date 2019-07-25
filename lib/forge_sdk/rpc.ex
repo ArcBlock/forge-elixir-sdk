@@ -13,6 +13,7 @@ defmodule ForgeSdk.Rpc do
     # state
     AccountState,
     AssetState,
+    DelegateState,
     ForgeState,
     ProtocolState,
     StakeState,
@@ -64,6 +65,7 @@ defmodule ForgeSdk.Rpc do
     # state related
     RequestGetAccountState,
     RequestGetAssetState,
+    RequestGetDelegateState,
     # RequestGetForgeState,
     RequestGetProtocolState,
     RequestGetStakeState,
@@ -335,6 +337,18 @@ defmodule ForgeSdk.Rpc do
     res.state
   end
 
+  @spec get_delegate_state(
+          RequestGetDelegateState.t()
+          | [RequestGetDelegateState.t()]
+          | Keyword.t()
+          | [Keyword.t()],
+          String.t() | atom(),
+          Keyword.t()
+        ) :: DelegateState.t() | [DelegateState.t()] | {:error, term()}
+  rpc :get_delegate_state, request_stream: true do
+    res.state
+  end
+
   # file system related
   @spec store_file(
           Enumerable.t()
@@ -438,6 +452,8 @@ defmodule ForgeSdk.Rpc do
   def retrieve_swap(itx, opts), do: apply(CoreTx.RetrieveSwap.Rpc, :retrieve_swap, [itx, opts])
 
   def revoke_swap(itx, opts), do: apply(CoreTx.RevokeSwap.Rpc, :revoke_swap, [itx, opts])
+
+  def delegate(itx, opts), do: apply(CoreTx.Delegate.Rpc, :delegate, [itx, opts])
   # account related
 
   @doc """

@@ -1,3 +1,9 @@
+## 0.34.0 (July 29, 2019)
+  - support multisig delegation
+  - support delegator in sdk
+  - add delegate rpc support
+  - support delegate tx
+
 ## 0.33.2 (July 19, 2019)
   - Fix cases where data don't have installed_at field
 

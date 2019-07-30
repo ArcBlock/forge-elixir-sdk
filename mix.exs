@@ -52,10 +52,10 @@ defmodule ForgeSdk.MixProject do
 
       # forge family dependencies
       {:mcrypto, "~> 0.2"},
-      # {:abt_did_elixir, "~> 0.3"},
-      # {:forge_abi, "~> 1.9.5"},
-      {:abt_did_elixir, path: "../abt-did-elixir"},
-      {:forge_abi, path: "../forge-abi"},
+      {:abt_did_elixir, "~> 0.3"},
+      {:forge_abi, "~> 1.12"},
+      # {:abt_did_elixir, path: "../abt-did-elixir"},
+      # {:forge_abi, path: "../forge-abi"},
 
       # dev and test
       {:credo, "~> 1.0.0", only: [:dev, :test]},

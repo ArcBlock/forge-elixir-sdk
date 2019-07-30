@@ -162,7 +162,7 @@ defmodule ForgeSdk.Rpc do
 
     case wallet.sk === "" do
       true -> multisig_rpc(req, conn_name)
-      _ -> WalletUtil.multisig!(wallet, req.tx, req.data)
+      _ -> WalletUtil.multisig!(wallet, req.tx, data: req.data, delegatee: req.delegatee)
     end
   rescue
     _ -> {:error, :internal}
@@ -410,8 +410,8 @@ defmodule ForgeSdk.Rpc do
   def prepare_consume_asset(itx, opts),
     do: apply(CoreTx.ConsumeAsset.Rpc, :prepare_consume_asset, [itx, opts])
 
-  def finalize_consume_asset(tx, asset_address, wallet),
-    do: apply(CoreTx.ConsumeAsset.Rpc, :finalize_consume_asset, [tx, asset_address, wallet])
+  def finalize_consume_asset(tx, opts),
+    do: apply(CoreTx.ConsumeAsset.Rpc, :finalize_consume_asset, [tx, opts])
 
   def declare(itx, opts), do: apply(CoreTx.Declare.Rpc, :declare, [itx, opts])
 
@@ -423,8 +423,8 @@ defmodule ForgeSdk.Rpc do
   def deposit_tether(itx, opts), do: apply(CoreTx.DepositTether.Rpc, :deposit_tether, [itx, opts])
   def prepare_exchange(itx, opts), do: apply(CoreTx.Exchange.Rpc, :prepare_exchange, [itx, opts])
 
-  def finalize_exchange(tx, wallet),
-    do: apply(CoreTx.Exchange.Rpc, :finalize_exchange, [tx, wallet])
+  def finalize_exchange(tx, opts),
+    do: apply(CoreTx.Exchange.Rpc, :finalize_exchange, [tx, opts])
 
   def exchange_tether(itx, opts),
     do: apply(CoreTx.ExchangeTether.Rpc, :exchange_tether, [itx, opts])

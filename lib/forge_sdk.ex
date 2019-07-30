@@ -115,9 +115,9 @@ defmodule ForgeSdk do
   @spec prepare_consume_asset(map(), Keyword.t()) :: Transaction.t() | {:error, term()}
   defdelegate prepare_consume_asset(itx, opts), to: Rpc
 
-  @spec finalize_consume_asset(Transaction.t(), String.t(), WalletInfo.t()) ::
+  @spec finalize_consume_asset(Transaction.t(), Keyword.t()) ::
           {:error, any()} | Transaction.t()
-  defdelegate finalize_consume_asset(tx, asset_address, wallet), to: Rpc
+  defdelegate finalize_consume_asset(tx, opts), to: Rpc
 
   @doc """
   Create a new `asset`.
@@ -202,8 +202,9 @@ defmodule ForgeSdk do
   @spec prepare_exchange(map(), Keyword.t()) :: Transaction.t() | {:error, term()}
   defdelegate prepare_exchange(itx, opts), to: Rpc
 
-  @spec finalize_exchange(Transaction.t(), WalletInfo.t()) :: {:error, term()} | Transaction.t()
-  defdelegate finalize_exchange(tx, wallet), to: Rpc
+  @spec finalize_exchange(Transaction.t(), Keyword.t()) :: {:error, term()} | Transaction.t()
+  defdelegate finalize_exchange(tx, opts), to: Rpc
+
   defdelegate exchange_tether(itx, opts), to: Rpc
 
   # defdelegate sys_upgrade(itx, opts), to: Rpc

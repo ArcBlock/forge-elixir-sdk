@@ -104,6 +104,18 @@ defmodule ForgeSdk.Util do
   end
 
   @doc """
+  Generate delegation address. Use sender's address + receiver's address as pseudo public key.
+  Use `ed25519` as pseudo key type. Use sha3 and base58 by default.
+  """
+  @spec to_delegate_address(String.t(), String.t()) :: String.t()
+  def to_delegate_address(addr1, addr2) do
+    data = addr1 <> addr2
+
+    hash = Mcrypto.hash(%Mcrypto.Hasher.Sha3{}, data)
+    AbtDid.hash_to_did(:delegate, hash, form: :short)
+  end
+
+  @doc """
   Generate stake address. Use sender's address + receiver's address as pseudo public key.
   Use `ed25519` as pseudo key type. Use sha3 and base58 by default.
   """

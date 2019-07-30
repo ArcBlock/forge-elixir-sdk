@@ -9,8 +9,6 @@ defmodule ForgeSdk.Wallet.Util do
 
   alias ForgeAbi.{Multisig, Transaction, WalletInfo, WalletType}
 
-  alias Google.Protobuf.Any
-
   alias Mcrypto.Hasher.{Keccak, Sha2, Sha3}
   alias Mcrypto.Signer.{Ed25519, Secp256k1}
 
@@ -50,14 +48,33 @@ defmodule ForgeSdk.Wallet.Util do
   @doc """
   Sign the transaction with extra private key, usually used for exchange and other transactions that requires involvment for multiple party. Note this is not for multisig wallet, but for a multisig transaction.
   """
-  @spec multisig!(WalletInfo.t(), Transaction.t(), Any.t() | nil) :: Transaction.t()
-  def multisig!(wallet, tx, data \\ nil)
+  @spec multisig!(WalletInfo.t(), Transaction.t(), Keyword.t()) :: Transaction.t()
+  def multisig!(wallet, tx, opts)
   def multisig!(_, %{signature: ""}, _), do: {:error, :invalid_signature}
 
-  def multisig!(wallet, tx, data) do
-    sigs = [Multisig.new(signer: wallet.address, pk: wallet.pk, data: data) | tx.signatures]
+  def multisig!(wallet, tx, opts) do
+    data = opts[:data]
+    delegatee = opts[:delegatee] || ""
+
+    sigs =
+      case delegatee do
+        "" ->
+          [Multisig.new(signer: wallet.address, pk: wallet.pk, data: data) | tx.signatures]
+
+        delegatee ->
+          [
+            Multisig.new(signer: delegatee, delegator: wallet.address, pk: wallet.pk, data: data)
+            | tx.signatures
+          ]
+      end
+
     tx_data = Transaction.encode(%{tx | signature: ""})
-    sender_wallet = WalletInfo.new(address: tx.from, pk: tx.pk)
+
+    sender_wallet =
+      case tx.delegator do
+        "" -> WalletInfo.new(address: tx.from, pk: tx.pk)
+        d -> WalletInfo.new(address: d, pk: tx.pk)
+      end
 
     case verify(sender_wallet, tx_data, tx.signature) do
       true ->

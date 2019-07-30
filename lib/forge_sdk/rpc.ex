@@ -13,6 +13,7 @@ defmodule ForgeSdk.Rpc do
     # state
     AccountState,
     AssetState,
+    DelegateState,
     ForgeState,
     ProtocolState,
     StakeState,
@@ -64,6 +65,7 @@ defmodule ForgeSdk.Rpc do
     # state related
     RequestGetAccountState,
     RequestGetAssetState,
+    RequestGetDelegateState,
     # RequestGetForgeState,
     RequestGetProtocolState,
     RequestGetStakeState,
@@ -160,7 +162,7 @@ defmodule ForgeSdk.Rpc do
 
     case wallet.sk === "" do
       true -> multisig_rpc(req, conn_name)
-      _ -> WalletUtil.multisig!(wallet, req.tx, req.data)
+      _ -> WalletUtil.multisig!(wallet, req.tx, data: req.data, delegatee: req.delegatee)
     end
   rescue
     _ -> {:error, :internal}
@@ -335,6 +337,18 @@ defmodule ForgeSdk.Rpc do
     res.state
   end
 
+  @spec get_delegate_state(
+          RequestGetDelegateState.t()
+          | [RequestGetDelegateState.t()]
+          | Keyword.t()
+          | [Keyword.t()],
+          String.t() | atom(),
+          Keyword.t()
+        ) :: DelegateState.t() | [DelegateState.t()] | {:error, term()}
+  rpc :get_delegate_state, request_stream: true do
+    res.state
+  end
+
   # file system related
   @spec store_file(
           Enumerable.t()
@@ -396,8 +410,8 @@ defmodule ForgeSdk.Rpc do
   def prepare_consume_asset(itx, opts),
     do: apply(CoreTx.ConsumeAsset.Rpc, :prepare_consume_asset, [itx, opts])
 
-  def finalize_consume_asset(tx, asset_address, wallet),
-    do: apply(CoreTx.ConsumeAsset.Rpc, :finalize_consume_asset, [tx, asset_address, wallet])
+  def finalize_consume_asset(tx, opts),
+    do: apply(CoreTx.ConsumeAsset.Rpc, :finalize_consume_asset, [tx, opts])
 
   def declare(itx, opts), do: apply(CoreTx.Declare.Rpc, :declare, [itx, opts])
 
@@ -409,8 +423,8 @@ defmodule ForgeSdk.Rpc do
   def deposit_tether(itx, opts), do: apply(CoreTx.DepositTether.Rpc, :deposit_tether, [itx, opts])
   def prepare_exchange(itx, opts), do: apply(CoreTx.Exchange.Rpc, :prepare_exchange, [itx, opts])
 
-  def finalize_exchange(tx, wallet),
-    do: apply(CoreTx.Exchange.Rpc, :finalize_exchange, [tx, wallet])
+  def finalize_exchange(tx, opts),
+    do: apply(CoreTx.Exchange.Rpc, :finalize_exchange, [tx, opts])
 
   def exchange_tether(itx, opts),
     do: apply(CoreTx.ExchangeTether.Rpc, :exchange_tether, [itx, opts])
@@ -438,6 +452,8 @@ defmodule ForgeSdk.Rpc do
   def retrieve_swap(itx, opts), do: apply(CoreTx.RetrieveSwap.Rpc, :retrieve_swap, [itx, opts])
 
   def revoke_swap(itx, opts), do: apply(CoreTx.RevokeSwap.Rpc, :revoke_swap, [itx, opts])
+
+  def delegate(itx, opts), do: apply(CoreTx.Delegate.Rpc, :delegate, [itx, opts])
   # account related
 
   @doc """

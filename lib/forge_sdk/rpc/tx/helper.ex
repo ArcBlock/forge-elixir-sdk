@@ -11,6 +11,7 @@ defmodule ForgeSdk.Tx.Builder.Helper do
     any = ForgeAbi.encode_any!(itx, type_url)
 
     wallet = opts[:wallet]
+    delegatee = opts[:delegatee]
     token = Keyword.get(opts, :token, "")
 
     sign? = Keyword.get(opts, :sign, true)
@@ -36,7 +37,7 @@ defmodule ForgeSdk.Tx.Builder.Helper do
 
     case sign? do
       true ->
-        case create_tx(any, nonce, gas, wallet, token, conn) do
+        case create_tx(any, nonce, gas, wallet, token, delegatee, conn) do
           {:error, _} = error ->
             error
 
@@ -49,12 +50,12 @@ defmodule ForgeSdk.Tx.Builder.Helper do
         end
 
       false ->
-        create_unsigned_tx(any, nonce, gas, wallet, conn)
+        create_unsigned_tx(any, nonce, gas, wallet, delegatee, conn)
     end
   end
 
   # private functions
-  defp create_unsigned_tx(any, nonce, gas, wallet, conn) do
+  defp create_unsigned_tx(any, nonce, gas, wallet, nil, conn) do
     Transaction.new(
       itx: any,
       from: wallet.address,
@@ -65,33 +66,72 @@ defmodule ForgeSdk.Tx.Builder.Helper do
     )
   end
 
-  defp create_tx(any, nonce, _gas, %{sk: ""} = wallet, token, conn) do
+  defp create_unsigned_tx(any, nonce, gas, wallet, delegatee, conn) do
+    Transaction.new(
+      itx: any,
+      delegator: wallet.address,
+      from: delegatee,
+      nonce: nonce,
+      gas: gas,
+      chain_id: conn.chain_id,
+      pk: wallet.pk
+    )
+  end
+
+  defp create_tx(any, nonce, _gas, %{sk: ""} = wallet, token, delegatee, conn) do
     req =
-      RequestCreateTx.new(
-        itx: any,
-        from: wallet.address,
-        nonce: nonce,
-        wallet: wallet,
-        token: token
-      )
+      case delegatee do
+        nil ->
+          RequestCreateTx.new(
+            itx: any,
+            from: wallet.address,
+            nonce: nonce,
+            wallet: wallet,
+            token: token
+          )
+
+        _ ->
+          RequestCreateTx.new(
+            itx: any,
+            from: delegatee,
+            delegator: wallet.address,
+            nonce: nonce,
+            wallet: wallet,
+            token: token
+          )
+      end
 
     ForgeSdk.create_tx(req, conn.chan)
   end
 
-  defp create_tx(any, nonce, gas, wallet, _token, conn) do
-    do_create_tx(any, nonce, gas, wallet, conn.chain_id)
+  defp create_tx(any, nonce, gas, wallet, _token, delegatee, conn) do
+    do_create_tx(any, nonce, gas, wallet, delegatee, conn.chain_id)
   end
 
-  defp do_create_tx(any, nonce, gas, wallet, chain_id) do
+  defp do_create_tx(any, nonce, gas, wallet, delegatee, chain_id) do
     tx =
-      Transaction.new(
-        itx: any,
-        from: wallet.address,
-        nonce: nonce,
-        gas: gas,
-        chain_id: chain_id,
-        pk: wallet.pk
-      )
+      case delegatee do
+        nil ->
+          Transaction.new(
+            itx: any,
+            from: wallet.address,
+            nonce: nonce,
+            gas: gas,
+            chain_id: chain_id,
+            pk: wallet.pk
+          )
+
+        _ ->
+          Transaction.new(
+            itx: any,
+            from: delegatee,
+            delegator: wallet.address,
+            nonce: nonce,
+            gas: gas,
+            chain_id: chain_id,
+            pk: wallet.pk
+          )
+      end
 
     tx = %Transaction{tx | signature: <<>>}
     signature = WalletUtil.sign!(wallet, Transaction.encode(tx))

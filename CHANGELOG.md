@@ -1,3 +1,6 @@
+## 0.37.0 (August 19, 2019)
+  - use user provided nonce
+
 ## 0.34.0 (July 29, 2019)
   - support multisig delegation
   - support delegator in sdk

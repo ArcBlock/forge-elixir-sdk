@@ -46,7 +46,7 @@ defmodule ForgeSdk.MixProject do
       {:deep_merge, "~> 0.1.1"},
       {:jason, "~> 1.1"},
       {:multibase, "~> 0.0.1"},
-      {:recase, "~> 0.4"},
+      {:recase, "~> 0.6"},
       {:toml, "~> 0.5"},
       {:typed_struct, "~> 0.1.4"},
 
@@ -61,7 +61,7 @@ defmodule ForgeSdk.MixProject do
       {:credo, "~> 1.0.0", only: [:dev, :test]},
       {:dialyxir, "~> 1.0.0-rc.4", only: [:dev], runtime: false},
       {:ex_doc, "~> 0.19.0", only: [:dev, :test], runtime: false},
-      {:excoveralls, "~> 0.10", only: [:test]},
+      {:excoveralls, "~> 0.11", only: [:test]},
       {:pre_commit_hook, "~> 1.2", only: [:dev, :test], runtime: false},
       {:stream_data, "~> 0.4", only: [:test, :integration]}
     ]

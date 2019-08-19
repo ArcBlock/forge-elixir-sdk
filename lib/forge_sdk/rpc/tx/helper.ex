@@ -25,11 +25,10 @@ defmodule ForgeSdk.Tx.Builder.Helper do
       raise "Tx requires signature but no sk or valid token found"
     end
 
-    # TODO: here we need to rethink this
     nonce =
-      case type_url in ["fg:t:poke", "fg:t:deploy_protocol"] do
-        true -> 0
-        false -> Enum.random(1..10_000_000_000)
+      case opts[:nonce] do
+        v when is_integer(v) -> v
+        _ -> Enum.random(1..10_000_000_000)
       end
 
     "fg:t:" <> type = type_url

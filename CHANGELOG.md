@@ -1,3 +1,6 @@
+## 0.37.1 (August 21, 2019)
+  - Add tx activation helper
+
 ## 0.37.0 (August 19, 2019)
   - use user provided nonce
 

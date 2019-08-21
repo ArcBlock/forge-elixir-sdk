@@ -275,6 +275,13 @@ defmodule ForgeSdk do
   """
   @spec upgrade_node(map(), Keyword.t()) :: String.t() | {:error, term()}
   defdelegate upgrade_node(itx, opts), to: Rpc
+
+  @spec activate_protocol(map(), Keyword.t()) :: String.t() | {:error, term()}
+  defdelegate activate_protocol(itx, opts), to: Rpc
+
+  @spec deactivate_protocol(map(), Keyword.t()) :: String.t() | {:error, term()}
+  defdelegate deactivate_protocol(itx, opts), to: Rpc
+
   # defdelegate upgrade_task(itx, opts), to: Rpc
 
   defdelegate withdraw_tether(itx, opts), to: Rpc

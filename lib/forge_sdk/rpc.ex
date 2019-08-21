@@ -455,9 +455,11 @@ defmodule ForgeSdk.Rpc do
 
   def delegate(itx, opts), do: apply(CoreTx.Delegate.Rpc, :delegate, [itx, opts])
 
-  def activate_protocol(itx, opts), do: apply(CoreTx.ActivateProtocol.Rpc, :activate_protocol, [itx, opts])
+  def activate_protocol(itx, opts),
+    do: apply(CoreTx.ActivateProtocol.Rpc, :activate_protocol, [itx, opts])
 
-  def deactivate_protocol(itx, opts), do: apply(CoreTx.DeactivateProtocol.Rpc, :deactivate_protocol, [itx, opts])
+  def deactivate_protocol(itx, opts),
+    do: apply(CoreTx.DeactivateProtocol.Rpc, :deactivate_protocol, [itx, opts])
 
   # account related
 

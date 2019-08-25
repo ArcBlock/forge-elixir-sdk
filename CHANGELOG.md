@@ -1,3 +1,7 @@
+## 0.37.2 (August 24, 2019)
+  - allow better decode for deploy protocol
+
+
 ## 0.37.1 (August 21, 2019)
   - Add tx activation helper
 

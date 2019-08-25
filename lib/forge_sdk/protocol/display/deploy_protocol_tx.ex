@@ -13,6 +13,7 @@ defimpl ForgeSdk.Display, for: ForgeAbi.DeployProtocolTx do
       group: group || "",
       code: Display.display(basic.code, expand?),
       data: Display.display(basic.data, expand?),
+      type_urls: Display.display(basic.data, expand?),
       installed_at: Display.display(Map.get(basic, :installed_at))
     })
   end

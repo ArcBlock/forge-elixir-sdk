@@ -75,7 +75,7 @@ defmodule ForgeSdk do
       w = ForgeSdk.create_wallet()
       ForgeSdk.declare(ForgeAbi.DeclareTx.new(moniker: "theater"), wallet: w)
       w1 = ForgeSdk.create_wallet()
-      ForgeSdk.declare(ForgeAbi.DeclareTx.new(moniker: "tyr"), wallet: w)
+      ForgeSdk.declare(ForgeAbi.DeclareTx.new(moniker: "tyr"), wallet: w1)
 
       # Note application shall already registered `Ticket` into Forge via `deploy_protocol`.
       factory = %{

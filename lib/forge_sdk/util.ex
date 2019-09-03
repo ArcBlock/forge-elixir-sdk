@@ -4,8 +4,11 @@ defmodule ForgeSdk.Util do
   """
 
   use ForgeAbi.Unit
+
+  alias ForgeAbi.{Transaction, WalletInfo}
   alias ForgeSdk.ConnSupervisor
   alias ForgeSdk.Conn
+  alias ForgeSdk.Wallet.Util, as: WalletUtil
 
   alias Google.Protobuf.Timestamp
 
@@ -144,5 +147,63 @@ defmodule ForgeSdk.Util do
   def one_token(name \\ "") do
     conn = ForgeSdk.get_conn(name)
     ForgeAbi.one_token(conn.decimal)
+  end
+
+  @spec verify_sig(Transaction.t()) :: boolean()
+  def verify_sig(%Transaction{} = tx) do
+    case to_wallet(tx) do
+      nil ->
+        false
+
+      wallet ->
+        tx1 = %Transaction{tx | signature: <<>>, signatures: []}
+        data = Transaction.encode(tx1)
+
+        WalletUtil.verify(wallet, data, tx.signature)
+    end
+  end
+
+  @spec verify_multi_sig(Transaction.t()) :: nil | Transaction.t()
+  def verify_multi_sig(%Transaction{} = tx) do
+    Enum.reduce_while(tx.signatures, tx, fn _, acc ->
+      [%{signer: signer, pk: pk, delegator: delegator, signature: sig} = v | rest] =
+        acc.signatures
+
+      v = %{v | signature: ""}
+      acc = %{acc | signatures: rest}
+      data = Transaction.encode(%{acc | signatures: [v | rest]})
+
+      address =
+        case delegator do
+          "" -> signer
+          _ -> delegator
+        end
+
+      wallet = WalletInfo.new(pk: pk, address: address)
+
+      cond do
+        AbtDid.match_pk?(address, pk) === false -> {:halt, nil}
+        WalletUtil.verify(wallet, data, sig) === true -> {:cont, acc}
+        true -> {:halt, nil}
+      end
+    end)
+  end
+
+  # private functions
+
+  # if delegator is empty, pk / from address shall be a pair
+  defp to_wallet(%Transaction{from: address, delegator: "", pk: pk}) do
+    case AbtDid.match_pk?(address, pk) do
+      true -> WalletInfo.new(pk: pk, address: address)
+      _ -> nil
+    end
+  end
+
+  # if delegator is not empty, pk / delegator address shall be a pair
+  defp to_wallet(%Transaction{delegator: address, pk: pk}) do
+    case AbtDid.match_pk?(address, pk) do
+      true -> WalletInfo.new(pk: pk, address: address)
+      _ -> nil
+    end
   end
 end

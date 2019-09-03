@@ -691,6 +691,8 @@ defmodule ForgeSdk do
   defdelegate token_to_unit(tokens, name \\ ""), to: Util
   defdelegate unit_to_token(units, name \\ ""), to: Util
   defdelegate one_token(name \\ ""), to: Util
+  defdelegate verify_sig(tx), to: Util
+  defdelegate verify_multi_sig(tx), to: Util
 
   # stats
   defdelegate get_forge_stats(requests, conn_name \\ ""), to: Rpc

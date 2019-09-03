@@ -1,3 +1,6 @@
+## 0.37.3 (September 03, 2019)
+  - add verify sig api
+
 ## 0.37.2 (August 24, 2019)
   - allow better decode for deploy protocol
 

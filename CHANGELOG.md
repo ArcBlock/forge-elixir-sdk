@@ -1,3 +1,7 @@
+## 0.37.4 (September 06, 2019)
+  - support deposit token (#131)
+  - update travis cache
+
 ## 0.37.3 (September 03, 2019)
   - add verify sig api
 

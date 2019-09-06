@@ -298,6 +298,8 @@ defmodule ForgeSdk do
 
   defdelegate delegate(itx, opts), to: Rpc
 
+  defdelegate deposit_token(itx, opts), to: Rpc
+
   # extended tx helper
   defdelegate stake_for_node(address, amount, opts), to: Rpc
 

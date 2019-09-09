@@ -68,10 +68,10 @@ defimpl ForgeSdk.Queue, for: ForgeAbi.CircularQueue do
   def init(_queue, opts \\ []) do
     queue =
       CircularQueue.new(
-        | type_url: opts[:type_url]   | | "",    |
-        | max_items: opts[:max_items] | | 0,     |
-        | circular: opts[:circular]   | | false, |
-        | fifo: opts[:fifo]           | | false  |
+        type_url: opts[:type_url] || "",
+        max_items: opts[:max_items] || 0,
+        circular: opts[:circular] || false,
+        fifo: opts[:fifo] || false
       )
 
     init_items(queue, opts[:items] || [])
@@ -113,8 +113,8 @@ defimpl ForgeSdk.Queue, for: ForgeAbi.CircularQueue do
 
     result_items =
       reversed_items
-      | > List.delete(find_item(reversed_items, value)) |
-      | > Enum.reverse()                                |
+      |> List.delete(find_item(reversed_items, value))
+      |> Enum.reverse()
 
     Map.put(queue, :items, result_items)
   end
@@ -145,6 +145,7 @@ defimpl ForgeSdk.Queue, for: ForgeAbi.CircularQueue do
 
   def contains?(queue, %{type_url: item_type_url, value: new_item}) do
     %{type_url: queue_type_url, items: items} = queue
+
     cond do
       queue_type_url != item_type_url -> false
       find_item(items, new_item) === nil -> false
@@ -179,17 +180,17 @@ defimpl ForgeSdk.Queue, for: ForgeAbi.CircularQueue do
   defp drop_item(%{fifo: false, items: items} = queue) do
     head =
       items
-      | > Enum.reverse() |
-      | > tl()           |
-      | > Enum.reverse() |
+      |> Enum.reverse()
+      |> tl()
+      |> Enum.reverse()
 
     Map.put(queue, :items, head)
   end
 
   defp replace_item(queue, item) do
     queue
-    | > drop_item()    |
-    | > add_item(item) |
+    |> drop_item()
+    |> add_item(item)
   end
 
   defp find_item(items, searched_item) do

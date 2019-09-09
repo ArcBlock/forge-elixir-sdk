@@ -1,3 +1,17 @@
+## 0.37.5 (September 06, 2019)
+  - Update deps version
+
+## 0.37.4 (September 06, 2019)
+  - support deposit token (#131)
+  - update travis cache
+
+## 0.37.3 (September 03, 2019)
+  - add verify sig api
+
+## 0.37.2 (August 24, 2019)
+  - allow better decode for deploy protocol
+
+
 ## 0.37.1 (August 21, 2019)
   - Add tx activation helper
 

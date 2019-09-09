@@ -75,7 +75,7 @@ defmodule ForgeSdk do
       w = ForgeSdk.create_wallet()
       ForgeSdk.declare(ForgeAbi.DeclareTx.new(moniker: "theater"), wallet: w)
       w1 = ForgeSdk.create_wallet()
-      ForgeSdk.declare(ForgeAbi.DeclareTx.new(moniker: "tyr"), wallet: w)
+      ForgeSdk.declare(ForgeAbi.DeclareTx.new(moniker: "tyr"), wallet: w1)
 
       # Note application shall already registered `Ticket` into Forge via `deploy_protocol`.
       factory = %{
@@ -297,6 +297,8 @@ defmodule ForgeSdk do
   defdelegate revoke_swap(itx, opts), to: Rpc
 
   defdelegate delegate(itx, opts), to: Rpc
+
+  defdelegate deposit_token(itx, opts), to: Rpc
 
   # extended tx helper
   defdelegate stake_for_node(address, amount, opts), to: Rpc
@@ -691,6 +693,8 @@ defmodule ForgeSdk do
   defdelegate token_to_unit(tokens, name \\ ""), to: Util
   defdelegate unit_to_token(units, name \\ ""), to: Util
   defdelegate one_token(name \\ ""), to: Util
+  defdelegate verify_sig(tx), to: Util
+  defdelegate verify_multi_sig(tx), to: Util
 
   # stats
   defdelegate get_forge_stats(requests, conn_name \\ ""), to: Rpc

@@ -1,4 +1,7 @@
-## 0.37.6
+## 0.38.0 (September 12, 2019)
+  - use latest forge abi
+
+## 0.37.6 (September 09, 2019)
   - Add test for queue.contains? method
 
 ## 0.37.5 (September 06, 2019)

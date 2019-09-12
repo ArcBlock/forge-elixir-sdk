@@ -236,4 +236,25 @@ defmodule ForgeSdkTest.Queue do
 
     assert res.items === [item_2.value, item_3.value, item_4.value]
   end
+
+  test "test contains" do
+    item_1 = %{type_url: "test", value: "1"}
+    item_2 = %{type_url: "test", value: "2"}
+    item_3 = %{type_url: "test", value: "3"}
+    item_4 = %{type_url: "test_1", value: "2"}
+
+    res =
+      Queue.init(CircularQueue.new(),
+        type_url: "test",
+        max_items: 2,
+        circular: true,
+        fifo: true,
+        items: [item_1, item_2]
+      )
+
+    assert Queue.contains?(res, item_1) == true
+    assert Queue.contains?(res, item_2) == true
+    assert Queue.contains?(res, item_3) == false
+    assert Queue.contains?(res, item_4) == false
+  end
 end

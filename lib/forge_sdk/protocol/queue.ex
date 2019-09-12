@@ -42,6 +42,12 @@ defprotocol ForgeSdk.Queue do
   """
   @spec size(t()) :: non_neg_integer()
   def size(queue)
+
+  @doc """
+  Check if queue contains an item.
+  """
+  @spec contains?(t(), Any.t()) :: boolean()
+  def contains?(queue, item)
 end
 
 defimpl ForgeSdk.Queue, for: ForgeAbi.CircularQueue do
@@ -129,6 +135,22 @@ defimpl ForgeSdk.Queue, for: ForgeAbi.CircularQueue do
 
   def full?(%{max_items: max_items, items: items}) do
     max_items <= length(items)
+  end
+
+  @doc """
+  Check if the queue contains an item.
+  """
+  @spec contains?(t(), Any.t()) :: boolean()
+  def contains?(_queue, nil), do: false
+
+  def contains?(queue, %{type_url: item_type_url, value: new_item}) do
+    %{type_url: queue_type_url, items: items} = queue
+
+    cond do
+      queue_type_url != item_type_url -> false
+      find_item(items, new_item) === nil -> false
+      true -> true
+    end
   end
 
   @doc """

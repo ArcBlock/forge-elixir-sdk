@@ -1,3 +1,6 @@
+## 0.38.1 (September 16, 2019)
+  - Add rpc in sdk
+
 ## 0.38.0 (September 12, 2019)
   - use latest forge abi
 

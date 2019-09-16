@@ -300,6 +300,12 @@ defmodule ForgeSdk do
 
   defdelegate deposit_token(itx, opts), to: Rpc
 
+  defdelegate withdraw_token(itx, opts), to: Rpc
+
+  defdelegate approve_withdraw(itx, opts), to: Rpc
+
+  defdelegate revoke_withdraw(itx, opts), to: Rpc
+
   # extended tx helper
   defdelegate stake_for_node(address, amount, opts), to: Rpc
 

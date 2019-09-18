@@ -43,7 +43,7 @@ defmodule ForgeSdk.MixProject do
     [
       {:bbmustache, "~> 1.8"},
       {:connection, "~> 1.0"},
-      {:deep_merge, "~> 0.1.1"},
+      {:deep_merge, "~> 0.2"},
       {:jason, "~> 1.1"},
       {:multibase, "~> 0.0.1"},
       {:recase, "~> 0.6"},

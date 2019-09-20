@@ -457,7 +457,9 @@ defmodule ForgeSdk.Rpc do
 
   def deposit_token(itx, opts), do: apply(CoreTx.DepositToken.Rpc, :deposit_token, [itx, opts])
 
-  def withdraw_token(itx, opts), do: apply(CoreTx.WithdrawToken.Rpc, :withdraw_token, [itx, opts])
+  def prepare_withdraw_token(itx, opts), do: apply(CoreTx.WithdrawToken.Rpc, :prepare_withdraw_token, [itx, opts])
+
+  def finalize_withdraw_token(itx, opts), do: apply(CoreTx.WithdrawToken.Rpc, :finalize_withdraw_token, [itx, opts])
 
   def approve_withdraw(itx, opts),
     do: apply(CoreTx.ApproveWithdraw.Rpc, :approve_withdraw, [itx, opts])

@@ -300,7 +300,9 @@ defmodule ForgeSdk do
 
   defdelegate deposit_token(itx, opts), to: Rpc
 
-  defdelegate withdraw_token(itx, opts), to: Rpc
+  defdelegate prepare_withdraw_token(itx, opts), to: Rpc
+
+  defdelegate finalize_withdraw_token(itx, opts), to: Rpc
 
   defdelegate approve_withdraw(itx, opts), to: Rpc
 

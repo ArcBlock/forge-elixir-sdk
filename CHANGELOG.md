@@ -1,5 +1,9 @@
+## 0.38.3 (September 20, 2019)
+  - make withdraw_token require multisig
+
 ## 0.38.2 (September 17, 2019)
   - bump deep_merge
+
 
 ## 0.38.1 (September 16, 2019)
   - Add rpc in sdk

@@ -15,6 +15,14 @@ defmodule ForgeSdk.Tx.Builder do
           ] do
       # credo:disable-for-lines:11
       cond do
+        options[:multisig] == true and options[:preprocessor] !== nil ->
+          def unquote(type)(itx, opts) do
+            opts = Keyword.put(opts, :send, :nosend)
+            [mod, fun] = unquote(options[:preprocessor])
+            itx = apply(mod, fun, [itx, opts])
+            Helper.build(itx, opts)
+          end
+
         options[:multisig] == true ->
           def unquote(type)(itx, opts) do
             opts = Keyword.put(opts, :send, :nosend)

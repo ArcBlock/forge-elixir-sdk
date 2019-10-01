@@ -1,3 +1,6 @@
+## 0.38.5 (October 01, 2019)
+  - support preprocessing and multisig
+
 ## 0.38.4 (September 30, 2019)
 
 

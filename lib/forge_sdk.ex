@@ -298,6 +298,8 @@ defmodule ForgeSdk do
 
   defdelegate delegate(itx, opts), to: Rpc
 
+  defdelegate revoke_delegate(itx, opts), to: Rpc
+
   defdelegate deposit_token(itx, opts), to: Rpc
 
   defdelegate prepare_withdraw_token(itx, opts), to: Rpc

@@ -455,7 +455,8 @@ defmodule ForgeSdk.Rpc do
 
   def delegate(itx, opts), do: apply(CoreTx.Delegate.Rpc, :delegate, [itx, opts])
 
-  def revoke_delegate(itx, opts), do: apply(CoreTx.RevokeDelegate.Rpc, :revoke_delegate, [itx, opts])
+  def revoke_delegate(itx, opts),
+    do: apply(CoreTx.RevokeDelegate.Rpc, :revoke_delegate, [itx, opts])
 
   def deposit_token(itx, opts), do: apply(CoreTx.DepositToken.Rpc, :deposit_token, [itx, opts])
 

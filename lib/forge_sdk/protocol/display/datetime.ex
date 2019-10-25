@@ -6,7 +6,7 @@ defimpl ForgeSdk.Display, for: Google.Protobuf.Timestamp do
   alias ForgeSdk.DateTimeUtils
 
   def display(%{seconds: seconds}, expand? \\ false) do
-    dt = 
+    dt =
       case DateTime.from_unix(seconds) do
         {:ok, date} -> date
         _ -> DateTime.from_unix!(0)

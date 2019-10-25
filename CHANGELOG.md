@@ -1,3 +1,6 @@
+## 0.39.1 (October 24, 2019)
+  - fix display invalid unix timestamp
+
 ## 0.39.0 (October 16, 2019)
   - bump forge-sdk to 0.39.0
 

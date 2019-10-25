@@ -1,3 +1,6 @@
+## 0.38.7 (October 24, 2019)
+  - fix display invalid unix timestamp
+
 ## 0.38.6 (October 02, 2019)
   - support revoke_delegate
 

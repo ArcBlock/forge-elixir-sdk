@@ -109,6 +109,10 @@ defmodule ForgeSdk.Rpc.Helper do
     do_send_stream(stream, rest, opts, fun)
   end
 
+  defp do_send_stream(_, [], _, _) do
+    {:error, "Lack of arguments."}
+  end
+
   defp get_grpc_opts(opts) do
     Keyword.delete(opts, :stream_mode)
   end

@@ -31,7 +31,6 @@ defmodule ForgeSdk do
     WalletInfo,
 
     # request response
-    RequestCreateTx,
     RequestCreateWallet,
     RequestGetAccountState,
     RequestGetAssetState,
@@ -216,12 +215,7 @@ defmodule ForgeSdk do
 
       w = ForgeSdk.create_wallet()
       ForgeSdk.declare(ForgeAbi.DeclareTx.new(moniker: "alice"), wallet: w)
-      itx = ForgeAbi.PokeTx.new(date: "2019-03-13", address: "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz")
-      req = ForgeAbi.RequestCreateTx.new(from: w.address, itx: ForgeAbi.encode_any!(:poke, itx),
-      nonce: 0, token: t, wallet: w)
-      tx = ForgeSdk.create_tx(req)
-      hash = ForgeSdk.send_tx(tx: tx)
-
+      hsh = ForgeSdk.checkin(wallet: w)
   """
   defdelegate poke(itx, opts), to: Rpc
 
@@ -374,25 +368,6 @@ defmodule ForgeSdk do
   defdelegate get_validators_info(conn_name \\ ""), to: Rpc
 
   @doc """
-  Create tx.
-
-  ## Example
-
-      w1 = ForgeSdk.create_wallet()
-      ForgeSdk.declare(ForgeAbi.DeclareTx.new(moniker: "alice"), wallet: w1)
-      w2 = ForgeSdk.create_wallet()
-      ForgeSdk.declare(ForgeAbi.DeclareTx.new(moniker: "bob"), wallet: w2)
-      data = Google.Protobuf.Any.new(type_url: "test_asset", value: "hello world")
-      itx = ForgeSdk.encode_any!(TransferTx.new(to: w2.address, value: new_unit(100)))
-      req = RequestCreateTx.new(itx: itx, from: w1.address, nonce: 2, walllet: w1)
-      tx = ForgeSdk.create_tx(req)
-
-  """
-  @spec create_tx(RequestCreateTx.t() | Keyword.t(), String.t() | atom()) ::
-          Transaction.t() | {:error, term()}
-  defdelegate create_tx(request, conn_name \\ ""), to: Rpc
-
-  @doc """
   Forge we support `multisig` for a tx, you can use this to endorse an already signed tx.
   **ExchangeTx, ConsumeAssetTx and some other txs** are using multisig technology.
 
@@ -428,8 +403,7 @@ defmodule ForgeSdk do
       ForgeSdk.declare(ForgeAbi.DeclareTx.new(moniker: "bob"), wallet: w2)
       data = Google.Protobuf.Any.new(type_url: "test_asset", value: "hello world")
       itx = ForgeSdk.encode_any!(TransferTx.new(to: w2.address, value: new_unit(100)))
-      req = RequestCreateTx.new(itx: itx, from: w1.address, nonce: 2, walllet: w1, token: t)
-      tx = ForgeSdk.create_tx(req)
+      tx = ForgeSdk.transfer(itx, wallet: w1, send: :nosend)
       hash = ForgeSdk.send_tx(tx: tx)
 
   """

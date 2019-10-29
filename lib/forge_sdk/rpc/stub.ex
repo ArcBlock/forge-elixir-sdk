@@ -3,8 +3,6 @@ defmodule ForgeSdk.Rpc.Stub do
   Aggregate all RPCs
   """
 
-  defdelegate create_tx(chan, req, opts \\ []), to: ForgeAbi.ChainRpc.Stub
-  defdelegate multisig(chan, req, opts \\ []), to: ForgeAbi.ChainRpc.Stub
   defdelegate send_tx(chan, req, opts \\ []), to: ForgeAbi.ChainRpc.Stub
   defdelegate get_tx(chan, opts \\ []), to: ForgeAbi.ChainRpc.Stub
   defdelegate get_unconfirmed_txs(chan, req, opts \\ []), to: ForgeAbi.ChainRpc.Stub

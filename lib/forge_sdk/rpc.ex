@@ -45,7 +45,6 @@ defmodule ForgeSdk.Rpc do
     PageInfo,
 
     # chain related
-    RequestCreateTx,
     RequestDeclareNode,
     RequestGetBlock,
     RequestGetBlocks,
@@ -130,48 +129,18 @@ defmodule ForgeSdk.Rpc do
     res.info
   end
 
-  @doc """
-  Create a transaction
-
-    iex> {wallet, _token} = ForgeSdk.create_wallet(RequestCreateWallet.new(passphrase: "abcd1234"))
-    {%ForgeAbi.WalletInfo{
-      address: "f8a5b784376a3ca9119eded5f53edec75a7575975",
-      pk: <<233, 139, 217, 205, 219, 102, 84, 238, 185, 77, 11, 69, 127, 85, 205,
-        32, 225, 110, 43, 37, 21, 184, 184, 86, 69, 238, 50, 142, 212, 216, 237,
-        99>>,
-      sk: <<111, 149, 26, 101, 189, 95, 253, 194, 136, 143, 44, 231, 32, 88, 165,
-        120, 163, 50, 11, 199, 150, 29, 162, 241, 219, 176, 172, 135, 137, 20, 16,
-        222, 233, 139, 217, 205, 219, 102, 84, 238, 185, 77, 11, 69, 127, 85,
-        ...>>,
-      type: %ForgeAbi.WalletType{address: 0, hash: 0, pk: 0}
-    }, ""}
-    iex>
-  """
-
-  @spec create_tx(RequestCreateTx.t() | Keyword.t(), String.t() | atom(), Keyword.t()) ::
-          Transaction.t() | {:error, term()}
-  rpc :create_tx do
-    res.tx
-  end
-
   @spec multisig(RequestMultisig.t() | Keyword.t(), String.t()) ::
           Transaction.t() | {:error, term()}
-  def multisig(req, conn_name \\ "") do
+  def multisig(req, _conn_name \\ "") do
     req = Helper.to_req(req, RequestMultisig)
     wallet = req.wallet
 
     case wallet.sk === "" do
-      true -> multisig_rpc(req, conn_name)
+      true -> {:error, :invalid_wallet}
       _ -> WalletUtil.multisig!(wallet, req.tx, data: req.data, delegatee: req.delegatee)
     end
   rescue
     _ -> {:error, :internal}
-  end
-
-  @spec multisig_rpc(RequestMultisig.t() | Keyword.t(), String.t() | atom(), Keyword.t()) ::
-          Transaction.t() | {:error, term()}
-  rpc :multisig_rpc do
-    res.tx
   end
 
   @spec send_tx(RequestSendTx.t() | Keyword.t(), String.t() | atom(), Keyword.t()) ::

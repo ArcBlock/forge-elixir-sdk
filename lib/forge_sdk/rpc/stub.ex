@@ -3,8 +3,6 @@ defmodule ForgeSdk.Rpc.Stub do
   Aggregate all RPCs
   """
 
-  defdelegate create_tx(chan, req, opts \\ []), to: ForgeAbi.ChainRpc.Stub
-  defdelegate multisig(chan, req, opts \\ []), to: ForgeAbi.ChainRpc.Stub
   defdelegate send_tx(chan, req, opts \\ []), to: ForgeAbi.ChainRpc.Stub
   defdelegate get_tx(chan, opts \\ []), to: ForgeAbi.ChainRpc.Stub
   defdelegate get_unconfirmed_txs(chan, req, opts \\ []), to: ForgeAbi.ChainRpc.Stub
@@ -18,11 +16,6 @@ defmodule ForgeSdk.Rpc.Stub do
   defdelegate get_config(chan, req, opts \\ []), to: ForgeAbi.ChainRpc.Stub
 
   # wallet rpc
-  defdelegate create_wallet(chan, req, opts \\ []), to: ForgeAbi.WalletRpc.Stub
-  defdelegate load_wallet(chan, req, opts \\ []), to: ForgeAbi.WalletRpc.Stub
-  defdelegate recover_wallet(chan, req, opts \\ []), to: ForgeAbi.WalletRpc.Stub
-  defdelegate list_wallet(chan, req, opts \\ []), to: ForgeAbi.WalletRpc.Stub
-  defdelegate remove_wallet(chan, req, opts \\ []), to: ForgeAbi.WalletRpc.Stub
   defdelegate declare_node(chan, req, opts \\ []), to: ForgeAbi.WalletRpc.Stub
 
   # state rpc
@@ -34,11 +27,6 @@ defmodule ForgeSdk.Rpc.Stub do
   defdelegate get_tether_state(chan, opts \\ []), to: ForgeAbi.StateRpc.Stub
   defdelegate get_swap_state(chan, opts \\ []), to: ForgeAbi.StateRpc.Stub
   defdelegate get_delegate_state(chan, opts \\ []), to: ForgeAbi.StateRpc.Stub
-
-  # file rpc
-  defdelegate store_file(chan, opts \\ []), to: ForgeAbi.FileRpc.Stub
-  defdelegate load_file(chan, req, opts \\ []), to: ForgeAbi.FileRpc.Stub
-  defdelegate pin_file(chan, req, opts \\ []), to: ForgeAbi.FileRpc.Stub
 
   # event rpc
   defdelegate subscribe(chan, req, opts \\ []), to: ForgeAbi.EventRpc.Stub

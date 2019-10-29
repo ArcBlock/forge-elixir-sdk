@@ -2,7 +2,7 @@ defmodule ForgeSdk.Tx.Builder.Helper do
   @moduledoc """
   Helper function for building tx rpc.
   """
-  alias ForgeAbi.{RequestCreateTx, RequestSendTx, Transaction}
+  alias ForgeAbi.{RequestSendTx, Transaction}
   alias ForgeSdk.Wallet.Util, as: WalletUtil
 
   # credo:disable-for-lines:40
@@ -12,7 +12,6 @@ defmodule ForgeSdk.Tx.Builder.Helper do
 
     wallet = opts[:wallet]
     delegatee = opts[:delegatee]
-    token = Keyword.get(opts, :token, "")
 
     sign? = Keyword.get(opts, :sign, true)
     conn = ForgeSdk.Util.get_conn(opts[:conn] || "")
@@ -21,8 +20,8 @@ defmodule ForgeSdk.Tx.Builder.Helper do
       raise "wallet shall be provided in opts"
     end
 
-    if wallet.sk === "" and token === "" and sign? do
-      raise "Tx requires signature but no sk or valid token found"
+    if wallet.sk === "" and sign? do
+      raise "Tx requires signature but no sk found"
     end
 
     nonce =
@@ -36,7 +35,7 @@ defmodule ForgeSdk.Tx.Builder.Helper do
 
     case sign? do
       true ->
-        case create_tx(any, nonce, gas, wallet, token, delegatee, conn) do
+        case do_create_tx(any, nonce, gas, wallet, delegatee, conn.chain_id) do
           {:error, _} = error ->
             error
 
@@ -75,36 +74,6 @@ defmodule ForgeSdk.Tx.Builder.Helper do
       chain_id: conn.chain_id,
       pk: wallet.pk
     )
-  end
-
-  defp create_tx(any, nonce, _gas, %{sk: ""} = wallet, token, delegatee, conn) do
-    req =
-      case delegatee do
-        nil ->
-          RequestCreateTx.new(
-            itx: any,
-            from: wallet.address,
-            nonce: nonce,
-            wallet: wallet,
-            token: token
-          )
-
-        _ ->
-          RequestCreateTx.new(
-            itx: any,
-            from: delegatee,
-            delegator: wallet.address,
-            nonce: nonce,
-            wallet: wallet,
-            token: token
-          )
-      end
-
-    ForgeSdk.create_tx(req, conn.chan)
-  end
-
-  defp create_tx(any, nonce, gas, wallet, _token, delegatee, conn) do
-    do_create_tx(any, nonce, gas, wallet, delegatee, conn.chain_id)
   end
 
   defp do_create_tx(any, nonce, gas, wallet, delegatee, chain_id) do

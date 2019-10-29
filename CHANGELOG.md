@@ -1,3 +1,8 @@
+## 0.40.0 (October 29, 2019)
+  - deprecate token and refactor create wallet
+  - deprecate create_tx and multisig rpc
+  - remove unnecessary interface
+
 ## 0.39.1 (October 24, 2019)
   - fix display invalid unix timestamp
 

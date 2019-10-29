@@ -31,18 +31,14 @@ defmodule ForgeSdk do
     WalletInfo,
 
     # request response
-    RequestCreateTx,
     RequestCreateWallet,
     RequestGetAccountState,
     RequestGetAssetState,
     RequestGetBlock,
     RequestGetBlocks,
     RequestGetTx,
-    RequestLoadWallet,
     RequestMultisig,
     RequestGetProtocolState,
-    RequestRecoverWallet,
-    RequestRemoveWallet,
     RequestSendTx,
     RequestSubscribe,
     RequestUnsubscribe,
@@ -216,12 +212,7 @@ defmodule ForgeSdk do
 
       w = ForgeSdk.create_wallet()
       ForgeSdk.declare(ForgeAbi.DeclareTx.new(moniker: "alice"), wallet: w)
-      itx = ForgeAbi.PokeTx.new(date: "2019-03-13", address: "zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz")
-      req = ForgeAbi.RequestCreateTx.new(from: w.address, itx: ForgeAbi.encode_any!(:poke, itx),
-      nonce: 0, token: t, wallet: w)
-      tx = ForgeSdk.create_tx(req)
-      hash = ForgeSdk.send_tx(tx: tx)
-
+      hsh = ForgeSdk.checkin(wallet: w)
   """
   defdelegate poke(itx, opts), to: Rpc
 
@@ -374,25 +365,6 @@ defmodule ForgeSdk do
   defdelegate get_validators_info(conn_name \\ ""), to: Rpc
 
   @doc """
-  Create tx.
-
-  ## Example
-
-      w1 = ForgeSdk.create_wallet()
-      ForgeSdk.declare(ForgeAbi.DeclareTx.new(moniker: "alice"), wallet: w1)
-      w2 = ForgeSdk.create_wallet()
-      ForgeSdk.declare(ForgeAbi.DeclareTx.new(moniker: "bob"), wallet: w2)
-      data = Google.Protobuf.Any.new(type_url: "test_asset", value: "hello world")
-      itx = ForgeSdk.encode_any!(TransferTx.new(to: w2.address, value: new_unit(100)))
-      req = RequestCreateTx.new(itx: itx, from: w1.address, nonce: 2, walllet: w1)
-      tx = ForgeSdk.create_tx(req)
-
-  """
-  @spec create_tx(RequestCreateTx.t() | Keyword.t(), String.t() | atom()) ::
-          Transaction.t() | {:error, term()}
-  defdelegate create_tx(request, conn_name \\ ""), to: Rpc
-
-  @doc """
   Forge we support `multisig` for a tx, you can use this to endorse an already signed tx.
   **ExchangeTx, ConsumeAssetTx and some other txs** are using multisig technology.
 
@@ -428,8 +400,7 @@ defmodule ForgeSdk do
       ForgeSdk.declare(ForgeAbi.DeclareTx.new(moniker: "bob"), wallet: w2)
       data = Google.Protobuf.Any.new(type_url: "test_asset", value: "hello world")
       itx = ForgeSdk.encode_any!(TransferTx.new(to: w2.address, value: new_unit(100)))
-      req = RequestCreateTx.new(itx: itx, from: w1.address, nonce: 2, walllet: w1, token: t)
-      tx = ForgeSdk.create_tx(req)
+      tx = ForgeSdk.transfer(itx, wallet: w1, send: :nosend)
       hash = ForgeSdk.send_tx(tx: tx)
 
   """
@@ -506,67 +477,13 @@ defmodule ForgeSdk do
   ## Example
 
       w1 = ForgeSdk.create_wallet()
-      ForgeSdk.create_wallet(moniker: "alice", passphrase: "abcd1234")
+      ForgeSdk.create_wallet(moniker: "alice")
 
   """
   @spec create_wallet(RequestCreateWallet.t() | Keyword.t(), String.t() | atom()) ::
-          {WalletInfo.t(), String.t()} | {:error, term()}
+          WalletInfo.t() | {:error, term()}
   defdelegate create_wallet(request, conn_name \\ ""), to: Rpc
 
-  @doc """
-  Load a node managed wallet by its `address` and `passphrase` from the keystore.
-
-  ## Example
-
-      {w, t} = ForgeSdk.create_wallet(moniker: "alice", passphrase: "abcd1234")
-      req = ForgeAbi.RequestLoadWallet.new(address: w.address, passphrase: "abcd1234")
-      ForgeSdk.load_wallet(req)
-
-  """
-  @spec load_wallet(RequestLoadWallet.t() | Keyword.t(), String.t() | atom()) ::
-          String.t() | {:error, term()}
-  defdelegate load_wallet(request, conn_name \\ ""), to: Rpc
-
-  @doc """
-  If you know the `type` and the `secret key` of the wallet, you can recover it into the current forge node.
-  This is useful when you want to switch your wallet from one node to another.
-  This will generate a keystore file.
-
-  ## Example
-
-      {w, t} = ForgeSdk.create_wallet(moniker: "alice", passphrase: "abcd1234")
-      request = RequestRecoverWallet.new(data: w.sk, type: w.type, passphrase: "abcd1234")
-      ForgeSdk.recover_wallet(req)
-
-  """
-  @spec recover_wallet(RequestRecoverWallet.t(), String.t()) ::
-          {WalletInfo.t(), String.t()} | {:error, term()}
-  defdelegate recover_wallet(request, conn_name \\ ""), to: Rpc
-
-  @doc """
-  Display the `wallet addresses` that current forge node hosts.
-
-  ## Example
-
-      ForgeSdk.list_wallet()
-
-  """
-  @spec list_wallet(String.t() | atom()) :: String.t() | {:error, term()}
-  defdelegate list_wallet(conn_name \\ ""), to: Rpc
-
-  @doc """
-  Delete the `keystore` for a given `wallet address`. This is useful when you finished your work on the forge node and you'd remove the footprint for your wallet.
-
-  ## Example
-
-      {w, t} = ForgeSdk.create_wallet(moniker: "alice", passphrase: "abcd1234")
-      request = RequestRemoveWallet.new(address: w.address)
-      ForgeSdk.remove_wallet(request)
-
-  """
-  @spec remove_wallet(RequestRemoveWallet.t() | Keyword.t(), String.t() | atom()) ::
-          :ok | {:error, term()}
-  defdelegate remove_wallet(request, conn_name \\ ""), to: Rpc
   defdelegate declare_node(request, conn_name \\ ""), to: Rpc
 
   # state related
@@ -692,7 +609,6 @@ defmodule ForgeSdk do
   defdelegate get_conn(name \\ ""), to: Util
   defdelegate get_parsed_config(name \\ ""), to: Util
   defdelegate datetime_to_proto(dt), to: Util
-  defdelegate proto_to_datetime(ts), to: Util
   defdelegate update_type_url(forge_state), to: Loader
   defdelegate get_tx_protocols(forge_state, address), to: Loader
   defdelegate get_address(hash), to: Rpc

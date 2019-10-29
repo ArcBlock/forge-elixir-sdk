@@ -45,7 +45,6 @@ defmodule ForgeSdk.Rpc do
     PageInfo,
 
     # chain related
-    RequestCreateTx,
     RequestDeclareNode,
     RequestGetBlock,
     RequestGetBlocks,
@@ -58,9 +57,6 @@ defmodule ForgeSdk.Rpc do
 
     # wallet related
     RequestCreateWallet,
-    RequestLoadWallet,
-    RequestRecoverWallet,
-    RequestRemoveWallet,
 
     # state related
     RequestGetAccountState,
@@ -71,11 +67,6 @@ defmodule ForgeSdk.Rpc do
     RequestGetStakeState,
     RequestGetTetherState,
     RequestGetSwapState,
-
-    # filesystem related
-    RequestStoreFile,
-    RequestLoadFile,
-    RequestPinFile,
 
     # event related
     RequestSubscribe,
@@ -130,48 +121,18 @@ defmodule ForgeSdk.Rpc do
     res.info
   end
 
-  @doc """
-  Create a transaction
-
-    iex> {wallet, _token} = ForgeSdk.create_wallet(RequestCreateWallet.new(passphrase: "abcd1234"))
-    {%ForgeAbi.WalletInfo{
-      address: "f8a5b784376a3ca9119eded5f53edec75a7575975",
-      pk: <<233, 139, 217, 205, 219, 102, 84, 238, 185, 77, 11, 69, 127, 85, 205,
-        32, 225, 110, 43, 37, 21, 184, 184, 86, 69, 238, 50, 142, 212, 216, 237,
-        99>>,
-      sk: <<111, 149, 26, 101, 189, 95, 253, 194, 136, 143, 44, 231, 32, 88, 165,
-        120, 163, 50, 11, 199, 150, 29, 162, 241, 219, 176, 172, 135, 137, 20, 16,
-        222, 233, 139, 217, 205, 219, 102, 84, 238, 185, 77, 11, 69, 127, 85,
-        ...>>,
-      type: %ForgeAbi.WalletType{address: 0, hash: 0, pk: 0}
-    }, ""}
-    iex>
-  """
-
-  @spec create_tx(RequestCreateTx.t() | Keyword.t(), String.t() | atom(), Keyword.t()) ::
-          Transaction.t() | {:error, term()}
-  rpc :create_tx do
-    res.tx
-  end
-
   @spec multisig(RequestMultisig.t() | Keyword.t(), String.t()) ::
           Transaction.t() | {:error, term()}
-  def multisig(req, conn_name \\ "") do
+  def multisig(req, _conn_name \\ "") do
     req = Helper.to_req(req, RequestMultisig)
     wallet = req.wallet
 
     case wallet.sk === "" do
-      true -> multisig_rpc(req, conn_name)
+      true -> {:error, :invalid_wallet}
       _ -> WalletUtil.multisig!(wallet, req.tx, data: req.data, delegatee: req.delegatee)
     end
   rescue
     _ -> {:error, :internal}
-  end
-
-  @spec multisig_rpc(RequestMultisig.t() | Keyword.t(), String.t() | atom(), Keyword.t()) ::
-          Transaction.t() | {:error, term()}
-  rpc :multisig_rpc do
-    res.tx
   end
 
   @spec send_tx(RequestSendTx.t() | Keyword.t(), String.t() | atom(), Keyword.t()) ::
@@ -237,35 +198,21 @@ defmodule ForgeSdk.Rpc do
   end
 
   # wallet related
-  @spec create_wallet(RequestCreateWallet.t() | Keyword.t(), String.t() | atom(), Keyword.t()) ::
-          {WalletInfo.t(), String.t()} | {:error, term()}
-  rpc :create_wallet do
-    {res.wallet, res.token}
-  end
+  @spec create_wallet(RequestCreateWallet.t() | Keyword.t(), String.t() | atom()) ::
+          WalletInfo.t() | {:error, term()}
+  def create_wallet(req, _conn_name \\ "") do
+    req = RequestCreateWallet.new(req)
 
-  @spec load_wallet(RequestLoadWallet.t() | Keyword.t(), String.t() | atom(), Keyword.t()) ::
-          String.t() | {:error, term()}
-  rpc :load_wallet do
-    {res.wallet, res.token}
-  end
+    wallet =
+      case req.type do
+        nil -> WalletUtil.create(ForgeAbi.WalletType.new())
+        v -> WalletUtil.create(v)
+      end
 
-  @spec recover_wallet(RequestRecoverWallet.t(), String.t() | atom(), Keyword.t()) ::
-          {WalletInfo.t(), String.t()} | {:error, term()}
-  rpc :recover_wallet do
-    {res.wallet, res.token}
-  end
-
-  @spec list_wallet(String.t() | atom(), Keyword.t()) :: String.t() | {:error, term()}
-  rpc :list_wallet, response_stream: true, no_params: true do
-    res.address
-  end
-
-  @spec remove_wallet(RequestRemoveWallet.t() | Keyword.t(), String.t() | atom(), Keyword.t()) ::
-          :ok | {:error, term()}
-  rpc :remove_wallet do
-    # just to disable compiler warning
-    _res = res
-    :ok
+    ForgeSdk.declare(apply(ForgeAbi.DeclareTx, :new, [%{moniker: req.moniker}]), wallet: wallet)
+    wallet
+  rescue
+    _ -> {:error, :internal}
   end
 
   @spec declare_node(RequestDeclareNode.t(), String.t() | atom(), Keyword.t()) ::
@@ -347,32 +294,6 @@ defmodule ForgeSdk.Rpc do
         ) :: DelegateState.t() | [DelegateState.t()] | {:error, term()}
   rpc :get_delegate_state, request_stream: true do
     res.state
-  end
-
-  # file system related
-  @spec store_file(
-          Enumerable.t()
-          | RequestStoreFile.t()
-          | [RequestStoreFile.t()]
-          | Keyword.t()
-          | [Keyword.t()],
-          String.t() | atom(),
-          Keyword.t()
-        ) :: String.t() | {:error, term()}
-  rpc :store_file, request_stream: true do
-    res.hash
-  end
-
-  @spec load_file(RequestLoadFile.t() | Keyword.t(), String.t() | atom(), Keyword.t()) ::
-          [binary()] | [error: term()] | {:error, term()}
-  rpc :load_file, response_stream: true do
-    res.chunk
-  end
-
-  @spec pin_file(RequestPinFile.t() | Keyword.t(), String.t() | atom(), Keyword.t()) ::
-          :ok | {:error, term()}
-  rpc :pin_file do
-    res.code
   end
 
   # event rpc

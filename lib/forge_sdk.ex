@@ -37,11 +37,8 @@ defmodule ForgeSdk do
     RequestGetBlock,
     RequestGetBlocks,
     RequestGetTx,
-    RequestLoadWallet,
     RequestMultisig,
     RequestGetProtocolState,
-    RequestRecoverWallet,
-    RequestRemoveWallet,
     RequestSendTx,
     RequestSubscribe,
     RequestUnsubscribe,
@@ -480,67 +477,13 @@ defmodule ForgeSdk do
   ## Example
 
       w1 = ForgeSdk.create_wallet()
-      ForgeSdk.create_wallet(moniker: "alice", passphrase: "abcd1234")
+      ForgeSdk.create_wallet(moniker: "alice")
 
   """
   @spec create_wallet(RequestCreateWallet.t() | Keyword.t(), String.t() | atom()) ::
-          {WalletInfo.t(), String.t()} | {:error, term()}
+          WalletInfo.t() | {:error, term()}
   defdelegate create_wallet(request, conn_name \\ ""), to: Rpc
 
-  @doc """
-  Load a node managed wallet by its `address` and `passphrase` from the keystore.
-
-  ## Example
-
-      {w, t} = ForgeSdk.create_wallet(moniker: "alice", passphrase: "abcd1234")
-      req = ForgeAbi.RequestLoadWallet.new(address: w.address, passphrase: "abcd1234")
-      ForgeSdk.load_wallet(req)
-
-  """
-  @spec load_wallet(RequestLoadWallet.t() | Keyword.t(), String.t() | atom()) ::
-          String.t() | {:error, term()}
-  defdelegate load_wallet(request, conn_name \\ ""), to: Rpc
-
-  @doc """
-  If you know the `type` and the `secret key` of the wallet, you can recover it into the current forge node.
-  This is useful when you want to switch your wallet from one node to another.
-  This will generate a keystore file.
-
-  ## Example
-
-      {w, t} = ForgeSdk.create_wallet(moniker: "alice", passphrase: "abcd1234")
-      request = RequestRecoverWallet.new(data: w.sk, type: w.type, passphrase: "abcd1234")
-      ForgeSdk.recover_wallet(req)
-
-  """
-  @spec recover_wallet(RequestRecoverWallet.t(), String.t()) ::
-          {WalletInfo.t(), String.t()} | {:error, term()}
-  defdelegate recover_wallet(request, conn_name \\ ""), to: Rpc
-
-  @doc """
-  Display the `wallet addresses` that current forge node hosts.
-
-  ## Example
-
-      ForgeSdk.list_wallet()
-
-  """
-  @spec list_wallet(String.t() | atom()) :: String.t() | {:error, term()}
-  defdelegate list_wallet(conn_name \\ ""), to: Rpc
-
-  @doc """
-  Delete the `keystore` for a given `wallet address`. This is useful when you finished your work on the forge node and you'd remove the footprint for your wallet.
-
-  ## Example
-
-      {w, t} = ForgeSdk.create_wallet(moniker: "alice", passphrase: "abcd1234")
-      request = RequestRemoveWallet.new(address: w.address)
-      ForgeSdk.remove_wallet(request)
-
-  """
-  @spec remove_wallet(RequestRemoveWallet.t() | Keyword.t(), String.t() | atom()) ::
-          :ok | {:error, term()}
-  defdelegate remove_wallet(request, conn_name \\ ""), to: Rpc
   defdelegate declare_node(request, conn_name \\ ""), to: Rpc
 
   # state related

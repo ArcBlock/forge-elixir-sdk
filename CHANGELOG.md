@@ -1,3 +1,7 @@
+## 0.39.2 (October 29, 2019)
+  - Bump up version
+  - Returns proper error when there are no arguments passed in GRPC calls.
+
 ## 0.39.1 (October 24, 2019)
   - fix display invalid unix timestamp
 

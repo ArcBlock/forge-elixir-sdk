@@ -17,7 +17,6 @@ defmodule ForgeSdk.Rpc do
     ForgeState,
     ProtocolState,
     StakeState,
-    TetherState,
     SwapState,
 
     # block
@@ -51,12 +50,8 @@ defmodule ForgeSdk.Rpc do
     RequestGetConfig,
     RequestGetTx,
     RequestGetUnconfirmedTxs,
-    RequestMultisig,
     RequestSearch,
     RequestSendTx,
-
-    # wallet related
-    RequestCreateWallet,
 
     # state related
     RequestGetAccountState,
@@ -65,7 +60,6 @@ defmodule ForgeSdk.Rpc do
     # RequestGetForgeState,
     RequestGetProtocolState,
     RequestGetStakeState,
-    RequestGetTetherState,
     RequestGetSwapState,
 
     # event related
@@ -84,12 +78,10 @@ defmodule ForgeSdk.Rpc do
     RequestListAssetTransactions,
     RequestListBlocks,
     RequestListTransactions,
-    RequestListTethers,
     RequestListSwap,
     ForgeStats
   }
 
-  alias ForgeSdk.Rpc.Helper
   alias ForgeSdk.Wallet.Util, as: WalletUtil
 
   # chain related
@@ -121,15 +113,13 @@ defmodule ForgeSdk.Rpc do
     res.info
   end
 
-  @spec multisig(RequestMultisig.t() | Keyword.t(), String.t()) ::
-          Transaction.t() | {:error, term()}
+  @spec multisig(Keyword.t(), String.t()) :: Transaction.t() | {:error, term()}
   def multisig(req, _conn_name \\ "") do
-    req = Helper.to_req(req, RequestMultisig)
-    wallet = req.wallet
+    wallet = req[:wallet]
 
-    case wallet.sk === "" do
+    case wallet === nil or wallet.sk === "" do
       true -> {:error, :invalid_wallet}
-      _ -> WalletUtil.multisig!(wallet, req.tx, data: req.data, delegatee: req.delegatee)
+      _ -> WalletUtil.multisig!(wallet, req[:tx], data: req[:data], delegatee: req[:delegatee])
     end
   rescue
     _ -> {:error, :internal}
@@ -198,18 +188,19 @@ defmodule ForgeSdk.Rpc do
   end
 
   # wallet related
-  @spec create_wallet(RequestCreateWallet.t() | Keyword.t(), String.t() | atom()) ::
+  @spec create_wallet(Keyword.t(), String.t() | atom()) ::
           WalletInfo.t() | {:error, term()}
   def create_wallet(req, _conn_name \\ "") do
-    req = RequestCreateWallet.new(req)
-
     wallet =
-      case req.type do
+      case req[:type] do
         nil -> WalletUtil.create(ForgeAbi.WalletType.new())
         v -> WalletUtil.create(v)
       end
 
-    ForgeSdk.declare(apply(ForgeAbi.DeclareTx, :new, [%{moniker: req.moniker}]), wallet: wallet)
+    ForgeSdk.declare(apply(ForgeAbi.DeclareTx, :new, [%{moniker: req[:moniker] || ""}]),
+      wallet: wallet
+    )
+
     wallet
   rescue
     _ -> {:error, :internal}
@@ -258,15 +249,6 @@ defmodule ForgeSdk.Rpc do
           Keyword.t()
         ) :: StakeState.t() | [StakeState.t()] | {:error, term()}
   rpc :get_stake_state, request_stream: true do
-    res.state
-  end
-
-  @spec get_tether_state(
-          RequestGetTetherState.t() | [RequestGetTetherState.t()] | Keyword.t() | [Keyword.t()],
-          String.t() | atom(),
-          Keyword.t()
-        ) :: TetherState.t() | [TetherState.t()] | {:error, term()}
-  rpc :get_tether_state, request_stream: true do
     res.state
   end
 
@@ -341,14 +323,10 @@ defmodule ForgeSdk.Rpc do
   def deploy_protocol(itx, opts),
     do: apply(CoreTx.DeployProtocol.Rpc, :deploy_protocol, [itx, opts])
 
-  def deposit_tether(itx, opts), do: apply(CoreTx.DepositTether.Rpc, :deposit_tether, [itx, opts])
   def prepare_exchange(itx, opts), do: apply(CoreTx.Exchange.Rpc, :prepare_exchange, [itx, opts])
 
   def finalize_exchange(tx, opts),
     do: apply(CoreTx.Exchange.Rpc, :finalize_exchange, [tx, opts])
-
-  def exchange_tether(itx, opts),
-    do: apply(CoreTx.ExchangeTether.Rpc, :exchange_tether, [itx, opts])
 
   def poke(itx, opts), do: apply(CoreTx.Poke.Rpc, :poke, [itx, opts])
   def checkin(opts), do: apply(CoreTx.Poke.Rpc, :checkin, [opts])
@@ -360,13 +338,6 @@ defmodule ForgeSdk.Rpc do
   def transfer(itx, opts), do: apply(CoreTx.Transfer.Rpc, :transfer, [itx, opts])
   def update_asset(itx, opts), do: apply(CoreTx.UpdateAsset.Rpc, :update_asset, [itx, opts])
   def upgrade_node(itx, opts), do: apply(CoreTx.UpgradeNode.Rpc, :upgrade_node, [itx, opts])
-
-  def withdraw_tether(itx, opts),
-    do: apply(CoreTx.WithdrawTether.Rpc, :withdraw_tether, [itx, opts])
-
-  def approve_tether(itx, opts), do: apply(CoreTx.ApproveTether.Rpc, :approve_tether, [itx, opts])
-
-  def revoke_tether(itx, opts), do: apply(CoreTx.RevokeTether.Rpc, :revoke_tether, [itx, opts])
 
   def setup_swap(itx, opts), do: apply(CoreTx.SetupSwap.Rpc, :setup_swap, [itx, opts])
 
@@ -486,15 +457,6 @@ defmodule ForgeSdk.Rpc do
         ) :: {[IndexedBlock.t()], PageInfo.t()} | {:error, term()}
   rpc :list_blocks do
     {res.blocks, res.page}
-  end
-
-  @spec list_tethers(
-          RequestListTethers.t() | Keyword.t(),
-          String.t() | atom(),
-          Keyword.t()
-        ) :: {[TetherState.t()], PageInfo.t()} | {:error, term()}
-  rpc :list_tethers do
-    {res.tethers, res.page}
   end
 
   @spec list_swap(

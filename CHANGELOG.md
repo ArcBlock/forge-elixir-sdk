@@ -1,3 +1,9 @@
+## 0.40.1 (October 31, 2019)
+  - fix multisig issue
+  - remove dead code
+  - update rpc
+  - remove uncessary rpc
+
 ## 0.40.0 (October 29, 2019)
   - deprecate token and refactor create wallet
   - deprecate create_tx and multisig rpc

@@ -31,13 +31,11 @@ defmodule ForgeSdk do
     WalletInfo,
 
     # request response
-    RequestCreateWallet,
     RequestGetAccountState,
     RequestGetAssetState,
     RequestGetBlock,
     RequestGetBlocks,
     RequestGetTx,
-    RequestMultisig,
     RequestGetProtocolState,
     RequestSendTx,
     RequestSubscribe,
@@ -180,7 +178,6 @@ defmodule ForgeSdk do
   """
   @spec declare(map(), Keyword.t()) :: String.t() | {:error, term()}
   defdelegate declare(itx, opts), to: Rpc
-  # defdelegate declare_file(itx, opts), to: Rpc
 
   @doc """
   Deploy a `new protocol` into the chain at a given `block height`.
@@ -193,15 +190,12 @@ defmodule ForgeSdk do
   """
   @spec deploy_protocol(map(), Keyword.t()) :: String.t() | {:error, term()}
   defdelegate deploy_protocol(itx, opts), to: Rpc
-  defdelegate deposit_tether(itx, opts), to: Rpc
 
   @spec prepare_exchange(map(), Keyword.t()) :: Transaction.t() | {:error, term()}
   defdelegate prepare_exchange(itx, opts), to: Rpc
 
   @spec finalize_exchange(Transaction.t(), Keyword.t()) :: {:error, term()} | Transaction.t()
   defdelegate finalize_exchange(tx, opts), to: Rpc
-
-  defdelegate exchange_tether(itx, opts), to: Rpc
 
   # defdelegate sys_upgrade(itx, opts), to: Rpc
 
@@ -272,14 +266,6 @@ defmodule ForgeSdk do
 
   @spec deactivate_protocol(map(), Keyword.t()) :: String.t() | {:error, term()}
   defdelegate deactivate_protocol(itx, opts), to: Rpc
-
-  # defdelegate upgrade_task(itx, opts), to: Rpc
-
-  defdelegate withdraw_tether(itx, opts), to: Rpc
-
-  defdelegate approve_tether(itx, opts), to: Rpc
-
-  defdelegate revoke_tether(itx, opts), to: Rpc
 
   defdelegate setup_swap(itx, opts), to: Rpc
 
@@ -385,7 +371,7 @@ defmodule ForgeSdk do
       ForgeSdk.send_tx(tx: tx1)
 
   """
-  @spec multisig(RequestMultisig.t() | Keyword.t(), String.t() | atom()) ::
+  @spec multisig(Keyword.t(), String.t() | atom()) ::
           Transaction.t() | {:error, term()}
   defdelegate multisig(request, conn_name \\ ""), to: Rpc
 
@@ -480,7 +466,7 @@ defmodule ForgeSdk do
       ForgeSdk.create_wallet(moniker: "alice")
 
   """
-  @spec create_wallet(RequestCreateWallet.t() | Keyword.t(), String.t() | atom()) ::
+  @spec create_wallet(Keyword.t(), String.t() | atom()) ::
           WalletInfo.t() | {:error, term()}
   defdelegate create_wallet(request, conn_name \\ ""), to: Rpc
 
@@ -547,14 +533,8 @@ defmodule ForgeSdk do
         ) :: ProtocolState.t() | [ProtocolState.t()] | {:error, term()}
   defdelegate get_protocol_state(request, conn_name \\ ""), to: Rpc
   defdelegate get_stake_state(request, conn_name \\ ""), to: Rpc
-  defdelegate get_tether_state(request, conn_name \\ ""), to: Rpc
   defdelegate get_swap_state(request, conn_name \\ ""), to: Rpc
   defdelegate get_delegate_state(request, conn_name \\ ""), to: Rpc
-
-  # filesystem related
-  # defdelegate store_file(request, conn_name \\ ""), to: File
-  # defdelegate load_file(request, conn_name \\ ""), to: File
-  # defdelegate pin_file(request, conn_name \\ ""), to: Rpc
 
   # subscription related
 
@@ -631,7 +611,6 @@ defmodule ForgeSdk do
   defdelegate list_top_accounts(request, conn_name \\ ""), to: Rpc
   defdelegate list_asset_transactions(request, conn_name \\ ""), to: Rpc
   defdelegate list_blocks(request, conn_name \\ ""), to: Rpc
-  defdelegate list_tethers(request, conn_name \\ ""), to: Rpc
   defdelegate list_swap(request, conn_name \\ ""), to: Rpc
   defdelegate get_health_status(request, conn_name \\ ""), to: Rpc
 end

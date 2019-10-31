@@ -117,7 +117,7 @@ defmodule ForgeSdk.Rpc do
   def multisig(req, _conn_name \\ "") do
     wallet = req[:wallet]
 
-    case wallet[:sk] === "" or wallet[:sk] === nil do
+    case wallet === nil or wallet.sk === "" do
       true -> {:error, :invalid_wallet}
       _ -> WalletUtil.multisig!(wallet, req[:tx], data: req[:data], delegatee: req[:delegatee])
     end

@@ -197,7 +197,10 @@ defmodule ForgeSdk.Rpc do
         v -> WalletUtil.create(v)
       end
 
-    ForgeSdk.declare(apply(ForgeAbi.DeclareTx, :new, [%{moniker: req[:moniker]}]), wallet: wallet)
+    ForgeSdk.declare(apply(ForgeAbi.DeclareTx, :new, [%{moniker: req[:moniker] || ""}]),
+      wallet: wallet
+    )
+
     wallet
   rescue
     _ -> {:error, :internal}

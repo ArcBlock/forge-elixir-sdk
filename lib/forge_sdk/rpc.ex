@@ -17,7 +17,7 @@ defmodule ForgeSdk.Rpc do
     ForgeState,
     ProtocolState,
     StakeState,
-    TetherState,
+    # TetherState,
     SwapState,
 
     # block
@@ -65,7 +65,7 @@ defmodule ForgeSdk.Rpc do
     # RequestGetForgeState,
     RequestGetProtocolState,
     RequestGetStakeState,
-    RequestGetTetherState,
+    # RequestGetTetherState,
     RequestGetSwapState,
 
     # event related
@@ -84,7 +84,7 @@ defmodule ForgeSdk.Rpc do
     RequestListAssetTransactions,
     RequestListBlocks,
     RequestListTransactions,
-    RequestListTethers,
+    # RequestListTethers,
     RequestListSwap,
     ForgeStats
   }
@@ -261,14 +261,14 @@ defmodule ForgeSdk.Rpc do
     res.state
   end
 
-  @spec get_tether_state(
-          RequestGetTetherState.t() | [RequestGetTetherState.t()] | Keyword.t() | [Keyword.t()],
-          String.t() | atom(),
-          Keyword.t()
-        ) :: TetherState.t() | [TetherState.t()] | {:error, term()}
-  rpc :get_tether_state, request_stream: true do
-    res.state
-  end
+  # @spec get_tether_state(
+  #         RequestGetTetherState.t() | [RequestGetTetherState.t()] | Keyword.t() | [Keyword.t()],
+  #         String.t() | atom(),
+  #         Keyword.t()
+  #       ) :: TetherState.t() | [TetherState.t()] | {:error, term()}
+  # rpc :get_tether_state, request_stream: true do
+  #   res.state
+  # end
 
   @spec get_swap_state(
           RequestGetSwapState.t() | [RequestGetSwapState.t()] | Keyword.t() | [Keyword.t()],
@@ -341,14 +341,10 @@ defmodule ForgeSdk.Rpc do
   def deploy_protocol(itx, opts),
     do: apply(CoreTx.DeployProtocol.Rpc, :deploy_protocol, [itx, opts])
 
-  def deposit_tether(itx, opts), do: apply(CoreTx.DepositTether.Rpc, :deposit_tether, [itx, opts])
   def prepare_exchange(itx, opts), do: apply(CoreTx.Exchange.Rpc, :prepare_exchange, [itx, opts])
 
   def finalize_exchange(tx, opts),
     do: apply(CoreTx.Exchange.Rpc, :finalize_exchange, [tx, opts])
-
-  def exchange_tether(itx, opts),
-    do: apply(CoreTx.ExchangeTether.Rpc, :exchange_tether, [itx, opts])
 
   def poke(itx, opts), do: apply(CoreTx.Poke.Rpc, :poke, [itx, opts])
   def checkin(opts), do: apply(CoreTx.Poke.Rpc, :checkin, [opts])
@@ -361,12 +357,16 @@ defmodule ForgeSdk.Rpc do
   def update_asset(itx, opts), do: apply(CoreTx.UpdateAsset.Rpc, :update_asset, [itx, opts])
   def upgrade_node(itx, opts), do: apply(CoreTx.UpgradeNode.Rpc, :upgrade_node, [itx, opts])
 
-  def withdraw_tether(itx, opts),
-    do: apply(CoreTx.WithdrawTether.Rpc, :withdraw_tether, [itx, opts])
+  # def deposit_tether(itx, opts), do: apply(CoreTx.DepositTether.Rpc, :deposit_tether, [itx, opts])
 
-  def approve_tether(itx, opts), do: apply(CoreTx.ApproveTether.Rpc, :approve_tether, [itx, opts])
+  # def exchange_tether(itx, opts),
+  #   do: apply(CoreTx.ExchangeTether.Rpc, :exchange_tether, [itx, opts])
+  # def withdraw_tether(itx, opts),
+  #   do: apply(CoreTx.WithdrawTether.Rpc, :withdraw_tether, [itx, opts])
 
-  def revoke_tether(itx, opts), do: apply(CoreTx.RevokeTether.Rpc, :revoke_tether, [itx, opts])
+  # def approve_tether(itx, opts), do: apply(CoreTx.ApproveTether.Rpc, :approve_tether, [itx, opts])
+
+  # def revoke_tether(itx, opts), do: apply(CoreTx.RevokeTether.Rpc, :revoke_tether, [itx, opts])
 
   def setup_swap(itx, opts), do: apply(CoreTx.SetupSwap.Rpc, :setup_swap, [itx, opts])
 
@@ -488,14 +488,14 @@ defmodule ForgeSdk.Rpc do
     {res.blocks, res.page}
   end
 
-  @spec list_tethers(
-          RequestListTethers.t() | Keyword.t(),
-          String.t() | atom(),
-          Keyword.t()
-        ) :: {[TetherState.t()], PageInfo.t()} | {:error, term()}
-  rpc :list_tethers do
-    {res.tethers, res.page}
-  end
+  # @spec list_tethers(
+  #         RequestListTethers.t() | Keyword.t(),
+  #         String.t() | atom(),
+  #         Keyword.t()
+  #       ) :: {[TetherState.t()], PageInfo.t()} | {:error, term()}
+  # rpc :list_tethers do
+  #   {res.tethers, res.page}
+  # end
 
   @spec list_swap(
           RequestListSwap.t() | Keyword.t(),

@@ -193,15 +193,12 @@ defmodule ForgeSdk do
   """
   @spec deploy_protocol(map(), Keyword.t()) :: String.t() | {:error, term()}
   defdelegate deploy_protocol(itx, opts), to: Rpc
-  defdelegate deposit_tether(itx, opts), to: Rpc
 
   @spec prepare_exchange(map(), Keyword.t()) :: Transaction.t() | {:error, term()}
   defdelegate prepare_exchange(itx, opts), to: Rpc
 
   @spec finalize_exchange(Transaction.t(), Keyword.t()) :: {:error, term()} | Transaction.t()
   defdelegate finalize_exchange(tx, opts), to: Rpc
-
-  defdelegate exchange_tether(itx, opts), to: Rpc
 
   # defdelegate sys_upgrade(itx, opts), to: Rpc
 
@@ -275,11 +272,15 @@ defmodule ForgeSdk do
 
   # defdelegate upgrade_task(itx, opts), to: Rpc
 
-  defdelegate withdraw_tether(itx, opts), to: Rpc
+  # defdelegate deposit_tether(itx, opts), to: Rpc
 
-  defdelegate approve_tether(itx, opts), to: Rpc
+  # defdelegate exchange_tether(itx, opts), to: Rpc
 
-  defdelegate revoke_tether(itx, opts), to: Rpc
+  # defdelegate withdraw_tether(itx, opts), to: Rpc
+
+  # defdelegate approve_tether(itx, opts), to: Rpc
+
+  # defdelegate revoke_tether(itx, opts), to: Rpc
 
   defdelegate setup_swap(itx, opts), to: Rpc
 
@@ -547,7 +548,7 @@ defmodule ForgeSdk do
         ) :: ProtocolState.t() | [ProtocolState.t()] | {:error, term()}
   defdelegate get_protocol_state(request, conn_name \\ ""), to: Rpc
   defdelegate get_stake_state(request, conn_name \\ ""), to: Rpc
-  defdelegate get_tether_state(request, conn_name \\ ""), to: Rpc
+  # defdelegate get_tether_state(request, conn_name \\ ""), to: Rpc
   defdelegate get_swap_state(request, conn_name \\ ""), to: Rpc
   defdelegate get_delegate_state(request, conn_name \\ ""), to: Rpc
 
@@ -631,7 +632,7 @@ defmodule ForgeSdk do
   defdelegate list_top_accounts(request, conn_name \\ ""), to: Rpc
   defdelegate list_asset_transactions(request, conn_name \\ ""), to: Rpc
   defdelegate list_blocks(request, conn_name \\ ""), to: Rpc
-  defdelegate list_tethers(request, conn_name \\ ""), to: Rpc
+  # defdelegate list_tethers(request, conn_name \\ ""), to: Rpc
   defdelegate list_swap(request, conn_name \\ ""), to: Rpc
   defdelegate get_health_status(request, conn_name \\ ""), to: Rpc
 end

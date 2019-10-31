@@ -53,9 +53,9 @@ defmodule ForgeSdk.MixProject do
       # forge family dependencies
       {:mcrypto, "~> 0.2"},
       {:abt_did_elixir, "~> 0.3"},
-      {:forge_abi, "~> 1.15"},
+      # {:forge_abi, "~> 1.15"},
       # {:abt_did_elixir, path: "../abt-did-elixir"},
-      # {:forge_abi, path: "../forge-abi"},
+      {:forge_abi, path: "../forge-abi"},
 
       # dev and test
       {:credo, "~> 1.0.0", only: [:dev, :test]},
@@ -88,7 +88,6 @@ defmodule ForgeSdk.MixProject do
       licenses: ["Apache 2.0"],
       maintainers: [
         "dingpl716@gmail.com",
-        "sunboshan@gmail.com",
         "tyr.chen@gmail.com"
       ],
       links: %{

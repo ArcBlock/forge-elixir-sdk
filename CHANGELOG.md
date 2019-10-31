@@ -1,3 +1,6 @@
+## 0.40.2 (October 31, 2019)
+  - fix multisig display issue
+
 ## 0.40.1 (October 31, 2019)
   - fix multisig issue
   - remove dead code

@@ -1,3 +1,6 @@
+## 0.40.3 (November 01, 2019)
+  - upgrade forge abi
+
 ## 0.40.2 (October 31, 2019)
   - fix multisig display issue
 

@@ -67,15 +67,15 @@ defimpl ForgeSdk.Display, for: Any do
 
   def display(data, expand? \\ false)
 
-  def display(%{__struct__: _} = data, _expand?) do
+  def display(%{__struct__: _} = data, expand?) do
     basic = Map.from_struct(data)
 
     Enum.reduce(basic, basic, fn {k, v}, acc ->
       cond do
-        is_map(v) and Map.has_key?(v, :__struct__) -> Map.put(acc, k, Display.display(v))
-        is_tuple(v) -> Map.put(acc, k, Display.display(v))
-        is_list(v) -> Map.put(acc, k, Enum.map(v, &Display.display(&1)))
-        true -> Map.put(acc, k, Display.display(v))
+        is_map(v) and Map.has_key?(v, :__struct__) -> Map.put(acc, k, Display.display(v, expand?))
+        is_tuple(v) -> Map.put(acc, k, Display.display(v, expand?))
+        is_list(v) -> Map.put(acc, k, Enum.map(v, &Display.display(&1, expand?)))
+        true -> Map.put(acc, k, Display.display(v, expand?))
       end
     end)
   end

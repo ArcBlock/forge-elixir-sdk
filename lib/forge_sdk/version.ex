@@ -56,6 +56,12 @@ defmodule ForgeSdk.Version do
 
     iex> ForgeSdk.Version.check("4.0.0", "3.0.0")
     :deny
+
+    iex> ForgeSdk.Version.check("4.0.0", "4.0a.1")
+    :invalid
+
+    iex> ForgeSdk.Version.check("4.0.0", "4.0.1-p1-p2")
+    :invalid
   """
   def check(old, new) do
     [ov1, ov2, ov3, _op] = normalize_version(old)

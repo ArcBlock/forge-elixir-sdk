@@ -1,3 +1,7 @@
+## 0.40.4 (November 05, 2019)
+  - fix signature verification
+  - make big uint expand to string
+
 ## 0.40.3 (November 01, 2019)
   - upgrade forge abi
 

@@ -4,7 +4,14 @@ defimpl ForgeSdk.Display, for: ForgeAbi.BigUint do
   """
   use ForgeAbi.Unit
 
-  def display(data, _expand? \\ false), do: to_int(data)
+  def display(data, expand?) do
+    v = to_int(data)
+
+    case expand? do
+      true -> Integer.to_string(v)
+      _ -> v
+    end
+  end
 end
 
 defimpl ForgeSdk.Display, for: ForgeAbi.BigSint do
@@ -13,5 +20,12 @@ defimpl ForgeSdk.Display, for: ForgeAbi.BigSint do
   """
   use ForgeAbi.Unit
 
-  def display(data, _expand? \\ false), do: to_int(data)
+  def display(data, expand?) do
+    v = to_int(data)
+
+    case expand? do
+      true -> Integer.to_string(v)
+      _ -> v
+    end
+  end
 end

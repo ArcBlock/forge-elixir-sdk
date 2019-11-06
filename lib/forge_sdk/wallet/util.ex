@@ -68,7 +68,7 @@ defmodule ForgeSdk.Wallet.Util do
           ]
       end
 
-    tx_data = Transaction.encode(%{tx | signature: ""})
+    tx_data = Transaction.encode(%{tx | signature: "", signatures: []})
 
     sender_wallet =
       case tx.delegator do

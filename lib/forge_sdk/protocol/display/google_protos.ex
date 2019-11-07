@@ -30,7 +30,7 @@ defimpl ForgeSdk.Display, for: Google.Protobuf.Any do
               _type: get_type(type_url),
               type_url: type_url,
               data: Display.display(data, expand?),
-              value: Base.url_encode64(any.value, padding: false)
+              value: get_value(any.value)
             }
         end
     end
@@ -39,4 +39,11 @@ defimpl ForgeSdk.Display, for: Google.Protobuf.Any do
   # TODO(tchen): we shall unify the name of tx (covert things like :confirm to :confirm_tx)
   defp get_type(<<_::size(16)>> <> ":t:" <> type), do: "#{type}_tx"
   defp get_type(type_url), do: type_url
+
+  defp get_value(value) do
+    case String.printable?(value) do
+      true -> value
+      false -> Base.url_encode64(value, padding: false)
+    end
+  end
 end

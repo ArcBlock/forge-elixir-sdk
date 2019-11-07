@@ -1,3 +1,6 @@
+## 0.40.6 (November 07, 2019)
+  - Fix a bug of displaying any. (#147)
+
 ## 0.40.5 (November 06, 2019)
   - update dep
   - add more test cases

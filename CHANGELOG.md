@@ -1,3 +1,8 @@
+## 0.40.5 (November 06, 2019)
+  - update dep
+  - add more test cases
+  - support version check
+
 ## 0.40.4 (November 05, 2019)
   - fix signature verification
   - make big uint expand to string

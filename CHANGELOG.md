@@ -1,3 +1,6 @@
+## 1.0.0 (November 12, 2019)
+  - bump forge-sdk to 1.0.0
+
 ## 0.40.6 (November 07, 2019)
   - Fix a bug of displaying any. (#147)
 

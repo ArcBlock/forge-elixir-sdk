@@ -339,6 +339,9 @@ defmodule ForgeSdk.Rpc do
   def update_asset(itx, opts), do: apply(CoreTx.UpdateAsset.Rpc, :update_asset, [itx, opts])
   def upgrade_node(itx, opts), do: apply(CoreTx.UpgradeNode.Rpc, :upgrade_node, [itx, opts])
 
+  def refuel(opts), do: apply(CoreTx.Refuel.Rpc, :refuel, [opts])
+  def refuel(itx, opts), do: apply(CoreTx.Refuel.Rpc, :refuel, [itx, opts])
+
   def setup_swap(itx, opts), do: apply(CoreTx.SetupSwap.Rpc, :setup_swap, [itx, opts])
 
   def retrieve_swap(itx, opts), do: apply(CoreTx.RetrieveSwap.Rpc, :retrieve_swap, [itx, opts])

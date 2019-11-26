@@ -290,6 +290,9 @@ defmodule ForgeSdk do
 
   defdelegate revoke_withdraw(itx, opts), to: Rpc
 
+  defdelegate refuel(opts), to: Rpc
+  defdelegate refuel(itx, opts), to: Rpc
+
   # extended tx helper
   defdelegate stake_for_node(address, amount, opts), to: Rpc
 

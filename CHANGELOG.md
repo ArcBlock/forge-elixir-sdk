@@ -1,3 +1,6 @@
+## 1.0.1 (November 25, 2019)
+  - support update validator
+
 ## 1.0.0 (November 12, 2019)
   - bump forge-sdk to 1.0.0
 

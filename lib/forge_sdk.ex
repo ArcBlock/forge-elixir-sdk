@@ -261,6 +261,9 @@ defmodule ForgeSdk do
   @spec upgrade_node(map(), Keyword.t()) :: String.t() | {:error, term()}
   defdelegate upgrade_node(itx, opts), to: Rpc
 
+  @spec update_validator(map(), Keyword.t()) :: String.t() | {:error, term()}
+  defdelegate update_validator(itx, opts), to: Rpc
+
   @spec activate_protocol(map(), Keyword.t()) :: String.t() | {:error, term()}
   defdelegate activate_protocol(itx, opts), to: Rpc
 

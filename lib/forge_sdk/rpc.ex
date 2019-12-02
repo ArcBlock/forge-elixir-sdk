@@ -342,6 +342,9 @@ defmodule ForgeSdk.Rpc do
   def refuel(opts), do: apply(CoreTx.Refuel.Rpc, :refuel, [opts])
   def refuel(itx, opts), do: apply(CoreTx.Refuel.Rpc, :refuel, [itx, opts])
 
+  def update_validator(itx, opts),
+    do: apply(CoreTx.UpdateValidator.Rpc, :update_validator, [itx, opts])
+
   def setup_swap(itx, opts), do: apply(CoreTx.SetupSwap.Rpc, :setup_swap, [itx, opts])
 
   def retrieve_swap(itx, opts), do: apply(CoreTx.RetrieveSwap.Rpc, :retrieve_swap, [itx, opts])

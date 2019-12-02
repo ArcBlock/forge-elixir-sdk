@@ -30,8 +30,7 @@ defmodule ForgeSdk.Tx.Builder.Helper do
         _ -> Enum.random(1..10_000_000_000)
       end
 
-    "fg:t:" <> type = type_url
-    gas = Map.get(conn.gas, type, 0)
+    gas = Map.get(conn.gas, type_url, 0)
 
     case sign? do
       true ->

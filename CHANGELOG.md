@@ -1,3 +1,6 @@
+## 1.0.1-p1 (December 3, 2019)
+  - Adds multisig to declare wallet.
+
 ## 1.0.1 (November 25, 2019)
   - support update validator
   - enable gas

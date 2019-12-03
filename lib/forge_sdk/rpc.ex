@@ -206,6 +206,32 @@ defmodule ForgeSdk.Rpc do
     _ -> {:error, :internal}
   end
 
+  @doc """
+
+  Supported optionas:
+    - type: ForgeAbi.WalletType
+    - moniker: The moniker for the wallet to create.
+    - issuer: The address of the issuer.
+  """
+  @spec prepare_create_wallet(Keyword.t(), String.t() | atom()) ::
+          {WalletInfo.t(), Transaction.t()} | {:error, term()}
+  def prepare_create_wallet(req, _conn_name \\ "") do
+    wallet =
+      case req[:type] do
+        nil -> WalletUtil.create(ForgeAbi.WalletType.new())
+        v -> WalletUtil.create(v)
+      end
+
+    moniker = req[:moniker] || ""
+    issuer = req[:issuer]
+    itx = apply(ForgeAbi.DeclareTx, :new, [%{moniker: moniker, issuer: issuer}])
+    tx = ForgeSdk.prepare_declare(itx, wallet: wallet)
+    {wallet, tx}
+  end
+
+  @spec finalize_create_wallet(Transaction.t(), Keyword.t()) :: {:error, any()} | Transaction.t()
+  def finalize_create_wallet(tx, opts), do: ForgeSdk.finalize_declare(tx, opts)
+
   @spec declare_node(RequestDeclareNode.t(), String.t() | atom(), Keyword.t()) ::
           WalletInfo.t() | {:error, term()}
   rpc :declare_node do
@@ -317,6 +343,12 @@ defmodule ForgeSdk.Rpc do
     do: apply(CoreTx.ConsumeAsset.Rpc, :finalize_consume_asset, [tx, opts])
 
   def declare(itx, opts), do: apply(CoreTx.Declare.Rpc, :declare, [itx, opts])
+
+  def prepare_declare(itx, opts),
+    do: apply(CoreTx.Declare.Rpc, :prepare_declare, [itx, opts])
+
+  def finalize_declare(tx, opts),
+    do: apply(CoreTx.Declare.Rpc, :finalize_declare, [tx, opts])
 
   # def declare_file(itx, opts), do: apply(CoreTx.DeclareFile.Rpc, :declare_file, [itx, opts])
 

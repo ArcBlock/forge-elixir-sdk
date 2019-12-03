@@ -179,6 +179,12 @@ defmodule ForgeSdk do
   @spec declare(map(), Keyword.t()) :: String.t() | {:error, term()}
   defdelegate declare(itx, opts), to: Rpc
 
+  @spec prepare_declare(map(), Keyword.t()) :: Transaction.t() | {:error, term()}
+  defdelegate prepare_declare(itx, opts), to: Rpc
+
+  @spec finalize_declare(Transaction.t(), Keyword.t()) :: {:error, any()} | Transaction.t()
+  defdelegate finalize_declare(tx, opts), to: Rpc
+
   @doc """
   Deploy a `new protocol` into the chain at a given `block height`.
 
@@ -472,9 +478,15 @@ defmodule ForgeSdk do
       ForgeSdk.create_wallet(moniker: "alice")
 
   """
-  @spec create_wallet(Keyword.t(), String.t() | atom()) ::
-          WalletInfo.t() | {:error, term()}
+  @spec create_wallet(Keyword.t(), String.t() | atom()) :: WalletInfo.t() | {:error, term()}
   defdelegate create_wallet(request, conn_name \\ ""), to: Rpc
+
+  @spec prepare_create_wallet(Keyword.t(), String.t() | atom()) ::
+          {WalletInfo.t(), Transaction.t()} | {:error, term()}
+  defdelegate prepare_create_wallet(request, conn_name \\ ""), to: Rpc
+
+  @spec finalize_create_wallet(Transaction.t(), Keyword.t()) :: {:error, any()} | Transaction.t()
+  defdelegate finalize_create_wallet(tx, opts), to: Rpc
 
   defdelegate declare_node(request, conn_name \\ ""), to: Rpc
 

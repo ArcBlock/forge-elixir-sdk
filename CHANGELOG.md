@@ -1,3 +1,6 @@
+## 1.0.2 (December 06, 2019)
+  - bump version
+
 ## 1.0.1-p1 (December 3, 2019)
   - Adds multisig to declare wallet.
 

@@ -1,3 +1,6 @@
+## 1.0.2-p1 (December 09, 2019)
+  - support restricted declare node
+
 ## 1.0.2 (December 06, 2019)
   - bump version
 

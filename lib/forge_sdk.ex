@@ -489,6 +489,8 @@ defmodule ForgeSdk do
   defdelegate finalize_create_wallet(tx, opts), to: Rpc
 
   defdelegate declare_node(request, conn_name \\ ""), to: Rpc
+  defdelegate prepare_declare_node(request, conn_name \\ ""), to: Rpc
+  defdelegate finalize_declare_node(tx, opts), to: Rpc
 
   # state related
 

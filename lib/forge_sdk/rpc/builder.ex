@@ -23,10 +23,17 @@ defmodule ForgeSdk.Rpc.Builder do
           raise ArgumentError, message: "expected :do to be given as option"
       end
 
+    {service_name, service} =
+      case options[:service] do
+        nil -> {service, service}
+        v -> {service, v}
+      end
+
     mod = to_request_mod(service)
 
     quote bind_quoted: [
             mod: mod,
+            service_name: service_name,
             service: service,
             options: options,
             body: Macro.escape(body, unquote: true)
@@ -35,7 +42,7 @@ defmodule ForgeSdk.Rpc.Builder do
 
       cond do
         options[:request_stream] == true ->
-          def unquote(service)(reqs, name \\ "", opts \\ []) do
+          def unquote(service_name)(reqs, name \\ "", opts \\ []) do
             conn = Util.get_conn(name)
             reqs = Helper.to_req(reqs, unquote(mod))
             fun = fn var!(res) -> unquote(body) end
@@ -44,7 +51,7 @@ defmodule ForgeSdk.Rpc.Builder do
           end
 
         options[:response_stream] == true and options[:no_params] == true ->
-          def unquote(service)(name \\ "", opts \\ []) do
+          def unquote(service_name)(name \\ "", opts \\ []) do
             conn = Util.get_conn(name)
             req = apply(unquote(mod), :new, [])
             fun = fn var!(res) -> unquote(body) end
@@ -53,7 +60,7 @@ defmodule ForgeSdk.Rpc.Builder do
           end
 
         options[:response_stream] == true ->
-          def unquote(service)(req, name \\ "", opts \\ []) do
+          def unquote(service_name)(req, name \\ "", opts \\ []) do
             conn = Util.get_conn(name)
             req = Helper.to_req(req, unquote(mod))
             fun = fn var!(res) -> unquote(body) end
@@ -62,7 +69,7 @@ defmodule ForgeSdk.Rpc.Builder do
           end
 
         options[:no_params] == true ->
-          def unquote(service)(name \\ "", opts \\ []) do
+          def unquote(service_name)(name \\ "", opts \\ []) do
             conn = Util.get_conn(name)
             req = apply(unquote(mod), :new, [])
             fun = fn var!(res) -> unquote(body) end
@@ -71,7 +78,7 @@ defmodule ForgeSdk.Rpc.Builder do
           end
 
         true ->
-          def unquote(service)(req, name \\ "", opts \\ []) do
+          def unquote(service_name)(req, name \\ "", opts \\ []) do
             conn = Util.get_conn(name)
             req = Helper.to_req(req, unquote(mod))
             fun = fn var!(res) -> unquote(body) end

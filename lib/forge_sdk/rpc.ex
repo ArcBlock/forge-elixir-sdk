@@ -238,6 +238,15 @@ defmodule ForgeSdk.Rpc do
     res.wallet
   end
 
+  @spec prepare_declare_node(RequestDeclareNode.t(), String.t() | atom()) ::
+          {WalletInfo.t(), Transaction.t()} | {:error, term()}
+  rpc :prepare_declare_node, service: :declare_node do
+    {res.wallet, res.tx}
+  end
+
+  @spec finalize_declare_node(Transaction.t(), Keyword.t()) :: {:error, any()} | Transaction.t()
+  def finalize_declare_node(tx, opts), do: ForgeSdk.finalize_declare(tx, opts)
+
   # account related
   @spec get_account_state(
           RequestGetAccountState.t() | [RequestGetAccountState.t()] | Keyword.t() | [Keyword.t()],

@@ -17,7 +17,12 @@ defimpl ForgeSdk.Display, for: ForgeAbi.ForgeState do
       tasks:
         Enum.map(basic.tasks, fn {key, value} ->
           %{key: key, value: Display.display(value, expand?)}
-        end)
+        end),
+      account_config:
+        Enum.map(basic.account_config, fn {key, value} ->
+          %{key: key, value: Display.display(value, expand?)}
+        end),
+      tx_config: Display.display(basic.tx_config)
     })
   end
 end

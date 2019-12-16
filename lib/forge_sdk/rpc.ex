@@ -18,6 +18,7 @@ defmodule ForgeSdk.Rpc do
     ProtocolState,
     StakeState,
     SwapState,
+    SwapStatistics,
 
     # block
     IndexedBlock,
@@ -79,6 +80,7 @@ defmodule ForgeSdk.Rpc do
     RequestListBlocks,
     RequestListTransactions,
     RequestListSwap,
+    RequestGetSwapStatistics,
     ForgeStats
   }
 
@@ -513,6 +515,15 @@ defmodule ForgeSdk.Rpc do
         ) :: {[SwapState.t()], PageInfo.t()} | {:error, term()}
   rpc :list_swap do
     {res.swap, res.page}
+  end
+
+  @spec get_swap_statistics(
+          RequestGetSwapStatistics.t() | Keyword.t(),
+          String.t() | atom(),
+          Keyword.t()
+        ) :: SwapStatistics | {:error, term()}
+  rpc :get_swap_statistics do
+    res.statistics
   end
 
   @spec get_health_status(

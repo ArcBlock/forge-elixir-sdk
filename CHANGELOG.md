@@ -1,4 +1,4 @@
-## 1.0.2-p2 (December 15, 2019)
+## 1.0.3 (December 15, 2019)
   - Add swap statistics API
 
 ## 1.0.2-p1 (December 09, 2019)

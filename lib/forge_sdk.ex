@@ -290,11 +290,12 @@ defmodule ForgeSdk do
 
   defdelegate prepare_withdraw_token(itx, opts), to: Rpc
 
-  defdelegate finalize_withdraw_token(itx, opts), to: Rpc
+  defdelegate finalize_withdraw_token(tx, opts), to: Rpc
 
   defdelegate approve_withdraw(itx, opts), to: Rpc
 
-  defdelegate revoke_withdraw(itx, opts), to: Rpc
+  defdelegate prepare_revoke_withdraw(itx, opts), to: Rpc
+  defdelegate finalize_revoke_withdraw(tx, opts), to: Rpc
 
   defdelegate refuel(opts), to: Rpc
   defdelegate refuel(itx, opts), to: Rpc

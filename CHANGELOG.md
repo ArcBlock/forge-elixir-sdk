@@ -1,3 +1,6 @@
+## 1.0.4 (December 21, 2019)
+  - support multisig revoke withdraw
+
 ## 1.0.3 (December 15, 2019)
   - Add swap statistics API
 

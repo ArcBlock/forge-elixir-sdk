@@ -410,8 +410,11 @@ defmodule ForgeSdk.Rpc do
   def approve_withdraw(itx, opts),
     do: apply(CoreTx.ApproveWithdraw.Rpc, :approve_withdraw, [itx, opts])
 
-  def revoke_withdraw(itx, opts),
-    do: apply(CoreTx.RevokeWithdraw.Rpc, :revoke_withdraw, [itx, opts])
+  def prepare_revoke_withdraw(itx, opts),
+    do: apply(CoreTx.RevokeWithdraw.Rpc, :prepare_revoke_withdraw, [itx, opts])
+
+  def finalize_revoke_withdraw(itx, opts),
+    do: apply(CoreTx.RevokeWithdraw.Rpc, :finalize_revoke_withdraw, [itx, opts])
 
   def activate_protocol(itx, opts),
     do: apply(CoreTx.ActivateProtocol.Rpc, :activate_protocol, [itx, opts])

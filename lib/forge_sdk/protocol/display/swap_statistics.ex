@@ -4,7 +4,7 @@ defimpl ForgeSdk.Display, for: ForgeAbi.SwapStatistics do
   """
   alias ForgeSdk.Display
 
-  def display(data, expand? \\ false) do
+  def display(data, _expand? \\ false) do
     basic = Map.from_struct(data)
 
     Map.merge(basic, %{

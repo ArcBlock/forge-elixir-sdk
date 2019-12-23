@@ -22,7 +22,8 @@ defimpl ForgeSdk.Display, for: ForgeAbi.ForgeState do
         Enum.map(basic.account_config, fn {key, value} ->
           %{key: key, value: Display.display(value, expand?)}
         end),
-      tx_config: Display.display(basic.tx_config)
+      tx_config: Display.display(basic.tx_config),
+      token_swap_config: Display.display(basic.token_swap_config)
     })
   end
 end
@@ -40,6 +41,22 @@ defimpl ForgeSdk.Display, for: ForgeAbi.StakeSummary do
       context: Display.display(basic.context, expand?),
       total_stakes: Display.display(basic.total_stakes),
       total_unstakes: Display.display(basic.total_unstakes)
+    })
+  end
+end
+
+defimpl ForgeSdk.Display, for: ForgeAbi.TokenSwapConfig do
+  @moduledoc """
+  Implementation of `Display` protocol for `TokenSwapConfig`
+  """
+  alias ForgeSdk.Display
+
+  def display(data, _expand? \\ false) do
+    basic = Map.from_struct(data)
+
+    Map.merge(basic, %{
+      max_commission: Display.display(basic.max_commission),
+      min_commission: Display.display(basic.min_commission)
     })
   end
 end

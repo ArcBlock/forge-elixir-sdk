@@ -1,3 +1,6 @@
+## 1.0.4-p0 (December 23, 2019)
+  - support token swap config
+
 ## 1.0.4 (December 21, 2019)
   - support multisig revoke withdraw
 

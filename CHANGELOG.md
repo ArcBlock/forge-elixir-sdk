@@ -1,3 +1,6 @@
+## 1.0.4-p1 (December 24, 2019)
+  - fix withdraw item display issue
+
 ## 1.0.4-p0 (December 23, 2019)
   - support token swap config
 

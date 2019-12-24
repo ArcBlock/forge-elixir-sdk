@@ -14,7 +14,8 @@ defimpl ForgeSdk.Display, for: ForgeAbi.AccountState do
       data: Display.display(basic.data),
       stake: Display.display(basic.stake),
       type: Display.display(basic.type),
-      context: Display.display(basic.context, expand?)
+      context: Display.display(basic.context, expand?),
+      withdraw_items: Display.display(basic.withdraw_items, true)
     })
   end
 end

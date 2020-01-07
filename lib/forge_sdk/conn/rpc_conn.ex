@@ -11,6 +11,8 @@ defmodule ForgeSdk.Conn do
     field :chain_id, String.t(), default: ""
     field :decimal, non_neg_integer()
     field :gas, map(), default: %{}
+    field :pid, pid(), default: nil
+    field :callback, function(), default: nil
   end
 end
 
@@ -26,6 +28,8 @@ defmodule ForgeSdk.RpcConn do
 
   alias GRPC.Stub, as: Client
 
+  @timeout 60000
+
   # ------------------------------------------------------------------
   # api
   # ------------------------------------------------------------------
@@ -37,33 +41,41 @@ defmodule ForgeSdk.RpcConn do
   * `opts` - the options for gRPC http2 client `gun`
   * `callback` - the 0 arity function to be called when gRPC connection is established
   """
-  @spec start_link(atom(), String.t(), Keyword.t(), (() -> any) | nil) :: GenServer.on_start()
-  def start_link(name, endpoint, opts, callback) do
-    Connection.start_link(__MODULE__, {endpoint, name, opts, callback}, name: name)
+  @spec start_link(list()) :: GenServer.on_start()
+  def start_link(args) do
+    Connection.start_link(
+      __MODULE__,
+      {args[:endpoint], args[:name], args[:opts], args[:callback]}
+    )
   end
 
   @spec get_conn(atom()) :: ForgeSdk.Conn.t() | {:error, :closed}
   def get_conn(name) do
-    Connection.call(name, :get_conn)
+    do_checkout_and_call(name, :get_conn)
+  end
+
+  @spec get_conn_state(atom()) :: ForgeSdk.Conn.t() | {:error, :closed}
+  def get_conn_state(name) do
+    do_call(name, :get_conn)
   end
 
   @spec get_config(atom()) :: String.t() | {:error, :closed}
   def get_config(name) do
-    Connection.call(name, :get_config)
+    do_call(name, :get_config)
   end
 
-  @spec update_config(atom(), String.t()) :: any()
-  def update_config(name, config) do
-    Connection.cast(name, {:update_config, config})
+  @spec update_config(pid(), String.t()) :: any()
+  def update_config(pid, config) do
+    Connection.call(pid, {:update_config, config})
   end
 
-  @spec update_gas(atom()) :: any()
-  def update_gas(name) do
-    Connection.cast(name, :update_gas)
+  @spec update_gas(pid(), map()) :: any()
+  def update_gas(pid, gas) do
+    Connection.call(pid, {:update_gas, gas})
   end
 
-  @spec close(atom()) :: any()
-  def close(name), do: Connection.call(name, :close)
+  @spec close(pid()) :: any()
+  def close(pid), do: Connection.call(pid, :close)
 
   # ------------------------------------------------------------------
   # callbacks
@@ -88,9 +100,9 @@ defmodule ForgeSdk.RpcConn do
     case Client.connect(endpoint, opts) do
       {:ok, chan} ->
         Process.monitor(chan.adapter_payload.conn_pid)
-        # send(self(), :get_config)
-        callback && spawn(fn -> callback.(conn.name) end)
-        {:ok, %{state | conn: %{conn | chan: chan}}}
+        Process.send_after(self(), :callback, 100)
+
+        {:ok, %{state | conn: %{conn | chan: chan, callback: callback}}}
 
       {:error, _} ->
         {:backoff, 5000, state}
@@ -116,7 +128,7 @@ defmodule ForgeSdk.RpcConn do
   end
 
   def handle_call(:get_conn, _from, %{conn: conn} = state) do
-    {:reply, conn, state}
+    {:reply, %{conn | pid: self()}, state}
   end
 
   def handle_call(:get_config, _from, %{config: config} = state) do
@@ -127,33 +139,31 @@ defmodule ForgeSdk.RpcConn do
     {:disconnect, {:close, from}, state}
   end
 
-  # cast
-
-  def handle_cast({:update_config, config}, %{conn: conn} = state) do
+  def handle_call({:update_config, config}, _from, %{conn: conn} = state) do
     config = Jason.decode!(config)
     chain_id = Map.get(config, "chain_id")
     decimal = Map.get(config, "decimal")
-    {:noreply, %{state | conn: %{conn | chain_id: chain_id, decimal: decimal}, config: config}}
+    {:reply, :ok, %{state | conn: %{conn | chain_id: chain_id, decimal: decimal}, config: config}}
   end
 
-  def handle_cast(:update_gas, %{conn: conn} = state) do
-    me = self()
-
-    spawn(fn ->
-      case ForgeSdk.get_forge_state(conn.name) do
-        nil -> Process.send_after(me, {:"$gen_cast", :update_gas}, 1000)
-        %{gas: gas} -> Connection.cast(me, {:update_gas, gas})
-      end
-    end)
-
-    {:noreply, state}
-  end
-
-  def handle_cast({:update_gas, gas}, %{conn: conn} = state) do
-    {:noreply, %{state | conn: %{conn | gas: gas}}}
+  def handle_call({:update_gas, gas}, _from, %{conn: conn} = state) do
+    {:reply, :ok, %{state | conn: %{conn | gas: gas}}}
   end
 
   # info
+  def handle_info(:callback, %{callback: callback, conn: conn} = state) do
+    me = self()
+
+    callback &&
+      spawn(fn ->
+        case callback.(conn.name, me) do
+          :error -> Process.send_after(me, :callback, 1000)
+          :ok -> :ok
+        end
+      end)
+
+    {:noreply, state}
+  end
 
   def handle_info(
         {:DOWN, _ref, :process, pid, reason},
@@ -166,5 +176,22 @@ defmodule ForgeSdk.RpcConn do
   def handle_info(msg, state) do
     Logger.debug("Got unexpected info message: #{inspect(msg)}")
     {:noreply, state}
+  end
+
+  # private functions
+
+  defp do_call(name, msg) do
+    :poolboy.transaction(
+      name,
+      fn pid ->
+        Connection.call(pid, msg)
+      end,
+      @timeout
+    )
+  end
+
+  defp do_checkout_and_call(name, msg) do
+    worker = :poolboy.checkout(name)
+    Connection.call(worker, msg)
   end
 end

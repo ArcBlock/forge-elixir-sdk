@@ -25,17 +25,27 @@ defmodule ForgeSdk.Util do
       _ -> nil
     end
 
-    result = ConnSupervisor.add(name, host)
+    callback = fn name, pid ->
+      config = ForgeSdk.get_config([parsed: true], name)
+      forge_state = ForgeSdk.get_forge_state(name)
+
+      case forge_state do
+        nil ->
+          :error
+
+        _ ->
+          ForgeSdk.RpcConn.update_config(pid, config)
+          ForgeSdk.RpcConn.update_gas(pid, forge_state.gas)
+      end
+    end
+
+    result = ConnSupervisor.add_pool(name, host, callback)
     forge_state = ForgeSdk.get_forge_state(name)
 
     case name do
       :forge_server_node -> nil
       _ -> ForgeSdk.update_type_url(forge_state)
     end
-
-    config = ForgeSdk.get_config([parsed: true], name)
-    ForgeSdk.RpcConn.update_config(name, config)
-    ForgeSdk.RpcConn.update_gas(name)
 
     result
   end
@@ -49,6 +59,13 @@ defmodule ForgeSdk.Util do
   def get_conn(""), do: get_conn(Application.get_env(:forge_sdk, :default_conn))
   def get_conn(name) when is_binary(name), do: get_conn(String.to_existing_atom(name))
   def get_conn(name), do: ForgeSdk.RpcConn.get_conn(name)
+
+  @spec get_conn_state(String.t() | atom()) :: Conn.t()
+  def get_conn_state(name \\ "")
+
+  def get_conn_state(""), do: get_conn_state(Application.get_env(:forge_sdk, :default_conn))
+  def get_conn_state(name) when is_binary(name), do: get_conn_state(String.to_existing_atom(name))
+  def get_conn_state(name), do: ForgeSdk.RpcConn.get_conn_state(name)
 
   @doc """
   Get the configuration for the conn.
@@ -133,17 +150,17 @@ defmodule ForgeSdk.Util do
   def datetime_to_proto(dt), do: Google.Protobuf.Timestamp.new(seconds: DateTime.to_unix(dt))
 
   def token_to_unit(n, name \\ "") do
-    conn = ForgeSdk.get_conn(name)
+    conn = ForgeSdk.get_conn_state(name)
     ForgeAbi.token_to_unit(n, conn.decimal)
   end
 
   def unit_to_token(v, name \\ "") do
-    conn = ForgeSdk.get_conn(name)
+    conn = ForgeSdk.get_conn_state(name)
     ForgeAbi.unit_to_token(v, conn.decimal)
   end
 
   def one_token(name \\ "") do
-    conn = ForgeSdk.get_conn(name)
+    conn = ForgeSdk.get_conn_state(name)
     ForgeAbi.one_token(conn.decimal)
   end
 

@@ -32,23 +32,27 @@ defmodule ForgeSdk.Tx.Builder.Helper do
 
     gas = Map.get(conn.gas, type_url, 0)
 
-    case sign? do
-      true ->
-        case do_create_tx(any, nonce, gas, wallet, delegatee, conn.chain_id) do
-          {:error, _} = error ->
-            error
+    result =
+      case sign? do
+        true ->
+          case do_create_tx(any, nonce, gas, wallet, delegatee, conn.chain_id) do
+            {:error, _} = error ->
+              error
 
-          tx ->
-            case Keyword.get(opts, :send, :broadcast) do
-              :broadcast -> send_tx(RequestSendTx.new(tx: tx), conn)
-              :commit -> send_tx(RequestSendTx.new(tx: tx, commit: true), conn)
-              :nosend -> tx
-            end
-        end
+            tx ->
+              case Keyword.get(opts, :send, :broadcast) do
+                :broadcast -> send_tx(RequestSendTx.new(tx: tx), conn)
+                :commit -> send_tx(RequestSendTx.new(tx: tx, commit: true), conn)
+                :nosend -> tx
+              end
+          end
 
-      false ->
-        create_unsigned_tx(any, nonce, gas, wallet, delegatee, conn)
-    end
+        false ->
+          create_unsigned_tx(any, nonce, gas, wallet, delegatee, conn)
+      end
+
+    :poolboy.checkin(conn.name, conn.pid)
+    result
   end
 
   # private functions

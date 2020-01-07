@@ -608,6 +608,7 @@ defmodule ForgeSdk do
 
   defdelegate connect(hostname, opts), to: Util
   defdelegate get_conn(name \\ ""), to: Util
+  defdelegate get_conn_state(name \\ ""), to: Util
   defdelegate get_parsed_config(name \\ ""), to: Util
   defdelegate datetime_to_proto(dt), to: Util
   defdelegate update_type_url(forge_state), to: Loader

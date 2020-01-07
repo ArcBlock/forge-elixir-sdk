@@ -46,6 +46,7 @@ defmodule ForgeSdk.MixProject do
       {:deep_merge, "~> 0.2"},
       {:jason, "~> 1.1"},
       {:multibase, "~> 0.0.1"},
+      {:poolboy, "~> 1.5"},
       {:recase, "~> 0.6"},
       {:toml, "~> 0.5"},
       {:typed_struct, "~> 0.1.4"},

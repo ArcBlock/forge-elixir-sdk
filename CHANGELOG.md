@@ -1,3 +1,7 @@
+## 1.0.6 (January 07, 2020)
+  - fix forge state issue for new chain
+  - support rpc conn pooling
+
 ## 1.0.4-p1 (December 24, 2019)
   - fix withdraw item display issue
 

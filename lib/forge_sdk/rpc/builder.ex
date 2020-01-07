@@ -38,7 +38,7 @@ defmodule ForgeSdk.Rpc.Builder do
             options: options,
             body: Macro.escape(body, unquote: true)
           ] do
-      default_opts = options[:opts] || []
+      default_opts = options[:opts] || [timeout: 30000]
 
       cond do
         options[:request_stream] == true ->

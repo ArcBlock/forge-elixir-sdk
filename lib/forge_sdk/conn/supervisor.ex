@@ -34,7 +34,12 @@ defmodule ForgeSdk.ConnSupervisor do
       {:max_overflow, overflow}
     ]
 
-    args = [name: name, endpoint: addr, opts: [adapter_opts: %{retry: 0}], callback: callback]
+    args = [
+      name: name,
+      endpoint: addr,
+      opts: [deadline: :infinity, adapter_opts: %{retry: 0}],
+      callback: callback
+    ]
 
     DynamicSupervisor.start_child(
       __MODULE__,

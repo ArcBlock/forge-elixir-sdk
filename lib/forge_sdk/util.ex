@@ -28,8 +28,15 @@ defmodule ForgeSdk.Util do
     callback = fn name, pid ->
       config = ForgeSdk.get_config([parsed: true], name)
       forge_state = ForgeSdk.get_forge_state(name)
-      ForgeSdk.RpcConn.update_config(pid, config)
-      ForgeSdk.RpcConn.update_gas(pid, forge_state.gas)
+
+      case forge_state do
+        nil ->
+          :error
+
+        _ ->
+          ForgeSdk.RpcConn.update_config(pid, config)
+          ForgeSdk.RpcConn.update_gas(pid, forge_state.gas)
+      end
     end
 
     result = ConnSupervisor.add_pool(name, host, callback)

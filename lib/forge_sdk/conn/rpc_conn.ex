@@ -12,6 +12,7 @@ defmodule ForgeSdk.Conn do
     field :decimal, non_neg_integer()
     field :gas, map(), default: %{}
     field :pid, pid(), default: nil
+    field :callback, function(), default: nil
   end
 end
 
@@ -95,19 +96,13 @@ defmodule ForgeSdk.RpcConn do
         %{conn: %{chan: nil, endpoint: endpoint} = conn, opts: opts, callback: callback} = state
       ) do
     Logger.info("Forge ABI RPC: reconnect to #{endpoint}...")
-    me = self()
 
     case Client.connect(endpoint, opts) do
       {:ok, chan} ->
         Process.monitor(chan.adapter_payload.conn_pid)
+        Process.send_after(self(), :callback, 100)
 
-        callback &&
-          spawn(fn ->
-            :timer.sleep(100)
-            callback.(conn.name, me)
-          end)
-
-        {:ok, %{state | conn: %{conn | chan: chan}}}
+        {:ok, %{state | conn: %{conn | chan: chan, callback: callback}}}
 
       {:error, _} ->
         {:backoff, 5000, state}
@@ -156,6 +151,19 @@ defmodule ForgeSdk.RpcConn do
   end
 
   # info
+  def handle_info(:callback, %{callback: callback, conn: conn} = state) do
+    me = self()
+
+    callback &&
+      spawn(fn ->
+        case callback.(conn.name, me) do
+          :error -> Process.send_after(me, :callback, 1000)
+          :ok -> :ok
+        end
+      end)
+
+    {:noreply, state}
+  end
 
   def handle_info(
         {:DOWN, _ref, :process, pid, reason},

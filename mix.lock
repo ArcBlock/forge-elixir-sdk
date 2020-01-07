@@ -37,6 +37,7 @@
   "multibase": {:hex, :multibase, "0.0.1", "9243bebe6f7f0f9f873c770ddcddab285cc554a8dd2374b8de6b2add087eccbc", [:mix], [{:base1, "~> 0.1.0", [hex: :base1, repo: "hexpm", optional: false]}, {:base2, "~> 0.1.0", [hex: :base2, repo: "hexpm", optional: false]}, {:basefiftyeight, "~> 0.1.0", [hex: :basefiftyeight, repo: "hexpm", optional: false]}, {:zbase32, "~> 2.0.0", [hex: :zbase32, repo: "hexpm", optional: false]}], "hexpm"},
   "nimble_parsec": {:hex, :nimble_parsec, "0.5.3", "def21c10a9ed70ce22754fdeea0810dafd53c2db3219a0cd54cf5526377af1c6", [:mix], [], "hexpm"},
   "parse_trans": {:hex, :parse_trans, "3.3.0", "09765507a3c7590a784615cfd421d101aec25098d50b89d7aa1d66646bc571c1", [:rebar3], [], "hexpm"},
+  "poolboy": {:hex, :poolboy, "1.5.2", "392b007a1693a64540cead79830443abf5762f5d30cf50bc95cb2c1aaafa006b", [:rebar3], [], "hexpm"},
   "pre_commit_hook": {:hex, :pre_commit_hook, "1.2.0", "cdd3448dfe05df5ceac3427c9784af2cb2bbff05876e0e3a6e002c5163eb5f7a", [:mix], [], "hexpm"},
   "protobuf": {:hex, :protobuf, "0.6.3", "742e9034c20532534ca96d7a7ee1251e0f2327dcf8ea6de0dd3eb3e054b236a7", [:mix], [], "hexpm"},
   "ranch": {:hex, :ranch, "1.6.2", "6db93c78f411ee033dbb18ba8234c5574883acb9a75af0fb90a9b82ea46afa00", [:rebar3], [], "hexpm"},

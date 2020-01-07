@@ -13,17 +13,33 @@ defmodule ForgeSdk.ConnSupervisor do
     DynamicSupervisor.init(strategy: :one_for_one)
   end
 
-  def add(name, addr, callback \\ nil) do
-    child_spec = %{
-      id: name,
-      # disable retry on gun's part to prevent undesired zombie connections
-      start: {RpcConn, :start_link, [name, addr, [adapter_opts: %{retry: 0}], callback]},
-      type: :worker,
-      restart: :permanent,
-      shutdown: 500
-    }
+  # def add(name, addr, callback \\ nil) do
+  #   child_spec = %{
+  #     id: name,
+  #     # disable retry on gun's part to prevent undesired zombie connections
+  #     start: {RpcConn, :start_link, [name, addr, [adapter_opts: %{retry: 0}], callback]},
+  #     type: :worker,
+  #     restart: :permanent,
+  #     shutdown: 500
+  #   }
 
-    DynamicSupervisor.start_child(__MODULE__, child_spec)
+  #   DynamicSupervisor.start_child(__MODULE__, child_spec)
+  # end
+
+  def add_pool(name, addr, callback \\ nil, size \\ 20, overflow \\ 0) do
+    config = [
+      {:name, {:local, name}},
+      {:worker_module, RpcConn},
+      {:size, size},
+      {:max_overflow, overflow}
+    ]
+
+    args = [name: name, endpoint: addr, opts: [adapter_opts: %{retry: 0}], callback: callback]
+
+    DynamicSupervisor.start_child(
+      __MODULE__,
+      :poolboy.child_spec(:worker, config, args)
+    )
   end
 
   def remove(pid) do

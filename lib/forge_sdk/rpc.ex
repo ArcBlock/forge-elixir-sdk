@@ -388,6 +388,9 @@ defmodule ForgeSdk.Rpc do
   def update_validator(itx, opts),
     do: apply(CoreTx.UpdateValidator.Rpc, :update_validator, [itx, opts])
 
+  def update_consensus_params(itx, opts),
+    do: apply(CoreTx.UpdateConsensusParams.Rpc, :update_consensus_params, [itx, opts])
+
   def setup_swap(itx, opts), do: apply(CoreTx.SetupSwap.Rpc, :setup_swap, [itx, opts])
 
   def retrieve_swap(itx, opts), do: apply(CoreTx.RetrieveSwap.Rpc, :retrieve_swap, [itx, opts])

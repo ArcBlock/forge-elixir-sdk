@@ -270,6 +270,9 @@ defmodule ForgeSdk do
   @spec update_validator(map(), Keyword.t()) :: String.t() | {:error, term()}
   defdelegate update_validator(itx, opts), to: Rpc
 
+  @spec update_consensus_params(map(), Keyword.t()) :: String.t() | {:error, term()}
+  defdelegate update_consensus_params(itx, opts), to: Rpc
+
   @spec activate_protocol(map(), Keyword.t()) :: String.t() | {:error, term()}
   defdelegate activate_protocol(itx, opts), to: Rpc
 

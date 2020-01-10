@@ -20,7 +20,8 @@ deploy:
     skip_cleanup: true
     script: make travis-deploy
     on:
-      branch: master
+      all_branches: true
+      condition: $TRAVIS_BRANCH =~ ^(master|release.*)$
   - provider: releases
     skip_cleanup: true
     tag_name: '$(git describe --tags --exact-match)'

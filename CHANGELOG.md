@@ -1,3 +1,6 @@
+## 1.0.7 (January 10, 2020)
+
+
 ## 1.0.6 (January 07, 2020)
   - fix forge state issue for new chain
   - support rpc conn pooling

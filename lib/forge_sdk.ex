@@ -55,8 +55,9 @@ defmodule ForgeSdk do
       ForgeSdk.declare(declare_tx, wallet: old_wallet)
       new_wallet = ForgeSdk.create_wallet()
       wallet_type = new_wallet.address |> AbtDid.get_did_type() |> ForgeSdk.Wallet.Util.to_wallet_type()
-      itx = ForgeAbi.Acctype: wallet_typeountMigrateTx.new(pk: new_wallet.pk, type: wallet_type, address: new_wallet.address)
+      itx = ForgeAbi.AccountMigrateTx.new(pk: new_wallet.pk, type: wallet_type, address: new_wallet.address)
       ForgeSdk.account_migrate(itx, wallet: old_wallet)
+
 
   """
   @spec account_migrate(map(), Keyword.t()) :: String.t() | {:error, term()}

@@ -1,3 +1,8 @@
+## 1.1.0 (March 12, 2020)
+  - fix doc (#159)
+  - deploy on release branch
+  - build for release/1.0
+
 ## 1.0.7 (January 10, 2020)
   - support update_consensus_params
 

@@ -106,6 +106,7 @@ defmodule ForgeSdk do
   """
   @spec acquire_asset(map(), Keyword.t()) :: String.t() | {:error, term()}
   defdelegate acquire_asset(itx, opts), to: Rpc
+
   # defdelegate consensus_upgrade(itx, opts), to: Rpc
 
   @spec prepare_consume_asset(map(), Keyword.t()) :: Transaction.t() | {:error, term()}
@@ -219,6 +220,7 @@ defmodule ForgeSdk do
   defdelegate poke(itx, opts), to: Rpc
 
   defdelegate stake(itx, opts), to: Rpc
+
   # defdelegate sys_upgrade(itx, opts), to: Rpc
 
   @doc """

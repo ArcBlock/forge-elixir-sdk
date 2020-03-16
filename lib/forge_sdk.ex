@@ -188,7 +188,7 @@ defmodule ForgeSdk do
   @spec finalize_declare(Transaction.t(), Keyword.t()) :: {:error, any()} | Transaction.t()
   defdelegate finalize_declare(tx, opts), to: Rpc
 
-  @doc """
+  @deprecated """
   Deploy a `new protocol` into the chain at a given `block height`.
 
   ## Example
@@ -198,7 +198,7 @@ defmodule ForgeSdk do
 
   """
   @spec deploy_protocol(map(), Keyword.t()) :: String.t() | {:error, term()}
-  defdelegate deploy_protocol(itx, opts), to: Rpc
+  def deploy_protocol(_itx, _opts), do: {:error, :internal}
 
   @spec prepare_exchange(map(), Keyword.t()) :: Transaction.t() | {:error, term()}
   defdelegate prepare_exchange(itx, opts), to: Rpc
@@ -219,7 +219,8 @@ defmodule ForgeSdk do
   """
   defdelegate poke(itx, opts), to: Rpc
 
-  defdelegate stake(itx, opts), to: Rpc
+  @deprecated "Stake tokens to other accounts, assets, or nodes"
+  def stake(_itx, _opts), do: {:error, :internal}
 
   # defdelegate sys_upgrade(itx, opts), to: Rpc
 
@@ -277,11 +278,13 @@ defmodule ForgeSdk do
   @spec update_consensus_params(map(), Keyword.t()) :: String.t() | {:error, term()}
   defdelegate update_consensus_params(itx, opts), to: Rpc
 
+  @deprecated "Activate a stopped protocol"
   @spec activate_protocol(map(), Keyword.t()) :: String.t() | {:error, term()}
-  defdelegate activate_protocol(itx, opts), to: Rpc
+  def activate_protocol(_itx, _opts), do: {:error, :internal}
 
+  @deprecated "Deactivate a running protocol"
   @spec deactivate_protocol(map(), Keyword.t()) :: String.t() | {:error, term()}
-  defdelegate deactivate_protocol(itx, opts), to: Rpc
+  def deactivate_protocol(_itx, _opts), do: {:error, :internal}
 
   defdelegate setup_swap(itx, opts), to: Rpc
 

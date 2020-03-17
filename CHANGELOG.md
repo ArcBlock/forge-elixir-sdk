@@ -1,3 +1,6 @@
+## 1.1.1 (March 17, 2020)
+  - deprecate interface
+
 ## 1.1.0 (March 12, 2020)
   - fix doc (#159)
   - deploy on release branch

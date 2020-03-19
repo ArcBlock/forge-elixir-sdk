@@ -1,3 +1,6 @@
+## 1.1.2 (March 19, 2020)
+  - use latest forge-abi
+
 ## 1.1.1 (March 17, 2020)
   - deprecate interface
 

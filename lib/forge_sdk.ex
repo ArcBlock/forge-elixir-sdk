@@ -43,7 +43,7 @@ defmodule ForgeSdk do
     ResponseSubscribe
   }
 
-  alias ForgeSdk.{Display, Loader, Rpc, Util, Wallet}
+  alias ForgeSdk.{Display, Rpc, Util, Wallet}
 
   @doc """
   Migrate a `wallet` from old address (as well as pk, sk) to a new address.
@@ -310,8 +310,8 @@ defmodule ForgeSdk do
   defdelegate refuel(opts), to: Rpc
   defdelegate refuel(itx, opts), to: Rpc
 
-  # extended tx helper
-  defdelegate stake_for_node(address, amount, opts), to: Rpc
+  @deprecated "not supported anymore"
+  def stake_for_node(_address, _amount, _opts), do: {:error, :internal}
 
   # chain related
   @doc """
@@ -621,8 +621,8 @@ defmodule ForgeSdk do
   defdelegate get_conn_state(name \\ ""), to: Util
   defdelegate get_parsed_config(name \\ ""), to: Util
   defdelegate datetime_to_proto(dt), to: Util
-  defdelegate update_type_url(forge_state), to: Loader
-  defdelegate get_tx_protocols(forge_state, address), to: Loader
+  # defdelegate update_type_url(forge_state), to: Loader
+  # defdelegate get_tx_protocols(forge_state, address), to: Loader
   defdelegate get_address(hash), to: Rpc
   defdelegate encode_any(data, type_url \\ nil), to: ForgeAbi
   defdelegate encode_any!(data, type_url \\ nil), to: ForgeAbi

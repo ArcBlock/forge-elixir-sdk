@@ -5,6 +5,7 @@ defmodule ForgeSdk.Rpc do
 
   use ForgeAbi.Unit
   import ForgeSdk.Rpc.Builder, only: [rpc: 2, rpc: 3]
+  import ForgeSdk.Tx.Builder, only: [tx: 1, tx: 2]
   require Logger
 
   @subscription_timeout 900 * 1000
@@ -85,6 +86,9 @@ defmodule ForgeSdk.Rpc do
   }
 
   alias ForgeSdk.Wallet.Util, as: WalletUtil
+  alias ForgeSdk.Rpc.Protocol.Helper
+  alias ForgeAbi.Transaction
+  alias Google.Protobuf.Any
 
   # chain related
   @doc """
@@ -338,92 +342,239 @@ defmodule ForgeSdk.Rpc do
 
   # tx helpers
 
-  def account_migrate(itx, opts),
-    do: apply(CoreTx.AccountMigrate.Rpc, :account_migrate, [itx, opts])
+  # account related
+  tx :account_migrate
+  tx :declare
+  tx :prepare_declare, multisig: true
 
-  def acquire_asset(itx, opts), do: apply(CoreTx.AcquireAsset.Rpc, :acquire_asset, [itx, opts])
-  def create_asset(itx, opts), do: apply(CoreTx.CreateAsset.Rpc, :create_asset, [itx, opts])
+  @spec finalize_declare(Transaction.t(), Keyword.t()) ::
+          {:error, any()} | Transaction.t()
+  def finalize_declare(tx, opts) do
+    wallet = opts[:wallet] || raise "wallet must be provided"
+    delegatee = opts[:delegatee] || ""
+    data = opts[:data]
 
-  def create_asset_factory(moniker, factory, opts),
-    do: apply(CoreTx.CreateAsset.Rpc, :create_asset_factory, [moniker, factory, opts])
+    ForgeSdk.multisig(tx: tx, wallet: wallet, data: data, delegatee: delegatee)
+  end
 
-  def prepare_consume_asset(itx, opts),
-    do: apply(CoreTx.ConsumeAsset.Rpc, :prepare_consume_asset, [itx, opts])
+  tx :delegate, preprocessor: [Helper, :delegate]
+  tx :revoke_delegate, preprocessor: [Helper, :revoke_delegate]
 
-  def finalize_consume_asset(tx, opts),
-    do: apply(CoreTx.ConsumeAsset.Rpc, :finalize_consume_asset, [tx, opts])
+  # asset related
+  tx :acquire_asset, preprocessor: [Helper, :acquire_asset]
+  tx :create_asset, preprocessor: [Helper, :create_asset]
+  tx :update_asset
 
-  def declare(itx, opts), do: apply(CoreTx.Declare.Rpc, :declare, [itx, opts])
+  @doc """
+  Allow user to stake for a node easily
+  """
+  @spec create_asset_factory(String.t(), map(), Keyword.t()) :: String.t()
+  def create_asset_factory(moniker, factory, opts) do
+    data = ForgeSdk.encode_any!(apply(ForgeAbi.AssetFactory, :new, [factory]))
 
-  def prepare_declare(itx, opts),
-    do: apply(CoreTx.Declare.Rpc, :prepare_declare, [itx, opts])
+    itx =
+      apply(ForgeAbi.CreateAssetTx, :new, [
+        %{
+          moniker: moniker,
+          ttl: opts[:ttl] || 0,
+          transferrable: opts[:transferrable] || false,
+          readonly: opts[:readonly] || false,
+          parent: opts[:parent] || "",
+          data: data
+        }
+      ])
 
-  def finalize_declare(tx, opts),
-    do: apply(CoreTx.Declare.Rpc, :finalize_declare, [tx, opts])
+    create_asset(Helper.create_asset(itx, opts), opts)
+  end
 
-  # def declare_file(itx, opts), do: apply(CoreTx.DeclareFile.Rpc, :declare_file, [itx, opts])
+  tx :prepare_consume_asset, multisig: true
 
-  def deploy_protocol(itx, opts),
-    do: apply(CoreTx.DeployProtocol.Rpc, :deploy_protocol, [itx, opts])
+  @spec finalize_consume_asset(Transaction.t(), Keyword.t()) ::
+          {:error, any()} | Transaction.t()
+  def finalize_consume_asset(tx, opts) do
+    asset_address = opts[:asset_address] || raise "asset_address must be provided"
+    wallet = opts[:wallet] || raise "wallet must be provided"
+    delegatee = opts[:delegatee] || ""
 
-  def prepare_exchange(itx, opts), do: apply(CoreTx.Exchange.Rpc, :prepare_exchange, [itx, opts])
+    data = Any.new(type_url: "fg:x:address", value: asset_address)
+    ForgeSdk.multisig(tx: tx, wallet: wallet, data: data, delegatee: delegatee)
+  end
 
-  def finalize_exchange(tx, opts),
-    do: apply(CoreTx.Exchange.Rpc, :finalize_exchange, [tx, opts])
+  # governance
+  # activate/deactivate/deploy are deprecated
+  # tx :activate_protocol
+  # tx :deactivate_protocol
+  # tx :deploy_protocol # need to auto generate the address by ForgeSdk.Util.to_tx_address(itx)
+  tx :update_consensus_params
+  tx :update_validator
+  tx :upgrade_node
 
-  def poke(itx, opts), do: apply(CoreTx.Poke.Rpc, :poke, [itx, opts])
-  def checkin(opts), do: apply(CoreTx.Poke.Rpc, :checkin, [opts])
-  def stake(itx, opts), do: apply(CoreTx.Stake.Rpc, :stake, [itx, opts])
+  # misc
+  tx :poke
 
-  def stake_for_node(address, value, opts),
-    do: apply(CoreTx.Stake.Rpc, :stake_for_node, [address, value, opts])
+  @doc """
+  Allow user to checkin to get reward
+  """
+  @spec checkin(Keyword.t()) :: String.t() | {:error, term()}
+  def checkin(opts) do
+    date = Date.to_string(Date.utc_today())
 
-  def transfer(itx, opts), do: apply(CoreTx.Transfer.Rpc, :transfer, [itx, opts])
-  def update_asset(itx, opts), do: apply(CoreTx.UpdateAsset.Rpc, :update_asset, [itx, opts])
-  def upgrade_node(itx, opts), do: apply(CoreTx.UpgradeNode.Rpc, :upgrade_node, [itx, opts])
+    address =
+      get_in(
+        ForgeSdk.get_parsed_config(opts[:conn] || ""),
+        ~w(forge prime token_holder address)
+      )
 
-  def refuel(opts), do: apply(CoreTx.Refuel.Rpc, :refuel, [opts])
-  def refuel(itx, opts), do: apply(CoreTx.Refuel.Rpc, :refuel, [itx, opts])
+    itx = apply(ForgeAbi.PokeTx, :new, [[date: date, address: address]])
 
-  def update_validator(itx, opts),
-    do: apply(CoreTx.UpdateValidator.Rpc, :update_validator, [itx, opts])
+    poke(itx, [{:nonce, 0} | opts])
+  end
 
-  def update_consensus_params(itx, opts),
-    do: apply(CoreTx.UpdateConsensusParams.Rpc, :update_consensus_params, [itx, opts])
+  tx :refuel
 
-  def setup_swap(itx, opts), do: apply(CoreTx.SetupSwap.Rpc, :setup_swap, [itx, opts])
+  @doc """
+  Allow user to refuel
+  """
+  @spec refuel(Keyword.t()) :: String.t() | {:error, term()}
+  def refuel(opts) do
+    date = Date.to_string(Date.utc_today())
+    itx = apply(ForgeAbi.RefuelTx, :new, [[date: date]])
+    refuel(itx, [{:nonce, 0} | opts])
+  end
 
-  def retrieve_swap(itx, opts), do: apply(CoreTx.RetrieveSwap.Rpc, :retrieve_swap, [itx, opts])
+  # atomic swap
+  tx :retrieve_swap
+  tx :revoke_swap
+  tx :setup_swap
 
-  def revoke_swap(itx, opts), do: apply(CoreTx.RevokeSwap.Rpc, :revoke_swap, [itx, opts])
+  # token swap
+  tx :approve_withdraw
+  tx :deposit_token
 
-  def delegate(itx, opts), do: apply(CoreTx.Delegate.Rpc, :delegate, [itx, opts])
+  tx :prepare_revoke_withdraw, multisig: true
 
-  def revoke_delegate(itx, opts),
-    do: apply(CoreTx.RevokeDelegate.Rpc, :revoke_delegate, [itx, opts])
+  @spec finalize_revoke_withdraw(Transaction.t(), Keyword.t()) ::
+          {:error, any()} | Transaction.t()
+  def finalize_revoke_withdraw(tx, opts) do
+    wallet = opts[:wallet] || raise "wallet must be provided"
+    delegatee = opts[:delegatee]
+    ForgeSdk.multisig(tx: tx, wallet: wallet, delegatee: delegatee)
+  end
 
-  def deposit_token(itx, opts), do: apply(CoreTx.DepositToken.Rpc, :deposit_token, [itx, opts])
+  tx :prepare_withdraw_token, multisig: true
 
-  def prepare_withdraw_token(itx, opts),
-    do: apply(CoreTx.WithdrawToken.Rpc, :prepare_withdraw_token, [itx, opts])
+  @spec finalize_withdraw_token(Transaction.t(), Keyword.t()) ::
+          {:error, any()} | Transaction.t()
+  def finalize_withdraw_token(tx, opts) do
+    wallet = opts[:wallet] || raise "wallet must be provided"
+    delegatee = opts[:delegatee]
+    ForgeSdk.multisig(tx: tx, wallet: wallet, delegatee: delegatee)
+  end
 
-  def finalize_withdraw_token(itx, opts),
-    do: apply(CoreTx.WithdrawToken.Rpc, :finalize_withdraw_token, [itx, opts])
+  # trade
+  tx :prepare_exchange, multisig: true
 
-  def approve_withdraw(itx, opts),
-    do: apply(CoreTx.ApproveWithdraw.Rpc, :approve_withdraw, [itx, opts])
+  @spec finalize_exchange(Transaction.t(), Keyword.t()) :: {:error, any()} | Transaction.t()
+  def finalize_exchange(tx, opts) do
+    wallet = opts[:wallet] || raise "wallet must be provided"
+    delegatee = opts[:delegatee]
+    ForgeSdk.multisig(tx: tx, wallet: wallet, delegatee: delegatee)
+  end
 
-  def prepare_revoke_withdraw(itx, opts),
-    do: apply(CoreTx.RevokeWithdraw.Rpc, :prepare_revoke_withdraw, [itx, opts])
+  tx :transfer
 
-  def finalize_revoke_withdraw(itx, opts),
-    do: apply(CoreTx.RevokeWithdraw.Rpc, :finalize_revoke_withdraw, [itx, opts])
+  defmodule Protocol.Helper do
+    def create_asset(itx, _opt) do
+      case itx.address === "" do
+        true -> %{itx | address: ForgeSdk.Util.to_asset_address(itx)}
+        false -> itx
+      end
+    end
 
-  def activate_protocol(itx, opts),
-    do: apply(CoreTx.ActivateProtocol.Rpc, :activate_protocol, [itx, opts])
+    def acquire_asset(itx, _opt) do
+      state = ForgeSdk.get_asset_state(address: itx.to)
 
-  def deactivate_protocol(itx, opts),
-    do: apply(CoreTx.DeactivateProtocol.Rpc, :deactivate_protocol, [itx, opts])
+      specs = attach_address(itx.specs, state)
+
+      case Enum.any?(specs, &is_nil/1) do
+        true -> %{itx | specs: []}
+        _ -> %{itx | specs: specs}
+      end
+    end
+
+    def delegate(itx, opt) do
+      wallet = Keyword.get(opt, :wallet)
+
+      case itx.address === "" do
+        true -> %{itx | address: ForgeSdk.Util.to_delegate_address(wallet.address, itx.to)}
+        false -> itx
+      end
+    end
+
+    def revoke_delegate(itx, opt) do
+      wallet = Keyword.get(opt, :wallet)
+
+      case itx.address === "" do
+        true -> %{itx | address: ForgeSdk.Util.to_delegate_address(wallet.address, itx.to)}
+        false -> itx
+      end
+    end
+
+    def attach_address(specs, state) when is_list(specs) do
+      specs
+      |> Enum.reduce_while([], fn spec, acc ->
+        spec = attach_address(spec, state)
+
+        case spec do
+          nil -> {:halt, []}
+          _ -> {:cont, [spec | acc]}
+        end
+      end)
+      |> Enum.reverse()
+    end
+
+    def attach_address(spec, state) do
+      case spec.address === "" do
+        true ->
+          case gen_create_asset_itx(spec, state) do
+            nil -> nil
+            tmp_itx -> %{spec | address: ForgeSdk.Util.to_asset_address(tmp_itx)}
+          end
+
+        false ->
+          spec
+      end
+    end
+
+    def gen_create_asset_itx(spec, state) do
+      factory_state = ForgeAbi.decode_any!(state.data)
+      mod = Module.concat("ForgeAbi", factory_state.asset_name)
+
+      case Code.ensure_loaded?(mod) do
+        false ->
+          nil
+
+        true ->
+          args = Jason.decode!(spec.data)
+
+          data =
+            factory_state.template
+            |> :bbmustache.render(args, key_type: :binary)
+            |> Jason.decode!(keys: :atoms!)
+
+          itx_data = ForgeAbi.encode_any!(mod.new(data))
+
+          params =
+            factory_state.attributes
+            |> Map.from_struct()
+            |> Map.merge(%{data: itx_data, parent: state.address, readonly: true})
+
+          apply(ForgeAbi.CreateAssetTx, :new, [params])
+      end
+    rescue
+      _ -> nil
+    end
+  end
 
   # account related
 

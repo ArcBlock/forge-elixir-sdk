@@ -15,8 +15,6 @@ defmodule ForgeSdk.Util do
   @doc """
   Upon initialization, forge client can call this function to make a gRPC connection to forge node.
   """
-  @spec connect(String.t(), Keyword.t()) ::
-          :ignore | {:error, any} | {:ok, pid} | {:ok, pid, any}
   def connect(host, opts) do
     name = String.to_atom(opts[:name])
 
@@ -30,7 +28,7 @@ defmodule ForgeSdk.Util do
       forge_state = ForgeSdk.get_forge_state(name)
 
       case forge_state do
-        nil ->
+        {:error, _} ->
           :error
 
         _ ->
@@ -39,15 +37,7 @@ defmodule ForgeSdk.Util do
       end
     end
 
-    result = ConnSupervisor.add_pool(name, host, callback)
-    forge_state = ForgeSdk.get_forge_state(name)
-
-    case name do
-      :forge_server_node -> nil
-      _ -> ForgeSdk.update_type_url(forge_state)
-    end
-
-    result
+    ConnSupervisor.add_pool(name, host, callback)
   end
 
   @doc """

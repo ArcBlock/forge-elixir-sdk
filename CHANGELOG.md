@@ -1,3 +1,6 @@
+## 1.1.3 (March 23, 2020)
+  - move tx protocol
+
 ## 1.1.2 (March 19, 2020)
   - use latest forge-abi
 

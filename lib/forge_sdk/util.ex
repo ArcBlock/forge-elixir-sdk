@@ -31,6 +31,9 @@ defmodule ForgeSdk.Util do
         {:error, _} ->
           :error
 
+        nil ->
+          :error
+
         _ ->
           ForgeSdk.RpcConn.update_config(pid, config)
           ForgeSdk.RpcConn.update_gas(pid, forge_state.gas)

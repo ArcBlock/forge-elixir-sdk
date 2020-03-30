@@ -24,7 +24,6 @@ defmodule ForgeSdk do
     NetInfo,
     NodeInfo,
     PageInfo,
-    ProtocolState,
     Transaction,
     TransactionInfo,
     ValidatorsInfo,
@@ -36,7 +35,6 @@ defmodule ForgeSdk do
     RequestGetBlock,
     RequestGetBlocks,
     RequestGetTx,
-    RequestGetProtocolState,
     RequestSendTx,
     RequestSubscribe,
     RequestUnsubscribe,
@@ -310,7 +308,7 @@ defmodule ForgeSdk do
   defdelegate refuel(opts), to: Rpc
   defdelegate refuel(itx, opts), to: Rpc
 
-  @deprecated "not supported anymore"
+  @deprecated "stake tokens to a node"
   def stake_for_node(_address, _amount, _opts), do: {:error, :internal}
 
   # chain related
@@ -546,24 +544,10 @@ defmodule ForgeSdk do
   @spec get_forge_state(String.t() | atom()) :: ForgeState.t() | {:error, term()}
   defdelegate get_forge_state(conn_name \\ ""), to: Rpc
 
-  @doc """
-  Return installed protocol state.
-
-  ## Example
-
-      req = ForgeAbi.RequestGetProtocolState.new(address: "z2E3zCQTx5dPQeimQvJWz3vJvcDv9Ad6YgaPn")
-      ForgeSdk.get_protocol_state(req)
-
-  """
-  @spec get_protocol_state(
-          RequestGetProtocolState.t()
-          | [RequestGetProtocolState.t()]
-          | Keyword.t()
-          | [Keyword.t()],
-          String.t()
-        ) :: ProtocolState.t() | [ProtocolState.t()] | {:error, term()}
-  defdelegate get_protocol_state(request, conn_name \\ ""), to: Rpc
-  defdelegate get_stake_state(request, conn_name \\ ""), to: Rpc
+  @deprecated "retrieve protocol state"
+  def get_protocol_state(_request, _conn_name \\ ""), do: {:error, :internal}
+  @deprecated "retrieve stake state"
+  def get_stake_state(_request, _conn_name \\ ""), do: {:error, :internal}
   defdelegate get_swap_state(request, conn_name \\ ""), to: Rpc
   defdelegate get_delegate_state(request, conn_name \\ ""), to: Rpc
 
@@ -638,7 +622,8 @@ defmodule ForgeSdk do
   defdelegate get_forge_stats(requests, conn_name \\ ""), to: Rpc
   defdelegate list_transactions(request, conn_name \\ ""), to: Rpc
   defdelegate list_assets(request, conn_name \\ ""), to: Rpc
-  defdelegate list_stakes(request, conn_name \\ ""), to: Rpc
+  @deprecated "list stakes for an account"
+  def list_stakes(_request, _conn_name \\ ""), do: {:error, :internal}
   defdelegate list_account(request, conn_name \\ ""), to: Rpc
   defdelegate list_top_accounts(request, conn_name \\ ""), to: Rpc
   defdelegate list_asset_transactions(request, conn_name \\ ""), to: Rpc

@@ -22,8 +22,6 @@ defmodule ForgeSdk.Rpc.Stub do
   defdelegate get_account_state(chan, opts \\ []), to: ForgeAbi.StateRpc.Stub
   defdelegate get_asset_state(chan, opts \\ []), to: ForgeAbi.StateRpc.Stub
   defdelegate get_forge_state(chan, req, opts \\ []), to: ForgeAbi.StateRpc.Stub
-  defdelegate get_protocol_state(chan, opts \\ []), to: ForgeAbi.StateRpc.Stub
-  defdelegate get_stake_state(chan, opts \\ []), to: ForgeAbi.StateRpc.Stub
   defdelegate get_swap_state(chan, opts \\ []), to: ForgeAbi.StateRpc.Stub
   defdelegate get_delegate_state(chan, opts \\ []), to: ForgeAbi.StateRpc.Stub
 

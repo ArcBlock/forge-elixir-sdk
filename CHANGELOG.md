@@ -1,3 +1,7 @@
+## 1.1.4 (March 30, 2020)
+  - bump forge-abi
+  - deprecate a bunch of APIs
+
 ## 1.1.3 (March 23, 2020)
   - move tx protocol
 

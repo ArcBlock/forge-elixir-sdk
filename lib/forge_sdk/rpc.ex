@@ -16,8 +16,6 @@ defmodule ForgeSdk.Rpc do
     AssetState,
     DelegateState,
     ForgeState,
-    ProtocolState,
-    StakeState,
     SwapState,
     SwapStatistics,
 
@@ -31,7 +29,6 @@ defmodule ForgeSdk.Rpc do
     UnconfirmedTxs,
 
     # index state
-    IndexedStakeState,
     IndexedAccountState,
     IndexedAssetState,
 
@@ -60,8 +57,6 @@ defmodule ForgeSdk.Rpc do
     RequestGetAssetState,
     RequestGetDelegateState,
     # RequestGetForgeState,
-    RequestGetProtocolState,
-    RequestGetStakeState,
     RequestGetSwapState,
 
     # event related
@@ -75,7 +70,6 @@ defmodule ForgeSdk.Rpc do
     RequestListAccount,
     RequestListAssets,
     RequestGetForgeStats,
-    RequestListStakes,
     RequestListTopAccounts,
     RequestListAssetTransactions,
     RequestListBlocks,
@@ -272,27 +266,6 @@ defmodule ForgeSdk.Rpc do
     res.state
   end
 
-  @spec get_protocol_state(
-          RequestGetProtocolState.t()
-          | [RequestGetProtocolState.t()]
-          | Keyword.t()
-          | [Keyword.t()],
-          String.t() | atom(),
-          Keyword.t()
-        ) :: ProtocolState.t() | [ProtocolState.t()] | {:error, term()}
-  rpc :get_protocol_state, request_stream: true do
-    res.state
-  end
-
-  @spec get_stake_state(
-          RequestGetStakeState.t() | [RequestGetStakeState.t()] | Keyword.t() | [Keyword.t()],
-          String.t() | atom(),
-          Keyword.t()
-        ) :: StakeState.t() | [StakeState.t()] | {:error, term()}
-  rpc :get_stake_state, request_stream: true do
-    res.state
-  end
-
   @spec get_swap_state(
           RequestGetSwapState.t() | [RequestGetSwapState.t()] | Keyword.t() | [Keyword.t()],
           String.t() | atom(),
@@ -366,7 +339,7 @@ defmodule ForgeSdk.Rpc do
   tx :update_asset
 
   @doc """
-  Allow user to stake for a node easily
+  Allow create asset factory
   """
   @spec create_asset_factory(String.t(), map(), Keyword.t()) :: String.t()
   def create_asset_factory(moniker, factory, opts) do
@@ -618,15 +591,6 @@ defmodule ForgeSdk.Rpc do
         ) :: {[IndexedAssetState.t()], PageInfo.t()} | {:error, term()}
   rpc :list_assets do
     {res.assets, res.page}
-  end
-
-  @spec list_stakes(
-          RequestListStakes.t() | Keyword.t(),
-          String.t() | atom(),
-          Keyword.t()
-        ) :: {[IndexedStakeState.t()], PageInfo.t()} | {:error, term()}
-  rpc :list_stakes do
-    {res.stakes, res.page}
   end
 
   @spec list_account(
